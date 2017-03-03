@@ -1,3 +1,16 @@
+#Getting Started
+
+Repo klonen
+```
+git clone https://github.com/Pzzio/EPOS.git
+cd EPOS
+```
+
+Feature branch erstellen
+```
+git checkout -b myNewBranch
+```
+
 #How To Branches
 
 * **master** Hier wird nichts committed ausser tags
