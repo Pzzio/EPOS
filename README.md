@@ -1,4 +1,4 @@
-#Branch overview
+#How To Branches
 
 * **master** Hier wird nichts committed ausser tags
 
