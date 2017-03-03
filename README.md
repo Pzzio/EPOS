@@ -1,14 +1,14 @@
 #Branch overview
 
-**master** - hier wird nichts committed ausser tags
+* **master** Hier wird nichts committed ausser tags
 
-**hotfix** - hotfixes fuer master branch
+* **hotfix** Hotfixes fuer master branch
 
-**development** - hier werden alle feature branches zusammengefuehrt
+* **development** Hier werden alle feature branches zusammengefuehrt
 
-**featureXY** - hier werden features entworfen
+* **featureXY** Hier werden features entworfen
 
-**featureXYZ** - hier werden andere features entworten
+* **featureXYZ** Hier werden andere Features entworten
 
 
 So aehnlich:
