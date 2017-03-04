@@ -9,8 +9,15 @@ var vueInstance = new Vue({
 
 function changeHeadline(){
     // jQuery cross domain ajax
-    $.get("http://pzzio.dns.army:5000/test").done(function (data) {
-        vueInstance.vueMessage = data;
+    $.ajax({
+            url: 'https://httpbin.org/delay/3',
+            type: 'GET',
+            success: function(data){ 
+                        vueInstance.vueMessage = "Delayed AJAX worked";
+                    },
+            error: function(data) {
+                        alert('woops!'); //or whatever
+                    }
     });
 }
 
