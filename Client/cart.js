@@ -32,4 +32,3 @@ class ExtraIngredient{
 var content = [];
 
 var pizza = new CartItem(1, 1.0, [new ExtraIngredient(1), new ExtraIngredient(2)]);
-console.log(JSON.stringify(pizza));

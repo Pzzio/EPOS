@@ -28,16 +28,21 @@
     <script src="js/jquery-3.1.1.js"></script>
     <!-- Bootstrap JS -->
     <script src="dist/js/bootstrap.min.js"></script>
-    <!-- Custom JS -->
-    <script src="utils.js"></script>
-    <script src="cart.js"></script>
 </head>
 
 <body>
 <div>
-    <ol>
-        <script>buildList([1, 2, 3, 4], function(item){return 1+item;});</script>
+    <ol id="test">
+        <div onload="buildList([1, 2, 3, 4], function(item){return item;});"></div>
+        <h1>{{test}}</h1>
+        <input value="{{test}}">
+        <div>stuff</div>
+        <div>more stuff</div>
+        <div>even more stuff</div>
     </ol>
 </div>
+    <!-- Custom JS -->
+    <script src="utils.js"></script>
+    <script src="cart.js"></script>
 </body>
 </html>
