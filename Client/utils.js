@@ -1,7 +1,8 @@
-var sent = {test: "Hey!"}
+var $scope = {test: "Hey!"}
 var bodyContent;
 var elementsWithVars = [];
 var elementCnt = 0;
+var lockInput = false;
 
 class VarContainer{
     constructor(element, name){
@@ -36,18 +37,22 @@ function replaceAll(str, find, replace) {
   return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 }
 
-function replaceVarsInDOM(){
+function replaceVarsInDOM(classToFocus){
     if(bodyContent == undefined){
         bodyContent = document.body.innerHTML;
     }
     var all = bodyContent;
 
-    for (property in sent) {
-        if (sent.hasOwnProperty(property)) {
-            all = replaceAll(all, "{{"+property+"}}", sent[property]);
+    for (property in $scope) {
+        if ($scope.hasOwnProperty(property)) {
+            all = replaceAll(all, "{{"+property+"}}", $scope[property]);
         }
     }
     document.body.innerHTML = all;
+    if(classToFocus !== undefined && document.getElementsByClassName(classToFocus)[0] !== undefined){
+        document.getElementsByClassName(classToFocus)[0].onfocus = function(){this.value = this.value;};
+        document.getElementsByClassName(classToFocus)[0].focus();
+    }
 }
 
 function checkForVarsInDOM(){
@@ -61,17 +66,30 @@ function checkForVarsInDOM(){
         }
     }
 
+    document.onkeydown = function(e){
+        if(e.keyCode === 17){
+            lockInput = true;
+        }
+    }
     document.onkeyup = function(e){
-        var target = (e.target) ? e.target : e.srcElement;
+        if(!lockInput){
+            var target = (e.target) ? e.target : e.srcElement;
 
-        for(var i = 0; i < elementsWithVars.length; i++){
-            if(elementsWithVars[i].element.className === target.className){
-                sent[elementsWithVars[i].name] = target.value;
+            for(var i = 0; i < elementsWithVars.length; i++){
+                if(elementsWithVars[i].element.className === target.className){
+                    $scope[elementsWithVars[i].name] = target.value;
+                }
+            }
+            replaceVarsInDOM(target.className);
+        }
+        else{
+            if(e.keyCode === 17){
+                lockInput = false;
             }
         }
-        replaceVarsInDOM();
     };
+
+    replaceVarsInDOM();
 }
 
 checkForVarsInDOM();
-replaceVarsInDOM();
