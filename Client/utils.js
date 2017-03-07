@@ -93,3 +93,56 @@ function checkForVarsInDOM(){
 }
 
 checkForVarsInDOM();
+
+
+// NotVue's constructor
+// Expects an object with all its settings, mainly el and data
+function NotVue(params) {
+    // TODO sanity check if el is present in params object
+    this.el = params.el; 
+
+		// during setting up getter/setter empty
+		this.data = {};
+
+		// register callbacks for every element in data
+    for (dataElement in params.data) {
+				// Enable one way binding for all data
+        // Which {{variable}} is to be replaced
+        var variable = dataElement;
+
+        // What to replace the variable with
+        var content = params.data[dataElement];
+
+				// When data changes, update the DOM
+				Object.defineProperty(this.data, dataElement, {
+						get : function(){
+										return this._name;
+									},
+
+						set: 	function(val){  
+										// TODO check if content is actually a string
+										replaceVarsInDOM(variable, content);
+
+										console.log("will change to: " + val);
+										this._name = val;
+										
+									}
+				});
+    }
+
+		// Actually copy data, once getter/setter are set up
+    this.data = params.data;
+}
+
+// Create a test NotVue object
+var notVue = new NotVue({
+    el: '#test',
+    data: {
+        message:    'Hello NotView!',
+        test:       'testContent',
+        tom:        'hello'
+    }
+});
+
+notVue.data.message = 'changged';
+notVue.data.test = 'changged';
