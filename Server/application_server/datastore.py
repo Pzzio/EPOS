@@ -1,6 +1,3 @@
-import os
-import io
-import sys
 import json
 
 VERSION=1.0
@@ -12,7 +9,7 @@ FILE_SECONDARY="secondary.json"
 class JsonDto(object):
     def __init__(self, b = None):
         if b:
-            self.__dict__ = json.loads(b)
+            self.__dict__ = json.loads(b)  # TODO; try except to send 400 to client
 
     def serialize(self):
         # TODO; add sanitization & validation
@@ -78,6 +75,13 @@ class Datastore():
         result = JsonDto()
         result.articles = ingredients
         return result
+
+    def get_all_articles(self):
+        articles = self.primary.articles
+        result = JsonDto()
+        result.articles = articles
+        return result
+
     def get_all_taxes(self):
         taxes = self.primary.taxes
         result = JsonDto()
@@ -94,22 +98,20 @@ class Datastore():
         result.payment_methods = payment_methods
         return result
 
-    def insert_costumer(self, costumer):
-        next_id = self.primary.costumer_info['max_id'] = ++self.primary.costumers_info['max_id']
-        costumer_entry = JsonDto()
-        self.primary.costumers.append(costumer_entry)
-        self.primary.costumers_info['max_id'] = next_id
-
-    def insert_payment(self, payment):
-        next_id = self.primary.payments_info['max_id'] = ++self.primary.payments_info['max_id']
-        payment_entry = JsonDto()
-        self.primary.payments.append(payment_entry)
-        self.primary.payments_info['max_id'] = next_id
-
-    def insert_order(self, order):
-        next_id = self.primary.orders_info['max_id'] = ++self.primary.orders_info['max_id']
-        order_entry = JsonDto()
-        self.primary.orders.append(order_entry)
-        self.primary.orders_info['max_id'] = next_id
-
-
+        # def insert_costumer(self, costumer):
+        #     next_id = self.primary.costumer_info['max_id'] = ++self.primary.costumers_info['max_id']
+        #     costumer_entry = JsonDto()
+        #     self.primary.costumers.append(costumer_entry)
+        #     self.primary.costumers_info['max_id'] = next_id
+        #
+        # def insert_payment(self, payment):
+        #     next_id = self.primary.payments_info['max_id'] = ++self.primary.payments_info['max_id']
+        #     payment_entry = JsonDto()
+        #     self.primary.payments.append(payment_entry)
+        #     self.primary.payments_info['max_id'] = next_id
+        #
+        # def insert_order(self, order):
+        #     next_id = self.primary.orders_info['max_id'] = ++self.primary.orders_info['max_id']
+        #     order_entry = JsonDto()
+        #     self.primary.orders.append(order_entry)
+        #     self.primary.orders_info['max_id'] = next_id

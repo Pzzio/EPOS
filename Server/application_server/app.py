@@ -1,6 +1,5 @@
 import argparse
 import cgi
-import gzip
 import http.server
 import logging
 import mimetypes
@@ -38,16 +37,21 @@ class BusinessData():
         taxes = self.datastore.get_all_taxes()
         return taxes.serialize()
 
-        def get_all_order_methods(self):
-            order_methods = self.datastore.get_all_order_methods()
+    def get_all_articles(self):
+        articles = self.datastore.get_all_articles()
+        return articles.serialize()
 
+    def get_all_order_methods(self):
+        order_methods = self.datastore.get_all_order_methods()
         return order_methods.serialize()
 
-        def get_all_payment_methods(self):
-            payment_methods = self.datastore.get_all_payment_methods()
-
+    def get_all_payment_methods(self):
+        payment_methods = self.datastore.get_all_payment_methods()
         return payment_methods.serialize()
 
+
+datastore = Datastore()
+business_data = BusinessData(datastore)
 
 def make_request_handler_class():
     '''
@@ -56,9 +60,6 @@ def make_request_handler_class():
     It exists to allow the handler to access the opts.path variable
     locally.
     '''
-
-    datastore = Datastore()
-    business_data = BusinessData(datastore)
 
     class MyRequestHandler(http.server.BaseHTTPRequestHandler):
         '''
@@ -143,6 +144,16 @@ def make_request_handler_class():
                 self.wfile.write(bytes(articles, "utf-8"))
                 print((datetime.now() - starttime).microseconds)
 
+            elif len(paths) == 1 and paths[0] == "allArticles":
+                if not self.check_content_type(content_type):
+                    return
+                self.send_response(200)  # OK
+                self.send_header('Content-type', self.APPLICATION_MIME)
+                self.end_headers()
+                articles = business_data.get_all_articles()
+                self.wfile.write(bytes(articles, "utf-8"))
+                print((datetime.now() - starttime).microseconds)
+
             elif len(paths) == 1 and paths[0] == "taxes":
                 if not self.check_content_type(content_type):
                     return
@@ -221,18 +232,6 @@ def make_request_handler_class():
                     # the server recognizes.
                     _, ext = os.path.splitext(path)
                     ext = ext.lower()
-                    # content_type = {
-                    #     '.css': 'text/css',
-                    #     '.gif': 'image/gif',
-                    #     '.htm': 'text/html',
-                    #     '.html': 'text/html',
-                    #     '.jpeg': 'image/jpeg',
-                    #     '.jpg': 'image/jpg',
-                    #     '.js': 'text/javascript',
-                    #     '.png': 'image/png',
-                    #     '.text': 'text/plain',
-                    #     '.txt': 'text/plain',
-                    # }
 
                     content_type = mimetypes.types_map[ext]
                     if not content_type:
@@ -240,38 +239,34 @@ def make_request_handler_class():
                         # Treat it as plain text.
                         self.send_response(200)  # OK
                         self.send_header('Content-type', 'text/plain')
-                        self.send_header('Content-Encoding', 'gzip')
+                        # self.send_header('Content-Encoding', 'gzip')
                         self.end_headers()
+
+                        # f = open(path, 'rb')
+                        # shutil.copyfile(f, self.wfile)
+                        # f.close()
+
                         with open(path, 'rb') as ifp:
-                            self.wfile.write(gzip.compress(ifp.read()))
+                            # self.wfile.write(gzip.compress(ifp.read()))
+                            # shutil.copyfile(ifp.read(), self.wfile)
+                            self.wfile.write(ifp.read())
                         print((datetime.now() - starttime).microseconds)
                         return
 
                     self.send_response(200)  # OK
                     self.send_header('Content-type', content_type)
-                    self.send_header('Content-Encoding', 'gzip')
+                    #self.send_header('Content-Encoding', 'gzip')
+
                     self.end_headers()
+                    # f = open(path, 'rb')
+                    # shutil.copyfile(f, self.wfile)
+                    # f.close()
+
                     with open(path, 'rb') as ifp:
-                        self.wfile.write(gzip.compress(ifp.read()))
+                        # self.wfile.write(gzip.compress(ifp.read()))
+                        self.wfile.write(ifp.read())
+                        #shutil.copyfile(ifp.read(), self.wfile)
                     print((datetime.now() - starttime).microseconds)
-                    # If it is a known extension, set the correct
-                    # content type in the response.
-                    # if ext in content_type:
-                    #     self.send_response(200)  # OK
-                    #     self.send_header('Content-type', content_type[ext])
-                    #     self.end_headers()
-                    #
-                    #     with open(path) as ifp:
-                    #         self.wfile.write(bytes(ifp.read(), "utf-8"))
-                    # else:
-                    #     # Unknown file type or a directory.
-                    #     # Treat it as plain text.
-                    #     self.send_response(200)  # OK
-                    #     self.send_header('Content-type', 'text/plain')
-                    #     self.end_headers()
-                    #
-                    #     with open(path) as ifp:
-                    #         self.wfile.write(bytes(ifp.read(), "utf-8"))
 
         def do_POST(self):
             '''
@@ -292,49 +287,7 @@ def make_request_handler_class():
             # Get the "Back" link.
             back = self.path if self.path.find('?') < 0 else self.path[:self.path.find('?')]
 
-            # Print out logging information about the path and args.
-            logging.debug('TYPE %s' % (ctype))
-            logging.debug('PATH %s' % (self.path))
-            logging.debug('ARGS %d' % (len(postvars)))
-            if len(postvars):
-                i = 0
-                for key in sorted(postvars):
-                    logging.debug('ARG[%d] %s=%s' % (i, key, postvars[key]))
-                    i += 1
-
-            # Tell the browser everything is okay and that there is
-            # HTML to display.
-            self.send_response(200)  # OK
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-
-            # Display the POST variables.
-            self.wfile.write('<html>')
-            self.wfile.write('  <head>')
-            self.wfile.write('    <title>Server POST Response</title>')
-            self.wfile.write('  </head>')
-            self.wfile.write('  <body>')
-            self.wfile.write('    <p>POST variables (%d).</p>' % (len(postvars)))
-
-            if len(postvars):
-                # Write out the POST variables in 3 columns.
-                self.wfile.write('    <table>')
-                self.wfile.write('      <tbody>')
-                i = 0
-                for key in sorted(postvars):
-                    i += 1
-                    val = postvars[key]
-                    self.wfile.write('        <tr>')
-                    self.wfile.write('          <td align="right">%d</td>' % (i))
-                    self.wfile.write('          <td align="right">%s</td>' % key)
-                    self.wfile.write('          <td align="left">%s</td>' % val)
-                    self.wfile.write('        </tr>')
-                self.wfile.write('      </tbody>')
-                self.wfile.write('    </table>')
-
-            self.wfile.write('    <p><a href="%s">Back</a></p>' % (back))
-            self.wfile.write('  </body>')
-            self.wfile.write('</html>')
+            #...
 
     return MyRequestHandler
 
