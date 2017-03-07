@@ -1,5 +1,3 @@
-
-
 function dumpCart(){
     localStorage.setItem("cart", content);
 }

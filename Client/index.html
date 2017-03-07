@@ -9,40 +9,26 @@
     <meta name="author" content="">
 
     <title>Pzzio Website Testing</title>
-
-    <!-- ########### CSS ########### -->
-    <!-- Bootstrap core CSS -->
-    <link href="dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap theme -->
-    <link href="dist/css/bootstrap-theme.min.css" rel="stylesheet">
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="theme.css" rel="stylesheet">
-
-    <!-- ########### JS ########### -->
-    <!-- jQuery -->
-    <script src="js/jquery-3.1.1.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="dist/js/bootstrap.min.js"></script>
 </head>
 
 <body>
 <div>
-    <ol id="test">
+    <ol  id="stuff">
         <div onload="buildList([1, 2, 3, 4], function(item){return item;});"></div>
-        <h1>{{test}}</h1>
         <input value="{{test}}">
-        <div>stuff: {{test}}</div>
+        <div>You are looking for: {{test}}</div>
         <div>more stuff</div>
         <div>even more stuff</div>
     </ol>
+    <button onclick="goToArticleView({id: 1})">Got to article 1</button>
+    <button onclick="goToArticleView({id: 2})">Got to article 2</button>
+    <button onclick="goToArticleView({id: 3})">Got to article 3</button>
+    <button onclick="goToArticleView({id: 4})">Got to article 4</button>
+    <button onclick="goToMainView()">Got to all articles</button>
+    <button onclick="goToCheckout()">Got to checkout</button>
 </div>
-    <!-- Custom JS -->
-    <script src="utils.js"></script>
-    <script src="cart.js"></script>
+<!-- Custom JS -->
+<script src="utils.js"></script>
+<script src="cart.js"></script>
 </body>
 </html>

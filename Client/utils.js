@@ -21,8 +21,30 @@ function buildList(input, action){
     }
 }
 
-function doGet(){
+function setNewUrl(url, title='default'){
+    window.history.pushState({urlPath: url}, title, url);
+}
 
+function goToArticleView(article) {
+    setNewUrl('/articles/' + article.id, '' + article.id);
+}
+function goToMainView() {
+    setNewUrl('/articles', 'articles');
+}
+function goToCheckout() {
+    setNewUrl('/checkout', 'checkout');
+}
+
+function doGet(url){
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            changeTo(url);
+            buildFromJson(JSON.parse(xhttp.responseText));
+        }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.send();
 }
 
 function doPost(){
@@ -32,9 +54,8 @@ function doPost(){
 function escapeRegExp(str) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
-
 function replaceAll(str, find, replace) {
-  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 }
 
 function replaceVarsInDOM(classToFocus){
