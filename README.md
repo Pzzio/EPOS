@@ -1,16 +1,29 @@
-#Branch overview
+#Getting Started
 
-**master** - contains nothing but tags
+Repo klonen
+```
+git clone https://github.com/Pzzio/EPOS.git
+cd EPOS
+```
 
-**hotfix** - hotfixes for master branch
+Feature branch erstellen
+```
+git checkout -b myNewBranch
+```
 
-**development** - where featurebranches are merged together
+#How To Branches
 
-**featureXY** - where a feature is actually implemented
+* **master** Hier wird nichts committed ausser tags
 
-**featureXYZ** - where another feature is implemented
+* **hotfix** Hotfixes fuer master branch
+
+* **development** Hier werden alle feature branches zusammengefuehrt
+
+* **featureXY** Hier werden features entworfen
+
+* **featureXYZ** Hier werden andere Features entworten
 
 
-For reference:
+So aehnlich:
 
 ![alt tag](https://images-ext-2.discordapp.net/eyJ1cmwiOiJodHRwczovL3d3dy5tb3ZhYmxldHlwZS5vcmcvY2FwdHVyZS9Nb3ZhYmxlVHlwZUJyYW5jaE1hcC5wbmcifQ.4V6xFG2LFifBEEEOqmK1K5s2wjY?width=577&height=703)
