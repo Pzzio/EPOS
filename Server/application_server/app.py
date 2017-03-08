@@ -4,13 +4,11 @@ import logging
 import mimetypes
 import os
 import re
-import sys
 from datetime import datetime
 
 from datastore import Datastore  # will work even if PyCharm cries
 
 VERSION = 1.0
-
 
 class BusinessData():
   def __init__(self, datastore):
@@ -276,15 +274,6 @@ def make_request_handler_class():
       # ...
 
   return MyRequestHandler
-
-
-def err(msg):
-  '''
-  Report an error message and exit.
-  '''
-  print('ERROR: %s' % (msg))
-  sys.exit(1)
-
 
 def httpd():
   '''
