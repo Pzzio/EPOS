@@ -1,8 +1,30 @@
-var $scope = {test: "Hey!"}
-var bodyContent;
-var elementsWithVars = [];
-var elementCnt = 0;
-var lockInput = false;
+function escapeRegExp(str) {
+    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
+// Replace {{variableName}} with content
+function replaceVarsInDOM(variableName, content)
+{
+		var allElements = document.getElementsByTagName("*");	
+
+		for (var i = 0; i<allElements.length; i++) {
+				var test = allElements[i];
+
+				// make sure only text is in innerHTML
+				if (test.children.length == 0) {
+
+						if (test.innerHTML.length > 0) {
+								var changedInner = replaceAll(test.innerHTML, "{{"+variableName+"}}", content);
+
+								test.innerHTML = changedInner;	
+						}
+				}
+		}
+}
 
 // NotVue's constructor
 // Expects an object with all its settings, mainly el and data
@@ -29,19 +51,18 @@ function NotVue(params) {
                     },
 
             set: 	function(val){  
-                        // TODO check if content is actually a string
-
-                        replaceVarsInDOM(variable, content);
-
                         console.log("will change to: " + val);
+
+                        // TODO check if content is actually a string
+                        replaceVarsInDOM(variable, val);
+
                         this._name = val;
-                            
                     }
         });
     }
 
     // Only copy data, once getter/setter are set up
-    this.data = params.data;
+    //this.data = params.data;
 }
 
 // Create a test NotVue object
@@ -53,9 +74,6 @@ var notVue = new NotVue({
         tom:        'hello'
     }
 });
-
-notVue.data.message = 'changged';
-notVue.data.test = 'changged';
 
 function scanForInputTags () {
     // TODO only start searching from the vue el element
