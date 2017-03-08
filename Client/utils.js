@@ -1,3 +1,5 @@
+var dynamicElements;        // holds all elements which contain {{variable}} innerHTML
+
 function escapeRegExp(str) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
@@ -53,8 +55,13 @@ function NotVue(params) {
             set: 	function(val){  
                         console.log("will change to: " + val);
 
+                        var splitStr = val.split('#'); 
+
+                        var varToReplace = splitStr[0];
+                        var content = splitStr[1]; 
+
                         // TODO check if content is actually a string
-                        replaceVarsInDOM(variable, val);
+                        replaceVarsInDOM(varToReplace, content);
 
                         this._name = val;
                     }
@@ -71,7 +78,7 @@ var notVue = new NotVue({
     data: {
         message:    'Hello NotView!',
         test:       'testContent',
-        tom:        'hello'
+        tom:        'toms content'
     }
 });
 
@@ -91,7 +98,7 @@ function scanForInputTags () {
 
 						// TODO get the "closest" vue instance, meaning the one
 						// with the closest el value in the DOM
-						notVue.data[varToBind] = inputElement.value; 
+						notVue.data[varToBind] = varToBind + "#" + inputElement.value; 
 				};	
     }
 }
