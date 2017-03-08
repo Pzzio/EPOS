@@ -1,0 +1,177 @@
+{
+   "articles_info":{
+      "size":3,
+      "max_id":2
+   },
+   "articles":[
+      {
+         "id":0,
+         "name":"Pizza Magherita",
+         "img_url":"/pizzaimg/0.svg",
+         "thumb_img_url":"/pizzaimg/thumb/0_thumb.svg",
+         "desc":"TEXT TEXT",
+         "base_ingredients":[
+            {
+               "id":0
+            },
+            {
+               "id":1
+            }
+         ],
+         "extra_ingredients":[
+            {
+               "id":2
+            },
+            {
+               "id":3
+            }
+         ],
+         "base_price":5,
+         "tax_id":0
+      },
+      {
+         "id":1,
+         "name":"Pizza Salami",
+         "img_url":"/pizzaimg/1.svg",
+         "thumb_img_url":"/pizzaimg/thumb/1_thumb.svg",
+         "desc":"TEXT TEXT",
+         "base_ingredients":[
+            {
+               "id":0
+            },
+            {
+               "id":1
+            }
+         ],
+         "extra_ingredients":[
+            {
+               "id":2
+            },
+            {
+               "id":3
+            }
+         ],
+         "base_price":5,
+         "tax_id":0
+      },
+      {
+         "id":2,
+         "name":"Pizza Terror",
+         "img_url":"/pizzaimg/2.svg",
+         "thumb_img_url":"/pizzaimg/thumb/2_thumb.svg",
+         "desc":"TEXT TEXT",
+         "base_ingredients":[
+            {
+               "id":0
+            },
+            {
+               "id":1
+            }
+         ],
+         "extra_ingredients":[
+            {
+               "id":2
+            },
+            {
+               "id":3
+            }
+         ],
+         "base_price":5,
+         "tax_id":0
+      }
+   ],
+   "ingredients_info":{
+      "size":4,
+      "max_id":3
+   },
+   "ingredients":[
+      {
+         "id":0,
+         "name":"Cheese",
+         "thumb_img_url":"/ingredientimg/thumb/thumb_1.svg",
+         "desc":"TEXT TEXT",
+         "tax_id":1
+      },
+      {
+         "id":1,
+         "name":"Garlic",
+         "thumb_img_url":"/ingredientimg/thumb/thumb_2.svg",
+         "desc":"TEXT TEXT",
+         "tax_id":1
+      },
+      {
+         "id":2,
+         "name":"Bacon",
+         "thumb_img_url":"/ingredientimg/thumb/thumb_3.svg",
+         "desc":"TEXT TEXT",
+         "tax_id":1
+      },
+      {
+         "id":3,
+         "name":"Mais",
+         "thumb_img_url":"/ingredientimg/thumb/thumb_4.svg",
+         "desc":"TEXT TEXT",
+         "tax_id":1
+      }
+   ],
+   "taxes_info":{
+      "size":2,
+      "max_id":1
+   },
+   "taxes":[
+      {
+         "id":0,
+         "type":"VAT_Type_1",
+         "amount":0.19
+      },
+      {
+         "id":1,
+         "type":"VAT_Type_2",
+         "amount":0.07
+      }
+   ],
+   "order_methods_info":{
+      "size":3,
+      "max_id":2
+   },
+   "order_methods":[
+      {
+         "id":0,
+         "name":"Local Order"
+      },
+      {
+         "id":1,
+         "name":"Telephone Order"
+      },
+      {
+         "id":2,
+         "name":"Online Order"
+      }
+   ],
+   "payment_methods_info":{
+      "size":3,
+      "max_id":2
+   },
+   "payment_methods":[
+      {
+         "id":0,
+         "name":"PayPal",
+         "location":"/payment/paypal"
+      },
+      {
+         "id":1,
+         "name":"Sofortüberweisung",
+         "location":"/payment/sofortueberweisung"
+      },
+      {
+         "id":2,
+         "name":"CCBill",
+         "location":"/payment/ccbill"
+      },
+      {
+         "id":3,
+         "name":"100% FREE NO VIRUS GRATIS GRATUITO 100% LEGIT DOWNLOAD NOW!",
+         "location":"/payment/free"
+      }
+   ]
+}
