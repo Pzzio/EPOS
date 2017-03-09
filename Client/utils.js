@@ -1,5 +1,6 @@
-var dynamicElements = [];        // holds all elements which contain {{variable}} innerHTML
-var internalData = {};
+var vueInstance = {};           // global reference to vue object
+var dynamicElements = [];       // holds all elements which contain {{variable}} innerHTML
+var internalData = {};          // holds all data, accessed only via the data-getter
 
 function escapeRegExp(str) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
@@ -19,7 +20,12 @@ function replaceVarsInDOM()
         var variableName = dynamicElements[i].variableName;
 
         // TODO dynamically get vue object reference
-        var variableContent = notVue.data[variableName];  
+        var variableContent = vueInstance.data[variableName];  
+
+        // prevent content to be set to undefined
+        if (!variableContent) {
+            variableContent = "";
+        }
 
         if (initialInnerHTML.includes(variableName)){
 
@@ -73,6 +79,8 @@ function registerAllDynamicElements() {
 // Expects an object with all its settings, mainly el and data
 function NotVue(params) {
 
+    vueInstance = this;
+
     // save all element references with dynamic content in them
     registerAllDynamicElements();
 
@@ -85,13 +93,17 @@ function NotVue(params) {
 
     Object.defineProperty(this, 'data', { 
         get: function() { 
-            this.updateDOM = true;
             return this.internalData; 
         },
         set: function(newVal) { 
             this.internalData = newVal; 
         } 
     });
+
+    // Assign oninput listeners
+    scanForInputTags();
+    
+    replaceVarsInDOM();
 }
 
 // Create a test NotVue object
@@ -114,20 +126,24 @@ function scanForInputTags () {
 
     for (var i = 0; i < allElements.length; i++)
     {
-				var inputElement = allElements[i];
+        var inputElement = allElements[i];
 
-				inputElement.oninput = function(inputEvent){ 
-						var inputElement = inputEvent.currentTarget;
-						var varToBind = inputElement.getAttribute("nv-model");
+        inputElement.oninput = function(inputEvent){ 
+            var inputElement = inputEvent.currentTarget;
+            var varToBind = inputElement.getAttribute("nv-model");
 
-						// TODO get the "closest" vue instance, meaning the one
-						// with the closest el value in the DOM
-						notVue.data[varToBind] = inputElement.value; 
+            // TODO get the "closest" vue instance, meaning the one
+            // with the closest el value in the DOM
+            vueInstance.data[varToBind] = inputElement.value; 
 
-                        replaceVarsInDOM();
-				};	
+            replaceVarsInDOM();
+        };	
+
+        // If the input element contains something, assign it right away
+        if (inputElement.value)
+        {
+            var varToBind = inputElement.getAttribute("nv-model");
+            vueInstance.data[varToBind] = inputElement.value; 
+        }
     }
 }
-
-// Assign oninput listeners
-scanForInputTags();
