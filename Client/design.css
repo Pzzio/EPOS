@@ -1,0 +1,74 @@
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    width: 100%;
+    background-image: url("pizza-banner.png");
+    background-size: cover;
+    border-top-right-radius: 1vw;
+    border-top-left-radius: 1vw;
+    line-height: 8vw;
+}
+
+header h1 {
+    text-align: center;
+    margin: 0;
+    font-family: "Brush Script MT", serif;
+    font-size: 5vw;
+}
+
+header button {
+    width: 8vw;
+    height: 8vw;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: transparent url("shopping-cart.png") no-repeat;
+    background-size: contain;
+    border: none;
+    outline: none;
+}
+
+article {
+    width: auto;
+    background-color: #dcdbdb;
+
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+
+section {
+    padding: 5px;
+    height: 375px;
+    width: 375px;
+    margin: 30px;
+    background-image: url("pizza-salami.jpg");
+    background-size: cover;
+    box-sizing: border-box;
+    transition: all .2s ease-in-out;
+}
+
+section:hover {
+    transform: scale(1.05);
+}
+
+footer {
+    width: auto;
+    height: 8vw;
+    background-color: #5e5e5e;
+    border-bottom-left-radius: 1vw;
+    border-bottom-right-radius: 1vw;
+}
+
+footer p {
+    text-align: center;
+    padding: 30px;
+    margin: 0;
+}
