@@ -91,6 +91,7 @@ def make_request_handler_class():
             Handle a GET request.
             '''
             logging.debug('GET %s' % (self.path))
+            print('GET %s' % (self.path))
 
             content_type = self.headers['content-type']
 
@@ -206,7 +207,7 @@ def make_request_handler_class():
             else:
                 # Get the file path.
                 # dem = paths.
-                path = "../Client" + rpath
+                path = "../../Client" + rpath
 
                 logging.debug('FILE %s' % (path))
 
@@ -379,6 +380,7 @@ def httpd():
     RequestHandlerClass = make_request_handler_class()
     server = http.server.HTTPServer(("", port), RequestHandlerClass)
     logging.info('Server starting %s:%s (level=%s)' % ("", port, ""))
+    print('Server starting %s:%s (level=%s)' % ("", port, ""))
     try:
         server.serve_forever()
     except KeyboardInterrupt:

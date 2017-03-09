@@ -2,7 +2,7 @@ import json
 
 VERSION=1.0
 
-LOCATION="./datastore/"
+LOCATION="../datastore/"
 FILE_PRIMARY="primary.json"
 FILE_SECONDARY="secondary.json"
 

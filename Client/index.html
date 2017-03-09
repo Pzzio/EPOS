@@ -1,34 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Pzzio Website Testing</title>
+    <link rel="stylesheet" href="design.css">
 </head>
 
 <body>
-<div>
-    <ol id="stuff">
-        <div onload="buildList([1, 2, 3, 4], function(item){return item;});"></div>
-        <input value="{{test}}">
-        <div>You are looking for: {{test}}</div>
-        <div>more stuff</div>
-        <div>even more stuff</div>
-    </ol>
-    <button onclick="goToArticleView({id: 1})">Got to article 1</button>
-    <button onclick="goToArticleView({id: 2})">Got to article 2</button>
-    <button onclick="goToArticleView({id: 3})">Got to article 3</button>
-    <button onclick="goToArticleView({id: 4})">Got to article 4</button>
-    <button onclick="goToMainView()">Got to all articles</button>
-    <button onclick="goToCheckout()">Got to checkout</button>
-</div>
-<!-- Custom JS -->
+
+<header>
+    <h1>Rosetti's Pizza</h1>
+    <button onclick="goToMainView('/articles')"></button>
+</header>
+
+<article>
+
+</article>
+
+<footer>
+    <p>Copyright by Pzz.io-Project</p>
+</footer>
+
 <script src="utils.js"></script>
-<script src="cart.js"></script>
+
 </body>
-</html>
