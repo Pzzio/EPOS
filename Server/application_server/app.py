@@ -50,7 +50,6 @@ class BusinessData():
 datastore = Datastore()
 business_data = BusinessData(datastore)
 
-
 def make_request_handler_class():
   '''
   Factory to make the request handler and add arguments to it.

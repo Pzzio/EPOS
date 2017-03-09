@@ -25,26 +25,17 @@ function setNewUrl(url, title = 'default') {
     window.history.pushState({urlPath: url}, title, url);
 }
 
-function goToArticleView(article) {
-    setNewUrl('/articles/' + article.id, '' + article.id);
-}
-function goToMainView() {
-    setNewUrl('/articles', 'articles');
-}
-function goToCheckout() {
-    setNewUrl('/checkout', 'checkout');
-}
-
-function doGet(url) {
+function doGet(url, action) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            changeTo(url);
-            buildFromJson(JSON.parse(xhttp.responseText));
+            action(JSON.parse(xhttp.responseText));
         }
     };
-    xhttp.open("GET", url, true);
-    xhttp.send();
+    xhttp.open('GET', url, true);
+    xhttp.setRequestHeader('Content-Type', 'application/com.rosettis.pizzaservice+json');
+    xhttp.setRequestHeader('ETag', 123);
+    xhttp.send(null);
 }
 
 function doPost() {
@@ -113,6 +104,56 @@ function checkForVarsInDOM() {
     };
 
     replaceVarsInDOM();
+}
+
+function goToArticleView(id) {
+    doGet('/article/' + id, function (json) {
+        var container = document.getElementsByTagName('article')[0];
+
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+
+        var section = document.createElement('SECTION');
+
+        container.appendChild(section);
+    });
+
+    setNewUrl('/article/' + id, '' + id);
+}
+function goToMainView() {
+    doGet('/articles', function (json) {
+
+        var container = document.getElementsByTagName('article')[0];
+
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+
+        for (var i = 0; i < json.articles.length; i++) {
+            var section = document.createElement('SECTION');
+            section.setAttribute('id', json.articles[i].id);
+            section.setAttribute('onclick', 'goToArticleView(' + json.articles[i].id + ')');
+            container.appendChild(section);
+        }
+    });
+
+    setNewUrl('/articles', 'articles');
+}
+function goToCheckout() {
+    setNewUrl('/checkout', 'checkout');
+}
+
+function foreward(url) {
+    if (url === '/articles') {
+        goToMainView();
+    }
+    else if (url === '/checkout') {
+        goToCheckout(url);
+    }
+    else {
+        goToArticleView(url);
+    }
 }
 
 checkForVarsInDOM();
