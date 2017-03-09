@@ -1,14 +1,17 @@
+import argparse
 import cgi
 import http.server
 import logging
 import mimetypes
 import os
 import re
+import sys
 from datetime import datetime
 
-from datastore import Datastore  # will work even if PyCharm cries
+from datastore import Datastore
 
 VERSION = 1.0
+
 
 class BusinessData():
   def __init__(self, datastore):
@@ -64,7 +67,7 @@ def make_request_handler_class():
     additional class variables.
     '''
 
-    APPLICATION_MIME = "application/com.rosettis.pizzaservice"
+    APPLICATION_MIME = "application/com.rosettis.pizzaservice+json"
 
     def do_HEAD(self):
       '''
@@ -77,7 +80,7 @@ def make_request_handler_class():
 
     def check_content_type(self, type):
       if not type or not type.startswith(self.APPLICATION_MIME):
-        # self.send_error(http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE, 'Unsupported content-type: ')
+        self.send_error(http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE, 'Unsupported content-type: ')
         return False
       return True
 
@@ -121,72 +124,89 @@ def make_request_handler_class():
       # displays some internal information.
 
       paths = list(filter(None, self.path.split("/")))
-      if self.check_content_type(content_type):
-        if len(paths) == 1 and paths[0] == "articles":
-          self.send_response(200)  # OK
-          self.send_header('Content-type', self.APPLICATION_MIME)
-          self.end_headers()
-          articles = business_data.get_articles()
-          self.wfile.write(bytes(articles, "utf-8"))
+      if len(paths) == 1 and paths[0] == "articles":
+        if not self.check_content_type(content_type):
+          return
+        self.send_response(200)  # OK
+        self.send_header('Content-type', self.APPLICATION_MIME)
+        self.end_headers()
+        articles = business_data.get_articles()
+        self.wfile.write(bytes(articles, "utf-8"))
+        print((datetime.now() - starttime).microseconds)
+
+      elif len(paths) == 1 and paths[0] == "ingredients":
+        if not self.check_content_type(content_type):
+          return
+        self.send_response(200)  # OK
+        self.send_header('Content-type', self.APPLICATION_MIME)
+        self.end_headers()
+        articles = business_data.get_all_ingredients()
+        self.wfile.write(bytes(articles, "utf-8"))
+        print((datetime.now() - starttime).microseconds)
+
+      elif len(paths) == 1 and paths[0] == "allArticles":
+        if not self.check_content_type(content_type):
+          return
+        self.send_response(200)  # OK
+        self.send_header('Content-type', self.APPLICATION_MIME)
+        self.end_headers()
+        articles = business_data.get_all_articles()
+        self.wfile.write(bytes(articles, "utf-8"))
+        print((datetime.now() - starttime).microseconds)
+
+      elif len(paths) == 1 and paths[0] == "taxes":
+        if not self.check_content_type(content_type):
+          return
+        self.send_response(200)  # OK
+        self.send_header('Content-type', self.APPLICATION_MIME)
+        self.end_headers()
+        articles = business_data.get_all_taxes()
+        self.wfile.write(bytes(articles, "utf-8"))
+        print((datetime.now() - starttime).microseconds)
+
+      elif len(paths) == 1 and paths[0] == "ordermethods":
+        if not self.check_content_type(content_type):
+          return
+        self.send_response(200)  # OK
+        self.send_header('Content-type', self.APPLICATION_MIME)
+        self.end_headers()
+        articles = business_data.get_all_order_methods()
+        self.wfile.write(bytes(articles, "utf-8"))
+        print((datetime.now() - starttime).microseconds)
+      elif len(paths) == 1 and paths[0] == "paymentmethods":
+        if not self.check_content_type(content_type):
+          return
+        self.send_response(200)  # OK
+        self.send_header('Content-type', self.APPLICATION_MIME)
+        self.end_headers()
+        articles = business_data.get_all_payment_methods()
+        self.wfile.write(bytes(articles, "utf-8"))
+        print((datetime.now() - starttime).microseconds)
+      elif (len(paths) >= 1) and (paths[0] == "article"):
+        article_id = paths[1]
+        if len(paths) == 3 and re.compile("^[0-9]+$").match(paths[1]) and paths[2] is "ingredients":
+          if not self.check_content_type(content_type):
+            return
+
+          ingredients = business_data.get_ingredients(article_id)
+          self.wfile.write(bytes(ingredients, "utf-8"))
           print((datetime.now() - starttime).microseconds)
 
-        elif len(paths) == 1 and paths[0] == "ingredients":
-          self.send_response(200)  # OK
-          self.send_header('Content-type', self.APPLICATION_MIME)
-          self.end_headers()
-          articles = business_data.get_all_ingredients()
-          self.wfile.write(bytes(articles, "utf-8"))
-          print((datetime.now() - starttime).microseconds)
+        else:
+          if not self.check_content_type(content_type):
+            return
 
-        elif len(paths) == 1 and paths[0] == "allArticles":
           self.send_response(200)  # OK
           self.send_header('Content-type', self.APPLICATION_MIME)
           self.end_headers()
-          articles = business_data.get_all_articles()
-          self.wfile.write(bytes(articles, "utf-8"))
+          article = business_data.get_article(article_id)
+          self.wfile.write(bytes(article, "utf-8"))
           print((datetime.now() - starttime).microseconds)
-
-        elif len(paths) == 1 and paths[0] == "taxes":
-          self.send_response(200)  # OK
-          self.send_header('Content-type', self.APPLICATION_MIME)
-          self.end_headers()
-          articles = business_data.get_all_taxes()
-          self.wfile.write(bytes(articles, "utf-8"))
-          print((datetime.now() - starttime).microseconds)
-
-        elif len(paths) == 1 and paths[0] == "ordermethods":
-          self.send_response(200)  # OK
-          self.send_header('Content-type', self.APPLICATION_MIME)
-          self.end_headers()
-          articles = business_data.get_all_order_methods()
-          self.wfile.write(bytes(articles, "utf-8"))
-          print((datetime.now() - starttime).microseconds)
-        elif len(paths) == 1 and paths[0] == "paymentmethods":
-          self.send_response(200)  # OK
-          self.send_header('Content-type', self.APPLICATION_MIME)
-          self.end_headers()
-          articles = business_data.get_all_payment_methods()
-          self.wfile.write(bytes(articles, "utf-8"))
-          print((datetime.now() - starttime).microseconds)
-        elif (len(paths) >= 1) and (paths[0] == "article"):
-          article_id = paths[1]
-          if len(paths) == 3 and re.compile("^[0-9]+$").match(paths[1]) and paths[2] is "ingredients":
-            ingredients = business_data.get_ingredients(article_id)
-            self.wfile.write(bytes(ingredients, "utf-8"))
-            print((datetime.now() - starttime).microseconds)
-
-          else:
-            self.send_response(200)  # OK
-            self.send_header('Content-type', self.APPLICATION_MIME)
-            self.end_headers()
-            article = business_data.get_article(article_id)
-            self.wfile.write(bytes(article, "utf-8"))
-            print((datetime.now() - starttime).microseconds)
 
       else:
         # Get the file path.
         # dem = paths.
-        path = "../Client/static" + rpath
+        path = "../Client" + rpath
 
         logging.debug('FILE %s' % (path))
 
@@ -214,7 +234,6 @@ def make_request_handler_class():
           ext = ext.lower()
 
           content_type = mimetypes.types_map[ext]
-          # content_type = mimes.mimes[ext]
           if not content_type:
             # Unknown file type or a directory.
             # Treat it as plain text.
@@ -248,8 +267,6 @@ def make_request_handler_class():
             self.wfile.write(ifp.read())
             # shutil.copyfile(ifp.read(), self.wfile)
           print((datetime.now() - starttime).microseconds)
-        else:
-          self.send_error(http.HTTPStatus.NOT_FOUND, 'Could not find ' + rpath)  # Send 404 Error
 
     def do_POST(self):
       '''
@@ -270,9 +287,85 @@ def make_request_handler_class():
       # Get the "Back" link.
       back = self.path if self.path.find('?') < 0 else self.path[:self.path.find('?')]
 
-      # ...
+      #...
 
   return MyRequestHandler
+
+
+def err(msg):
+  '''
+  Report an error message and exit.
+  '''
+  print('ERROR: %s' % (msg))
+  sys.exit(1)
+
+
+def getopts():
+  '''
+  Get the command line options.
+  '''
+
+  # Get the help from the module documentation.
+  this = os.path.basename(sys.argv[0])
+  description = ('description:%s' % '\n  '.join(__doc__.split('\n')))
+  epilog = ' '
+  rawd = argparse.RawDescriptionHelpFormatter
+  parser = argparse.ArgumentParser(formatter_class=rawd,
+                                   description=description,
+                                   epilog=epilog)
+
+  parser.add_argument('-d', '--daemonize',
+                      action='store',
+                      type=str,
+                      default='.',
+                      metavar='DIR',
+                      help='daemonize this process, store the 3 run files (.log, .err, .pid) in DIR (default "%(default)s")')
+
+  parser.add_argument('-H', '--host',
+                      action='store',
+                      type=str,
+                      default='localhost',
+                      help='hostname, default=%(default)s')
+
+  parser.add_argument('-l', '--level',
+                      action='store',
+                      type=str,
+                      default='info',
+                      choices=['notset', 'debug', 'info', 'warning', 'error', 'critical', ],
+                      help='define the logging level, the default is %(default)s')
+
+  parser.add_argument('--no-dirlist',
+                      action='store_true',
+                      help='disable directory listings')
+
+  parser.add_argument('-p', '--port',
+                      action='store',
+                      type=int,
+                      default=8080,
+                      help='port, default=%(default)s')
+
+  parser.add_argument('-r', '--rootdir',
+                      action='store',
+                      type=str,
+                      default=os.path.abspath('.'),
+                      help='web directory root that contains the HTML/CSS/JS files %(default)s')
+
+  parser.add_argument('-v', '--verbose',
+                      action='count',
+                      help='level of verbosity')
+
+  parser.add_argument('-V', '--version',
+                      action='version',
+                      version='%(prog)s - v' + VERSION)
+
+  opts = parser.parse_args()
+  opts.rootdir = os.path.abspath(opts.rootdir)
+  if not os.path.isdir(opts.rootdir):
+    err('Root directory does not exist: ' + opts.rootdir)
+  if opts.port < 1 or opts.port > 65535:
+    err('Port is out of range [1..65535]: %d' % (opts.port))
+  return opts
+
 
 def httpd():
   '''
@@ -292,6 +385,25 @@ def httpd():
     pass
   server.server_close()
   logging.info('Server stopping %s:%s' % ("", port))
+
+
+def get_logging_level(opts):
+  '''
+  Get the logging levels specified on the command line.
+  The level can only be set once.
+  '''
+  if opts.level == 'notset':
+    return logging.NOTSET
+  elif opts.level == 'debug':
+    return logging.DEBUG
+  elif opts.level == 'info':
+    return logging.INFO
+  elif opts.level == 'warning':
+    return logging.WARNING
+  elif opts.level == 'error':
+    return logging.ERROR
+  elif opts.level == 'critical':
+    return logging.CRITICAL
 
 
 def main():
