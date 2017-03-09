@@ -6,6 +6,8 @@ import time
 
 Cookieliste = []
 
+timestamp = 0
+
 
 def cookietest(self, cookiebekommen):
 
@@ -19,7 +21,8 @@ def cookietest(self, cookiebekommen):
 def neuencookie(self, neuescookie):
     #TODO kontrolle ob noch platz frei ist
     if len(Cookieliste) >= 50:
-        inlisteaufreumen()
+        if timestamp < time.time() * 1000:
+            inlisteaufreumen()
     if len(Cookieliste) >= 50:
         return False
 
@@ -31,9 +34,12 @@ def neuencookie(self, neuescookie):
 
 
 def inlisteaufreumen(self):
+    timestamp = Cookieliste[1]["exp_date"]
     for cookie in Cookieliste:
         if cookie["exp_date"] <= time.time() * 1000:
             Cookieliste.remove(cookie)
+        if cookie["exp_date"] < timestamp:
+            timestamp = cookie["exp_date"]
 
 
 
