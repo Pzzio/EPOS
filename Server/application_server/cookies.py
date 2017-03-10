@@ -19,7 +19,7 @@ def cookietest(self, cookiebekommen):
 
 
 def neuencookie(self, neuescookie):
-    #TODO kontrolle ob noch platz frei ist
+
     if len(Cookieliste) >= 50:
         if timestamp < time.time() * 1000:
             inlisteaufreumen()
@@ -51,7 +51,7 @@ def cookierefresh(self, cookiezumrefresh):
         Cookieliste.append(cookiezumrefresh)
         return True
     else:
-        return False
+        return neuencookie(cookiezumrefresh)
 
 
 
