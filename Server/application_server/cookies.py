@@ -18,6 +18,15 @@ def cookietest(self, cookiebekommen):
     return False
 
 
+
+def cookietestneu(self, cookiebekommen):
+    for cookie in Cookieliste:
+        if cookie["cookie_value"] == cookiebekommen["cookie_value"]:
+             if cookie["exp_date"] >= time.time() * 1000:
+                return True
+    return False
+
+
 def neuencookie(self, neuescookie):
 
     if len(Cookieliste) >= 50:
