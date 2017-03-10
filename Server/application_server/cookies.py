@@ -26,7 +26,7 @@ def neuencookie(self, neuescookie):
     if len(Cookieliste) >= 50:
         return False
 
-
+    neuescookie["exp_date"] = (time.time() + 5 ) *1000
     Cookieliste.append(neuescookie)
     return True
 
