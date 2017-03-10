@@ -6,7 +6,7 @@ import os
 import re
 from datetime import datetime
 
-from datastore import Datastore  # will work even if PyCharm cries
+from datastore import JsonDto, Datastore  # will work even if PyCharm cries
 
 VERSION = 1.0
 
@@ -170,20 +170,14 @@ def make_request_handler_class():
           self.wfile.write(bytes(articles, "utf-8"))
           print((datetime.now() - starttime).microseconds)
         elif (len(paths) >= 1) and (paths[0] == "article"):
-          article_id = paths[1]
-          if len(paths) == 3 and re.compile("^[0-9]+$").match(paths[1]) and paths[2] is "ingredients":
-            ingredients = business_data.get_ingredients(article_id)
-            self.wfile.write(bytes(ingredients, "utf-8"))
-            print((datetime.now() - starttime).microseconds)
-
-          else:
+          if re.compile("^[0-9]+$").match(paths[1]):
+            article_id = paths[1]
             self.send_response(200)  # OK
             self.send_header('Content-type', self.APPLICATION_MIME)
             self.end_headers()
             article = business_data.get_article(article_id)
             self.wfile.write(bytes(article, "utf-8"))
             print((datetime.now() - starttime).microseconds)
-
       else:
         # Get the file path.
         # dem = paths.
@@ -256,22 +250,31 @@ def make_request_handler_class():
       '''
       Handle POST requests.
       '''
+
       logging.debug('POST %s' % (self.path))
 
       # CITATION: http://stackoverflow.com/questions/4233218/python-basehttprequesthandler-post-variables
+
       ctype, pdict = cgi.parse_header(self.headers['content-type'])
-      if ctype == 'multipart/form-data':
-        postvars = cgi.parse_multipart(self.rfile, pdict)
-      elif ctype == 'application/x-www-form-urlencoded':
-        length = int(self.headers['content-length'])
-        postvars = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
-      else:
-        postvars = {}
 
-      # Get the "Back" link.
-      back = self.path if self.path.find('?') < 0 else self.path[:self.path.find('?')]
+      if ctype == self.APPLICATION_MIME and self.path == "/cart/checkout":
+        try:
+          length = int(self.headers['content-length'])
+          body = self.rfile.read(length)
+          checkout = JsonDto(body)
+          # TODO;validate checkout
+          if datastore.insert_full_checkout(checkout):
+            self.send_response(http.HTTPStatus.OK)
+            self.send_header('Content-type', self.APPLICATION_MIME)
+            self.end_headers()
+        except ValueError or TypeError:  # TODO; expect all errors here
+          self.send_response(http.HTTPStatus.BAD_REQUEST)
+          self.send_header('Content-type', self.APPLICATION_MIME)
+          self.end_headers()
+          # TODO, create & send JsonError
 
-      # ...
+          # TODO; send http.HTTPStatus.CONFLICT if validation raised "EPOSCheckoutPriceConflictError" or "EPOSCheckoutArticleIngredientConflict"
+          # TODO; send http.HTTPStatus.NOT_FOUND if validation raised "EPOSCheckoutArticleNotFoundError" or "EPOSCheckoutIngredientNotFoundError"
 
   return MyRequestHandler
 
@@ -285,6 +288,9 @@ def httpd():
     port = 8081
 
   RequestHandlerClass = make_request_handler_class()
+  RequestHandlerClass.server_version = "EPOS Master Server"
+  RequestHandlerClass.sys_version = str(VERSION)
+
   server = http.server.HTTPServer(("", port), RequestHandlerClass)
   logging.info('Server starting %s:%s (level=%s)' % ("", port, ""))
   try:
