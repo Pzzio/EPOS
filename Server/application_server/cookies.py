@@ -10,13 +10,11 @@ timestamp = 0
 
 
 def cookietest(self, cookiebekommen):
-
     if testobcookiebereitsinliste():
         if cookiebekommen["exp_date"] >= time.time() * 1000 :
             return True
 
     return False
-
 
 
 def cookietestneu(self, cookiebekommen):
@@ -28,18 +26,14 @@ def cookietestneu(self, cookiebekommen):
 
 
 def neuencookie(self, neuescookie):
-
     if len(Cookieliste) >= 50:
         if timestamp < time.time() * 1000:
             inlisteaufreumen()
     if len(Cookieliste) >= 50:
         return False
-
     neuescookie["exp_date"] = (time.time() + 5 ) *1000
     Cookieliste.append(neuescookie)
     return True
-
-
 
 
 def inlisteaufreumen(self):
@@ -51,7 +45,6 @@ def inlisteaufreumen(self):
             timestamp = cookie["exp_date"]
 
 
-
 def cookierefresh(self, cookiezumrefresh):
     if testobcookiebereitsinliste(cookiezumrefresh):
 
@@ -61,7 +54,6 @@ def cookierefresh(self, cookiezumrefresh):
         return True
     else:
         return neuencookie(cookiezumrefresh)
-
 
 
 def testobcookiebereitsinliste(cookiezumtesten):
