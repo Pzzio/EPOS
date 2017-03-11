@@ -1,29 +1,15 @@
-#Getting Started
+#Welcome to the Framework free Branch!
 
-Repo klonen
-```
-git clone https://github.com/Pzzio/EPOS.git
-cd EPOS
-```
+Because who needs god damn frameworks if you got Phillip on your team? Since our work with frameworks was restricted we told each other: "We actually never wanted to use frameworks in the first place! Phillip, we got a job for you!"
 
-Feature branch erstellen
-```
-git checkout -b myNewBranch
-```
+#Why Phillip?
 
-#How To Branches
+In order to avoid the devilish seduction of frameworks you need a first tier Jackass, who fucking hates himself, so that he enjoys building code contained in every single framework in existance.
 
-* **master** Hier wird nichts committed ausser tags
+Talk about reinventing the wheel: no one reinvents the wheel with such an impressive dedication to hurt himself while coding day and night to achieve a minor improvement like Phillip!
 
-* **hotfix** Hotfixes fuer master branch
+#Get on Board!
 
-* **development** Hier werden alle feature branches zusammengefuehrt
+If you think you got the witts to lose then hop aboard the crazy train down to Amnesia. Prepare for an exciting ride passing Boilerplatown, Unnecesscity and Timewastown as our captain in charge, Phillip, drags you into the endless vaults of his utter madness!
 
-* **featureXY** Hier werden features entworfen
-
-* **featureXYZ** Hier werden andere Features entworten
-
-
-So aehnlich:
-
-![alt tag](https://images-ext-2.discordapp.net/eyJ1cmwiOiJodHRwczovL3d3dy5tb3ZhYmxldHlwZS5vcmcvY2FwdHVyZS9Nb3ZhYmxlVHlwZUJyYW5jaE1hcC5wbmcifQ.4V6xFG2LFifBEEEOqmK1K5s2wjY?width=577&height=703)
+Because plain is the only way I like my code!
