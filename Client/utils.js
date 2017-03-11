@@ -16,7 +16,7 @@ class LocalDatastore {
         this.MAIN_DATA_INGREDIENTS = 'MAIN_DATA_INGREDIENTS';
         this.MAIN_DATA_ORDER_METHODS = 'MAIN_DATA_ORDER_METHODS';
         this.MAIN_DATA_PAYMENT_METHODS = 'MAIN_DATA_PAYMENT_METHODS';
-        this.MAIN_DATA_TAXES = 'MAIN_DATA_TAXES';;;;;;
+        this.MAIN_DATA_TAXES = 'MAIN_DATA_TAXES';
         this.MAIN_DATA_CART = 'MAIN_DATA_CART';
         this.MAIN_REVISIONS = 'MAIN_REVISIONS'
     }
@@ -178,15 +178,15 @@ class LocalDatastore {
     }
 
     getAllArticlesBrief() {
-        let result = null;;;;;;
-        let articles = {articles: []};;;;;;
+        let result = null;
+        let articles = {articles: []};
 
         this.getAllArticles().articles.forEach(function (element, index, array) {
             articles.articles.push({id: element.id, thumb_img_url: element.thumb_img_url, name: element.name})
-        });;;;;;
+        });
 
         if (articles.articles.length != 0)
-            result = articles;;;;;;
+            result = articles;
 
         return result
 
@@ -199,41 +199,41 @@ class LocalDatastore {
     }
 
     getExtraIngredientsFromArticleById(articleId) {
-        let article = this.getArticleById(articleId);;;;;;
+        let article = this.getArticleById(articleId);
         if (!article)
-            return null;;;;;;
+            return null;
 
-        let ingredients = {ingredients: []};;;;;;
-        let result = null;;;;;;
+        let ingredients = {ingredients: []};
+        let result = null;
 
         article.extra_ingredients.forEach(function (element, index, array) {
-            let ingredient = this.getIngredientById(element.id);;;;;;
+            let ingredient = this.getIngredientById(element.id);
             if (ingredient)
                 ingredients.ingredients.push(ingredient)
-        }, this);;;;;;
+        }, this);
 
         if (ingredients.ingredients.length != 0)
-            result = ingredients;;;;;;
+            result = ingredients;
 
         return result
     }
 
     getBaseIngredientsFromArticleById(articleId) {
-        let article = this.getArticleById(articleId);;;;;;
+        let article = this.getArticleById(articleId);
         if (!article)
-            return null;;;;;;
+            return null;
 
-        let ingredients = {ingredients: []};;;;;;
-        let result = null;;;;;;
+        let ingredients = {ingredients: []};
+        let result = null;
 
         article.base_ingredients.forEach(function (element, index, array) {
-            let ingredient = this.getIngredientById(element.id);;;;;;
+            let ingredient = this.getIngredientById(element.id);
             if (ingredient)
                 ingredients.ingredients.push(ingredient)
-        }, this);;;;;;
+        }, this);
 
         if (ingredients.ingredients.length != 0)
-            result = ingredients;;;;;;
+            result = ingredients;
 
         return result
 
@@ -518,7 +518,7 @@ function foreward(url) {
 
 function initMain() {
     if (!dataStore.getRevisions()) {
-        rev_setup = {articles: null, ingredients: null, ordermethods: null, paymentmethods: null, taxes: null};;;;;;
+        rev_setup = {articles: null, ingredients: null, ordermethods: null, paymentmethods: null, taxes: null};
         dataStore.saveRevisions(rev_setup)
     }
 
@@ -528,16 +528,16 @@ function initMain() {
             dataStore.saveAllArticles(data)
         })
     } else {
-        let etag = dataStore.getRevisions().articles;;;;;;
+        let etag = dataStore.getRevisions().articles;
         doGet('/articles', function (data, status, newEtag) {
             switch (status) {
                 case 304:
                     //all fine
                     break;
                 case 200:
-                    dataStore.saveAllArticles(data);;;;;;
-                    let newrevs = dataStore.getRevisions();;;;;;
-                    newrevs.articles = newEtag;;;;;;
+                    dataStore.saveAllArticles(data);
+                    let newrevs = dataStore.getRevisions();
+                    newrevs.articles = newEtag;
                     dataStore.saveRevisions(newrevs)
             }
         }, etag)
@@ -547,16 +547,16 @@ function initMain() {
             dataStore.saveAllIngredients(data)
         })
     } else {
-        let etag = dataStore.getRevisions().ingredients;;;;;;
+        let etag = dataStore.getRevisions().ingredients;
         doGet('/ingredients', function (data, status, newEtag) {
             switch (status) {
                 case 304:
                     //all fine
                     break;
                 case 200:
-                    dataStore.saveAllIngredients(data);;;;;;
-                    let newrevs = dataStore.getRevisions();;;;;;
-                    newrevs.ingredients = newEtag;;;;;;
+                    dataStore.saveAllIngredients(data);
+                    let newrevs = dataStore.getRevisions();
+                    newrevs.ingredients = newEtag;
                     dataStore.saveRevisions(newrevs)
             }
         }, etag)
@@ -566,16 +566,16 @@ function initMain() {
             dataStore.saveOrderMethods(data)
         })
     } else {
-        let etag = dataStore.getRevisions().ordermethods;;;;;;
+        let etag = dataStore.getRevisions().ordermethods;
         doGet('/ordermethods', function (data, status, newEtag) {
             switch (status) {
                 case 304:
                     //all fine
                     break;
                 case 200:
-                    dataStore.saveOrderMethods(data);;;;;;
-                    let newrevs = dataStore.getRevisions();;;;;;
-                    newrevs.ordermethods = newEtag;;;;;;
+                    dataStore.saveOrderMethods(data);
+                    let newrevs = dataStore.getRevisions();
+                    newrevs.ordermethods = newEtag;
                     dataStore.saveRevisions(newrevs)
             }
         }, etag)
@@ -585,16 +585,16 @@ function initMain() {
             dataStore.savePaymentMethods(data)
         })
     } else {
-        let etag = dataStore.getRevisions().paymentmethods;;;;;;
+        let etag = dataStore.getRevisions().paymentmethods;
         doGet('/paymentmethods', function (data, status, newEtag) {
             switch (status) {
                 case 304:
                     //all fine
                     break;
                 case 200:
-                    dataStore.savePaymentMethods(data);;;;;;
-                    let newrevs = dataStore.getRevisions();;;;;;
-                    newrevs.paymentmethods = newEtag;;;;;;
+                    dataStore.savePaymentMethods(data);
+                    let newrevs = dataStore.getRevisions();
+                    newrevs.paymentmethods = newEtag;
                     dataStore.saveRevisions(newrevs)
             }
         }, etag)
@@ -604,16 +604,16 @@ function initMain() {
             dataStore.saveTaxes(data)
         })
     } else {
-        let etag = dataStore.getRevisions().taxes;;;;;;
+        let etag = dataStore.getRevisions().taxes;
         doGet('/taxes', function (data, status, newEtag) {
             switch (status) {
                 case 304:
                     //all fine
                     break;
                 case 200:
-                    dataStore.saveTaxes(data);;;;;;
-                    let newrevs = dataStore.getRevisions();;;;;;
-                    newrevs.taxes = newEtag;;;;;;
+                    dataStore.saveTaxes(data);
+                    let newrevs = dataStore.getRevisions();
+                    newrevs.taxes = newEtag;
                     dataStore.saveRevisions(newrevs)
             }
         }, etag)
