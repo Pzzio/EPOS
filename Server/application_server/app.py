@@ -9,6 +9,8 @@ from datetime import datetime
 
 from datastore import JsonDto, Datastore  # will work even if PyCharm cries
 
+virtual_routes = ["articles", "article", "cart"]
+
 VERSION = 1.0
 
 class BusinessData():
@@ -179,9 +181,18 @@ def make_request_handler_class():
             article = business_data.get_article(article_id)
             self.wfile.write(bytes(article, "utf-8"))
             print((datetime.now() - starttime).microseconds)
+        else:
+          self.send_response(404)  # OK
+          self.send_header('Content-type', self.APPLICATION_MIME)
+          self.end_headers()
       else:
         # Get the file path.
         # dem = paths.
+        cache_it = True
+        if len(paths) >= 1 and paths[0] in virtual_routes:
+          cache_it = False
+          rpath = "/"
+
         path = "../Client" + rpath
 
         logging.debug('FILE %s' % (path))
@@ -244,9 +255,10 @@ def make_request_handler_class():
             self.send_header('Content-type', content_type)
             # self.send_header('Content-Encoding', 'gzip')
 
-            self.send_header('ETag', hash(payload))
-            self.send_header('Cache-control', "max-age=60, must-revalidate, post-check=0, pre-check=0")
-            self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
+            if cache_it:
+              self.send_header('ETag', hash(payload))
+              self.send_header('Cache-control', "max-age=60, must-revalidate, post-check=0, pre-check=0")
+              self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
             self.end_headers()
             # self.wfile.write(gzip.compress(ifp.read()))
             self.wfile.write(payload)
