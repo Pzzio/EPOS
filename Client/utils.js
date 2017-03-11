@@ -33,7 +33,7 @@ function doGet(url, action) {
         }
     };
     xhttp.open('GET', url, true);
-    xhttp.setRequestHeader('Content-Type', 'application/com.rosettis.pizzaservice+json');
+    xhttp.setRequestHeader('Content-Type', 'application/com.rosettis.pizzaservice');
     xhttp.setRequestHeader('ETag', 123);
     xhttp.send(null);
 }
@@ -108,6 +108,15 @@ function checkForVarsInDOM() {
 
 function goToArticleView(id) {
     doGet('/article/' + id, function (json) {
+        var img_container = document.createElement('SECTION');
+        var img = document.createElement('IMG');
+        img.setAttribute('src', json.thumb_img_url);
+        img_container.appendChild(img);
+
+        var button = document.createElement('BUTTON');
+        button.setAttribute('id', 'addToCart');
+        button.setAttribute('value', 'In den Warenkorb');
+
         var container = document.getElementsByTagName('article')[0];
 
         while (container.firstChild) {
@@ -115,13 +124,44 @@ function goToArticleView(id) {
         }
 
         var section = document.createElement('SECTION');
+        section.setAttribute('id', 'ingredients-form');
 
-        container.appendChild(section);
+        var list = document.createElement('UL');
+
+        for (property in json) {
+            var list_element = document.createElement('LI');
+
+            var label_1 = document.createElement('LABEL');
+            label_1.setAttribute('value', 'Zutaten usw.');
+
+            var label_2 = document.createElement('LABEL');
+            label_2.setAttribute('value', 'Zutaten usw.');
+
+            var input_1 = document.createElement('INPUT');
+            input_1.setAttribute('type', 'checkbox');
+            input_1.setAttribute('name', 'zutat');
+            input_1.setAttribute('value', 'zutat');
+
+            var input_2 = document.createElement('INPUT');
+            input_1.setAttribute('type', 'checkbox');
+            input_1.setAttribute('name', 'zutat');
+            input_1.setAttribute('value', 'zutat');
+
+            label_1.appendChild(input_1);
+            label_2.appendChild(input_2);
+            list_element.appendChild(label_1);
+            list_element.appendChild(label_2);
+            list.appendChild(list_element);
+        }
+
+        container.appendChild(img_container);
+        container.appendChild(list);
+        container.appendChild(button);
     });
 
     setNewUrl('/article/' + id, '' + id);
 }
-function goToMainView() {
+function goToArticles() {
     doGet('/articles', function (json) {
 
         var container = document.getElementsByTagName('article')[0];
@@ -131,9 +171,14 @@ function goToMainView() {
         }
 
         for (var i = 0; i < json.articles.length; i++) {
+            var img = document.createElement('IMG');
+            img.setAttribute('src', 'pizza-salami.jpg'/*json.articles[i].thumb_img_url*/);
+            img.setAttribute('onclick', 'goToArticleView(' + json.articles[i].id + ')');
+
             var section = document.createElement('SECTION');
             section.setAttribute('id', json.articles[i].id);
-            section.setAttribute('onclick', 'goToArticleView(' + json.articles[i].id + ')');
+
+            section.appendChild(img);
             container.appendChild(section);
         }
     });
@@ -143,10 +188,31 @@ function goToMainView() {
 function goToCheckout() {
     setNewUrl('/checkout', 'checkout');
 }
+function goToIndex() {
+    doGet('/', function () {
+        var container = document.getElementsByTagName('article')[0];
+
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+
+        var button = document.createElement('BUTTON');
+        button.setAttribute('id', 'start-btn');
+        button.setAttribute('onclick', 'goToArticles()');
+
+        var section = document.createElement('SECTION');
+        section.setAttribute('id', 'start');
+        section.appendChild(button);
+
+        container.appendChild(section);
+    });
+
+    setNewUrl('/', 'index');
+}
 
 function foreward(url) {
     if (url === '/articles') {
-        goToMainView();
+        goToArticles();
     }
     else if (url === '/checkout') {
         goToCheckout(url);
@@ -155,5 +221,3 @@ function foreward(url) {
         goToArticleView(url);
     }
 }
-
-checkForVarsInDOM();
