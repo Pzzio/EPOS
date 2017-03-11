@@ -77,7 +77,7 @@ class Datastore:
   def get_all_ingredients(self):
     ingredients = self.primary.ingredients
     result = JsonDto()
-    result.articles = ingredients
+    result.ingredients = ingredients
     return result
 
   def get_all_articles(self):

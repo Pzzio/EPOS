@@ -5,12 +5,18 @@ import mimetypes
 import os
 import time
 from datetime import datetime
+from http.server import HTTPServer
+from socketserver import ThreadingMixIn
 
 from datastore import JsonDto, Datastore  # will work even if PyCharm cries
 
 virtual_routes = ["articles", "article", "cart"]
 
 VERSION = 1.1
+
+
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+  pass
 
 class BusinessData():
   def __init__(self, datastore):
@@ -63,6 +69,10 @@ class BusinessData():
   def get_payment_methods_revision(self):
     payment_methods_info = self.datastore.get_payment_methods_info().payment_methods_info['revision']
     return payment_methods_info
+
+  def get_taxes_revision(self):
+    taxes_info = self.datastore.get_taxes_info().taxes_info['revision']
+    return taxes_info
 
 
 datastore = Datastore()
@@ -143,10 +153,16 @@ def make_request_handler_class():
       if self.check_content_type(content_type):
         if len(paths) == 1 and paths[0] == "articles":
 
+          rev = str(business_data.get_articles_revision())
+          req_etag = self.headers['If-None-Match']
+          if req_etag and req_etag == rev:
+            self.send_response(http.HTTPStatus.NOT_MODIFIED)
+            self.send_header('ETag', rev)
+            self.send_header('Cache-control', "public, max-age=60")
+            self.end_headers()
+            return
+
           articles = business_data.get_all_articles()
-
-          rev = business_data.get_articles_revision()
-
           self.send_response(200)  # OK
           self.send_header('ETag', rev)
           self.send_header('Content-type', self.APPLICATION_MIME)
@@ -155,13 +171,13 @@ def make_request_handler_class():
           print((datetime.now() - starttime).microseconds)
 
         elif len(paths) == 1 and paths[0] == "ingredients":
-          rev = business_data.get_ingredients_revision()
-          req_etag = str(self.headers['If-None-Match'])
+          rev = str(business_data.get_ingredients_revision())
+          req_etag = self.headers['If-None-Match']
           if req_etag and req_etag == rev:
             self.send_response(http.HTTPStatus.NOT_MODIFIED)
             self.send_header('ETag', rev)
             self.send_header('Cache-control', "public, max-age=60")
-            self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
+
             self.end_headers()
             return
 
@@ -169,18 +185,18 @@ def make_request_handler_class():
           self.send_header('ETag', rev)
           self.send_header('Content-type', self.APPLICATION_MIME)
           self.end_headers()
-          articles = business_data.get_all_ingredients()
-          self.wfile.write(bytes(articles, "utf-8"))
+          ingredients = business_data.get_all_ingredients()
+          self.wfile.write(bytes(ingredients, "utf-8"))
           print((datetime.now() - starttime).microseconds)
 
         elif len(paths) == 1 and paths[0] == "taxes":
-          rev = business_data.datastore.get_taxes_info()['revision']
-          req_etag = str(self.headers['If-None-Match'])
+          rev = str(business_data.get_taxes_revision())
+          req_etag = self.headers['If-None-Match']
           if req_etag and req_etag == rev:
             self.send_response(http.HTTPStatus.NOT_MODIFIED)
             self.send_header('ETag', rev)
             self.send_header('Cache-control', "public, max-age=60")
-            self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
+
             self.end_headers()
             return
 
@@ -193,13 +209,13 @@ def make_request_handler_class():
           print((datetime.now() - starttime).microseconds)
 
         elif len(paths) == 1 and paths[0] == "ordermethods":
-          rev = business_data.get_order_methods_revision()
-          req_etag = str(self.headers['If-None-Match'])
+          rev = str(business_data.get_order_methods_revision())
+          req_etag = self.headers['If-None-Match']
           if req_etag and req_etag == rev:
             self.send_response(http.HTTPStatus.NOT_MODIFIED)
             self.send_header('ETag', rev)
             self.send_header('Cache-control', "public, max-age=60")
-            self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
+
             self.end_headers()
             return
           articles = business_data.get_all_order_methods()
@@ -211,14 +227,12 @@ def make_request_handler_class():
           print((datetime.now() - starttime).microseconds)
 
         elif len(paths) == 1 and paths[0] == "paymentmethods":
-          rev = business_data.get_payment_methods_revision()
-          req_etag = str(self.headers['If-None-Match'])
+          rev = str(business_data.get_payment_methods_revision())
+          req_etag = self.headers['If-None-Match']
           if req_etag and req_etag == rev:
             self.send_response(http.HTTPStatus.NOT_MODIFIED)
             self.send_header('ETag', rev)
             self.send_header('Cache-control', "public, max-age=60")
-            self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
-            self.send_header('Last-Modified', 0)
             self.end_headers()
             return
           articles = business_data.get_all_payment_methods()
@@ -372,7 +386,7 @@ def httpd():
   RequestHandlerClass.server_version = "EPOS Master Server"
   RequestHandlerClass.sys_version = str(VERSION)
 
-  server = http.server.HTTPServer(("", port), RequestHandlerClass)
+  server = ThreadedHTTPServer(("", port), RequestHandlerClass)
   logging.info('Server starting %s:%s (level=%s)' % ("", port, ""))
   try:
     server.serve_forever()
