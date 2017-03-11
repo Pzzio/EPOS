@@ -59,7 +59,7 @@ class Datastore:
   def get_articles_info(self):
     articles_info = self.primary.articles_info
     result = JsonDto()
-    result.article_info = articles_info
+    result.articles_info = articles_info
     return result
 
   def get_article(self, id):
@@ -69,9 +69,9 @@ class Datastore:
     return st
 
   def get_ingredients_info(self):
-    article_ingredients = self.primary.article_ingredients
+    ingredients_info = self.primary.ingredients_info
     result = JsonDto()
-    result.article_info = article_ingredients
+    result.ingredients_info = ingredients_info
     return result
 
   def get_all_ingredients(self):
@@ -89,7 +89,7 @@ class Datastore:
   def get_taxes_info(self):
     taxes_info = self.primary.taxes_info
     result = JsonDto()
-    result.article_info = taxes_info
+    result.taxes_info = taxes_info
     return result
 
   def get_all_taxes(self):
@@ -101,7 +101,7 @@ class Datastore:
   def get_order_methods_info(self):
     order_methods_info = self.primary.order_methods_info
     result = JsonDto()
-    result.article_info = order_methods_info
+    result.order_methods_info = order_methods_info
     return result
 
   def get_all_order_methods(self):
@@ -113,7 +113,7 @@ class Datastore:
   def get_payment_methods_info(self):
     payment_methods_info = self.primary.payment_methods_info
     result = JsonDto()
-    result.article_info = payment_methods_info
+    result.payment_methods_info = payment_methods_info
     return result
 
   def get_all_payment_methods(self):

@@ -3,7 +3,6 @@ import http.server
 import logging
 import mimetypes
 import os
-import re
 import time
 from datetime import datetime
 
@@ -11,7 +10,7 @@ from datastore import JsonDto, Datastore  # will work even if PyCharm cries
 
 virtual_routes = ["articles", "article", "cart"]
 
-VERSION = 1.0
+VERSION = 1.1
 
 class BusinessData():
   def __init__(self, datastore):
@@ -48,6 +47,22 @@ class BusinessData():
   def get_all_payment_methods(self):
     payment_methods = self.datastore.get_all_payment_methods()
     return payment_methods.serialize()
+
+  def get_articles_revision(self):
+    articles_info = self.datastore.get_articles_info().articles_info['revision']
+    return articles_info
+
+  def get_ingredients_revision(self):
+    ingredients_info = self.datastore.get_ingredients_info().ingredients_info['revision']
+    return ingredients_info
+
+  def get_order_methods_revision(self):
+    order_methods_info = self.datastore.get_order_methods_info().order_methods_info['revision']
+    return order_methods_info
+
+  def get_payment_methods_revision(self):
+    payment_methods_info = self.datastore.get_payment_methods_info().payment_methods_info['revision']
+    return payment_methods_info
 
 
 datastore = Datastore()
@@ -127,65 +142,108 @@ def make_request_handler_class():
       paths = list(filter(None, self.path.split("/")))
       if self.check_content_type(content_type):
         if len(paths) == 1 and paths[0] == "articles":
+
+          articles = business_data.get_all_articles()
+
+          rev = business_data.get_articles_revision()
+
           self.send_response(200)  # OK
+          self.send_header('ETag', rev)
           self.send_header('Content-type', self.APPLICATION_MIME)
           self.end_headers()
-          articles = business_data.get_articles()
           self.wfile.write(bytes(articles, "utf-8"))
           print((datetime.now() - starttime).microseconds)
 
         elif len(paths) == 1 and paths[0] == "ingredients":
+          rev = business_data.get_ingredients_revision()
+          req_etag = str(self.headers['If-None-Match'])
+          if req_etag and req_etag == rev:
+            self.send_response(http.HTTPStatus.NOT_MODIFIED)
+            self.send_header('ETag', rev)
+            self.send_header('Cache-control', "public, max-age=60")
+            self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
+            self.end_headers()
+            return
+
           self.send_response(200)  # OK
+          self.send_header('ETag', rev)
           self.send_header('Content-type', self.APPLICATION_MIME)
           self.end_headers()
           articles = business_data.get_all_ingredients()
           self.wfile.write(bytes(articles, "utf-8"))
           print((datetime.now() - starttime).microseconds)
 
-        elif len(paths) == 1 and paths[0] == "allArticles":
-          self.send_response(200)  # OK
-          self.send_header('Content-type', self.APPLICATION_MIME)
-          self.end_headers()
-          articles = business_data.get_all_articles()
-          self.wfile.write(bytes(articles, "utf-8"))
-          print((datetime.now() - starttime).microseconds)
-
         elif len(paths) == 1 and paths[0] == "taxes":
+          rev = business_data.datastore.get_taxes_info()['revision']
+          req_etag = str(self.headers['If-None-Match'])
+          if req_etag and req_etag == rev:
+            self.send_response(http.HTTPStatus.NOT_MODIFIED)
+            self.send_header('ETag', rev)
+            self.send_header('Cache-control', "public, max-age=60")
+            self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
+            self.end_headers()
+            return
+
+          articles = business_data.get_all_taxes()
           self.send_response(200)  # OK
           self.send_header('Content-type', self.APPLICATION_MIME)
+          self.send_header('ETag', rev)
           self.end_headers()
-          articles = business_data.get_all_taxes()
           self.wfile.write(bytes(articles, "utf-8"))
           print((datetime.now() - starttime).microseconds)
 
         elif len(paths) == 1 and paths[0] == "ordermethods":
-          self.send_response(200)  # OK
-          self.send_header('Content-type', self.APPLICATION_MIME)
-          self.end_headers()
-          articles = business_data.get_all_order_methods()
-          self.wfile.write(bytes(articles, "utf-8"))
-          print((datetime.now() - starttime).microseconds)
-        elif len(paths) == 1 and paths[0] == "paymentmethods":
-          self.send_response(200)  # OK
-          self.send_header('Content-type', self.APPLICATION_MIME)
-          self.end_headers()
-          articles = business_data.get_all_payment_methods()
-          self.wfile.write(bytes(articles, "utf-8"))
-          print((datetime.now() - starttime).microseconds)
-        elif (len(paths) >= 1) and (paths[0] == "article"):
-          if re.compile("^[0-9]+$").match(paths[1]):
-            article_id = paths[1]
-            self.send_response(200)  # OK
-            self.send_header('Content-type', self.APPLICATION_MIME)
+          rev = business_data.get_order_methods_revision()
+          req_etag = str(self.headers['If-None-Match'])
+          if req_etag and req_etag == rev:
+            self.send_response(http.HTTPStatus.NOT_MODIFIED)
+            self.send_header('ETag', rev)
+            self.send_header('Cache-control', "public, max-age=60")
+            self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
             self.end_headers()
-            article = business_data.get_article(article_id)
-            self.wfile.write(bytes(article, "utf-8"))
-            print((datetime.now() - starttime).microseconds)
+            return
+          articles = business_data.get_all_order_methods()
+          self.send_response(200)  # OK
+          self.send_header('Content-type', self.APPLICATION_MIME)
+          self.send_header('ETag', rev)
+          self.end_headers()
+          self.wfile.write(bytes(articles, "utf-8"))
+          print((datetime.now() - starttime).microseconds)
+
+        elif len(paths) == 1 and paths[0] == "paymentmethods":
+          rev = business_data.get_payment_methods_revision()
+          req_etag = str(self.headers['If-None-Match'])
+          if req_etag and req_etag == rev:
+            self.send_response(http.HTTPStatus.NOT_MODIFIED)
+            self.send_header('ETag', rev)
+            self.send_header('Cache-control', "public, max-age=60")
+            self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
+            self.send_header('Last-Modified', 0)
+            self.end_headers()
+            return
+          articles = business_data.get_all_payment_methods()
+          self.send_response(200)  # OK
+          self.send_header('Content-type', self.APPLICATION_MIME)
+          self.send_header('ETag', rev)
+          self.end_headers()
+          self.wfile.write(bytes(articles, "utf-8"))
+          print((datetime.now() - starttime).microseconds)
+
+        # elif len(paths) == 2 and paths[0] == "article" and re.compile("^[0-9]+$").match(paths[1]):
+        #     article_id = paths[1]
+        #     self.send_response(200)  # OK
+        #     self.send_header('Content-type', self.APPLICATION_MIME)
+        #     self.end_headers()
+        #     article = business_data.get_article(article_id)
+        #     self.wfile.write(bytes(article, "utf-8"))
+        #     print((datetime.now() - starttime).microseconds)
+
         else:
           self.send_response(404)  # OK
           self.send_header('Content-type', self.APPLICATION_MIME)
           self.end_headers()
-      else:
+
+      else:  # serve static files & handle virtual routes
         # Get the file path.
         # dem = paths.
         cache_it = True
@@ -245,10 +303,11 @@ def make_request_handler_class():
             payload = ifp.read()
             req_etag = str(self.headers['If-None-Match'])
             if req_etag and req_etag == str(hash(payload)):
-              self.send_response(304)
+              self.send_response(http.HTTPStatus.NOT_MODIFIED)
               self.send_header('ETag', hash(payload))
-              self.send_header('Cache-control', "max-age=60, must-revalidate, post-check=0, pre-check=0")
+              self.send_header('Cache-control', "public, max-age=60")
               self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
+              self.send_header('Last-Modified', 0)
               self.end_headers()
               return
             self.send_response(200)  # OK
@@ -257,8 +316,9 @@ def make_request_handler_class():
 
             if cache_it:
               self.send_header('ETag', hash(payload))
-              self.send_header('Cache-control', "max-age=60, must-revalidate, post-check=0, pre-check=0")
+              self.send_header('Cache-control', "public, max-age=60")
               self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
+              self.send_header('Last-Modified', 0)
             self.end_headers()
             # self.wfile.write(gzip.compress(ifp.read()))
             self.wfile.write(payload)
