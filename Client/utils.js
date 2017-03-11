@@ -33,7 +33,7 @@ function doGet(url, action) {
         }
     };
     xhttp.open('GET', url, true);
-    xhttp.setRequestHeader('Content-Type', 'application/com.rosettis.pizzaservice');
+    xhttp.setRequestHeader('Content-Type', 'application/com.rosettis.pizzaservice+json');
     xhttp.setRequestHeader('ETag', 123);
     xhttp.send(null);
 }
@@ -132,20 +132,18 @@ function goToArticleView(id) {
             var list_element = document.createElement('LI');
 
             var label_1 = document.createElement('LABEL');
-            label_1.setAttribute('value', 'Zutaten usw.');
+            label_1.innerHTML = ('Zutaten usw.');
 
             var label_2 = document.createElement('LABEL');
-            label_2.setAttribute('value', 'Zutaten usw.');
+            label_2.innerHTML = ('Zutaten usw.');
 
             var input_1 = document.createElement('INPUT');
             input_1.setAttribute('type', 'checkbox');
             input_1.setAttribute('name', 'zutat');
-            input_1.setAttribute('value', 'zutat');
 
             var input_2 = document.createElement('INPUT');
-            input_1.setAttribute('type', 'checkbox');
-            input_1.setAttribute('name', 'zutat');
-            input_1.setAttribute('value', 'zutat');
+            input_2.setAttribute('type', 'checkbox');
+            input_2.setAttribute('name', 'zutat');
 
             label_1.appendChild(input_1);
             label_2.appendChild(input_2);
@@ -186,6 +184,119 @@ function goToArticles() {
     setNewUrl('/articles', 'articles');
 }
 function goToCheckout() {
+    doGet('/articles', function () {
+
+        var container = document.getElementsByTagName('article')[0];
+
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+
+        var section_1 = document.createElement('SECTION');
+        section_1.setAttribute('id', 'order-form');
+        var label = document.createElement('LABEL');
+        label.innerHTML = ('value', 'Name:');
+        var input = document.createElement('INPUT');
+        input.setAttribute('nv-model', 'message');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', 'name');
+        label.appendChild(input);
+        section_1.appendChild(label);
+
+        var label = document.createElement('LABEL');
+        label.innerHTML = ('value', 'Vorname:');
+        input = document.createElement('INPUT');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', 'vorname');
+        label.appendChild(input);
+        section_1.appendChild(label);
+
+        var label = document.createElement('LABEL');
+        label.innerHTML = ('value', 'E-Mail:');
+        input = document.createElement('INPUT');
+        input.setAttribute('type', 'email');
+        input.setAttribute('name', 'email');
+        label.appendChild(input);
+        section_1.appendChild(label);
+
+        var label = document.createElement('LABEL');
+        label.innerHTML = ('value', 'Telefon:');
+        input = document.createElement('INPUT');
+        input.setAttribute('type', 'tel');
+        input.setAttribute('name', 'tel');
+        label.appendChild(input);
+        section_1.appendChild(label);
+
+        var label = document.createElement('LABEL');
+        label.innerHTML = ('value', 'Straße:');
+        input = document.createElement('INPUT');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', 'strasse');
+        label.appendChild(input);
+        section_1.appendChild(label);
+
+        var label = document.createElement('LABEL');
+        label.innerHTML = ('value', 'Hausnummer:');
+        input = document.createElement('INPUT');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', 'hausnr');
+        label.appendChild(input);
+        section_1.appendChild(label);
+
+        var label = document.createElement('LABEL');
+        label.innerHTML = ('value', 'PLZ:');
+        input = document.createElement('INPUT');
+        input.setAttribute('type', 'text');
+        input.setAttribute('pattern', '[0-9]{4,5}');
+        input.setAttribute('name', 'plz');
+        label.appendChild(input);
+        section_1.appendChild(label);
+
+        var label = document.createElement('LABEL');
+        label.innerHTML = ('value', 'Ort:');
+        input = document.createElement('INPUT');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', 'ort');
+        label.appendChild(input);
+        section_1.appendChild(label);
+
+        var label = document.createElement('LABEL');
+        label.innerHTML = ('value', 'Zusatzinfo:');
+        input = document.createElement('INPUT');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', 'zusatzinfos');
+        label.appendChild(input);
+        section_1.appendChild(label);
+
+        var label = document.createElement('BUTTON');
+        label.innerHTML = ('value', 'Kostenpflichtig bestellen');
+        label.setAttribute('id', 'order');
+        section_1.appendChild(label);
+
+        /* TODO wichtig hier noch verbessern!
+         var section_2 = document
+         .createElement('SECTION')
+         .setAttribute('id', 'ship-cart-total')
+         .appendChild(document
+         .createElement('LABEL')
+         .setAttribute('value', 'Artikel Anzahl: 1'))
+         .appendChild(document.createElement('BR'))
+         .appendChild(document
+         .createElement('LABEL')
+         .setAttribute('value', 'Artikel 1: Ketchup'))
+         .appendChild(document.createElement('BR'))
+         .appendChild(document
+         .createElement('LABEL')
+         .setAttribute('value', 'Artikel 2: noch mehr Ketchup'))
+         .appendChild(document.createElement('BR'))
+         .appendChild(document.createElement('BR'))
+         .appendChild(document
+         .createElement('LABEL')
+         .setAttribute('value', 'Gesamtpreis: 5€'));*/
+
+        container.appendChild(section_1);
+    });
+
     setNewUrl('/checkout', 'checkout');
 }
 function goToIndex() {
