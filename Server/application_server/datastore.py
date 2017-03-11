@@ -7,7 +7,6 @@ LOCATION = "./datastore/"
 FILE_PRIMARY = "primary.json"
 FILE_SECONDARY = "secondary.json"
 
-
 class JsonDto:
   def __init__(self, b=None):
     if b:
