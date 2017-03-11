@@ -4,6 +4,7 @@ import logging
 import mimetypes
 import os
 import re
+import time
 from datetime import datetime
 
 from datastore import JsonDto, Datastore  # will work even if PyCharm cries
@@ -181,7 +182,7 @@ def make_request_handler_class():
       else:
         # Get the file path.
         # dem = paths.
-        path = "../Client/static" + rpath
+        path = "../Client" + rpath
 
         logging.debug('FILE %s' % (path))
 
@@ -229,18 +230,26 @@ def make_request_handler_class():
             print((datetime.now() - starttime).microseconds)
             return
 
-          self.send_response(200)  # OK
-          self.send_header('Content-type', content_type)
-          # self.send_header('Content-Encoding', 'gzip')
-
-          self.end_headers()
-          # f = open(path, 'rb')
-          # shutil.copyfile(f, self.wfile)
-          # f.close()
-
           with open(path, 'rb') as ifp:
+            payload = ifp.read()
+            req_etag = str(self.headers['If-None-Match'])
+            if req_etag and req_etag == str(hash(payload)):
+              self.send_response(304)
+              self.send_header('ETag', hash(payload))
+              self.send_header('Cache-control', "max-age=60, must-revalidate, post-check=0, pre-check=0")
+              self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
+              self.end_headers()
+              return
+            self.send_response(200)  # OK
+            self.send_header('Content-type', content_type)
+            # self.send_header('Content-Encoding', 'gzip')
+
+            self.send_header('ETag', hash(payload))
+            self.send_header('Cache-control', "max-age=60, must-revalidate, post-check=0, pre-check=0")
+            self.send_header('Expires', str(time.strftime("%a, %d %b %Y %T GMT", time.gmtime(time.time() + 60))))
+            self.end_headers()
             # self.wfile.write(gzip.compress(ifp.read()))
-            self.wfile.write(ifp.read())
+            self.wfile.write(payload)
             # shutil.copyfile(ifp.read(), self.wfile)
           print((datetime.now() - starttime).microseconds)
         else:
