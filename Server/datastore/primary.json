@@ -1,6 +1,6 @@
 {
   "articles_info": {
-    "size": 3,
+    "revision": 0,
     "max_id": 2
   },
   "articles": [
@@ -81,7 +81,7 @@
     }
   ],
   "ingredients_info": {
-    "size": 4,
+    "revision": 0,
     "max_id": 3
   },
   "ingredients": [
@@ -115,7 +115,7 @@
     }
   ],
   "taxes_info": {
-    "size": 2,
+    "revision": 0,
     "max_id": 1
   },
   "taxes": [
@@ -131,7 +131,7 @@
     }
   ],
   "order_methods_info": {
-    "size": 3,
+    "revision": 0,
     "max_id": 2
   },
   "order_methods": [
@@ -149,7 +149,7 @@
     }
   ],
   "payment_methods_info": {
-    "size": 3,
+    "revision": 0,
     "max_id": 2
   },
   "payment_methods": [
@@ -175,7 +175,7 @@
     }
   ],
   "costumers_info": {
-    "size": 1,
+    "revision": 0,
     "max_id": 0
   },
   "customers": [
@@ -196,7 +196,7 @@
     }
   ],
   "payments_info": {
-    "size": 1,
+    "revision": 0,
     "max_id": 0
   },
   "payments": [
@@ -211,7 +211,7 @@
     }
   ],
   "orders_info": {
-    "size": 1,
+    "revision": 0,
     "max_id": 0
   },
   "orders": [
