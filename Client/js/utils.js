@@ -695,6 +695,10 @@ function initMain() {
         }, etag)
     }
 
+    let url = window.location.href;
+    console.log(url);
+    window.history.replaceState({urlPath: url}, '', url);
+
     isInitialized = true
 }
 
@@ -702,7 +706,4 @@ window.addEventListener('popstate', function (event) {
     foreward(window.history.state.urlPath, true);
 });
 
-var url = window.location.href;
-console.log(url);
-window.history.replaceState({urlPath: url}, '', url);
 initMain();
