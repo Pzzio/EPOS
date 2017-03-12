@@ -400,8 +400,8 @@ function checkForletsInDOM() {
     replaceletsInDOM();
 }
 
-function goToArticleView(id) {
-    doGet('/article/' + id, function (json) {
+function goToArticleView(url, update) {
+    doGet(url, function (json) {
         let img_container = document.createElement('SECTION');
         let img = document.createElement('IMG');
         img.setAttribute('src', json.thumb_img_url);
@@ -413,7 +413,7 @@ function goToArticleView(id) {
 
         let container = document.getElementsByTagName('article')[0];
 
-        while (container.firstChild) {
+	while (container.firstChild) {
             container.removeChild(container.firstChild);
         }
 
@@ -453,9 +453,13 @@ function goToArticleView(id) {
         container.appendChild(button);
     });
 
-    setNewUrl('/article/' + id, '' + id);
+    if (update) {
+        return;
+    }
+
+    setNewUrl(url, url);
 }
-function goToArticles() {
+function goToArticles(update) {
     doGet('/articles', function (json) {
 
         let container = document.getElementsByTagName('article')[0];
@@ -477,12 +481,87 @@ function goToArticles() {
         }
     });
 
+    if (update) {
+        return;
+    }
+
     setNewUrl('/articles', 'articles');
 }
-function goToCheckout() {
+
+function goToCheckout(update) {
+    doGet('/articles', function () {
+
+        let container = document.getElementsByTagName('article')[0];
+
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+
+        let section_1 = document.createElement('SECTION');
+        section_1.setAttribute('id', 'order-form');
+
+
+        let fields = [
+            {content: 'Name:', type: 'text', name: 'name'},
+            {content: 'Vorname:', type: 'text', name: 'vorname'},
+            {content: 'E-Mail:', type: 'email', name: 'email'},
+            {content: 'Telefon:', type: 'tel', name: 'tel'},
+            {content: 'Straße:', type: 'text', name: 'strasse'},
+            {content: 'Hausnummer:', type: 'text', name: 'hausnr'},
+            {content: 'PLZ:', type: 'text', name: 'plz'},
+            {content: 'Ort:', type: 'text', name: 'ort'},
+            {content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
+        ];
+        for (let i = 0; i < fields.length; i++) {
+            let label = document.createElement('LABEL');
+            let input = document.createElement('INPUT');
+            let breakln = document.createElement('BR');
+
+            label.innerHTML = fields[i].content;
+
+            input.setAttribute('type', fields[i].type);
+            input.setAttribute('name', fields[i].name);
+
+            label.appendChild(input);
+            section_1.appendChild(label);
+            section_1.appendChild(breakln);
+        }
+
+        let button = document.createElement('BUTTON');
+        button.innerHTML = ('value', 'Kostenpflichtig bestellen');
+        button.setAttribute('id', 'order');
+        section_1.appendChild(button);
+
+        let section_2 = document.createElement('SECTION');
+        section_2.setAttribute('id', 'ship-cart-total');
+
+        fields = [
+            {content: 'Artikel Anzahl: 999'},
+            {content: 'Artikel 1: Ketchup'},
+            {content: 'Artikel 2: noch  mehr Ketchup'},
+            {content: 'Gesamtpreis: 5€'}
+        ];
+        for (let i = 0; i < fields.length; i++) {
+            let label = document.createElement('LABEL');
+            let breakln = document.createElement('BR');
+
+            label.innerHTML = fields[i].content;
+
+            section_2.appendChild(label);
+            section_2.appendChild(breakln);
+        }
+
+        container.appendChild(section_1);
+        container.appendChild(section_2);
+    });
+
+    if (update) {
+        return;
+    }
+
     setNewUrl('/checkout', 'checkout');
 }
-function goToIndex() {
+function goToIndex(update) {
     doGet('/', function () {
         let container = document.getElementsByTagName('article')[0];
 
@@ -501,18 +580,25 @@ function goToIndex() {
         container.appendChild(section);
     });
 
+    if (update) {
+        return;
+    }
+
     setNewUrl('/', 'index');
 }
 
-function foreward(url) {
+function foreward(url, update) {
     if (url === '/articles') {
-        goToArticles();
+        goToArticles(update);
     }
     else if (url === '/checkout') {
-        goToCheckout(url);
+        goToCheckout(update);
+    }
+    else if (url === '/') {
+        goToIndex(update);
     }
     else {
-        goToArticleView(url);
+        goToArticleView(url, update);
     }
 }
 
@@ -622,4 +708,11 @@ function initMain() {
     isInitialized = true
 }
 
+window.addEventListener('popstate', function (event) {
+    foreward(window.history.state.urlPath, true);
+});
+
+var url = window.location.href;
+console.log(url);
+window.history.replaceState({urlPath: url}, '', url);
 initMain();

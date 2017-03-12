@@ -1,0 +1,137 @@
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 1280px;
+    margin: auto;
+}
+
+@media screen and (max-width: 1280px) {
+    body {
+        width: 100%;
+    }
+}
+
+header {
+    width: 100%;
+    background-image: url("pizza-banner.png");
+    background-size: cover;
+    border-top-right-radius: 1vw;
+    border-top-left-radius: 1vw;
+    line-height: 8vw;
+    position: relative;
+}
+
+header label h1 {
+    text-align: center;
+    margin: 0;
+    font-family: "Brush Script MT", serif;
+    font-size: 5vw;
+    user-select: none;
+}
+
+#shopping-cart-btn {
+    width: 8vw;
+    height: 8vw;
+    position: absolute;
+    right: 5px;
+    top: 0;
+
+    background: transparent url("shopping-cart.png") no-repeat;
+    background-size: contain;
+    border: none;
+    outline: none;
+
+    transition: all .2s ease-in-out;
+    cursor: pointer;
+}
+
+#shopping-cart-btn:hover {
+    transform: scale(1.05);
+}
+
+#instruction label * {
+    margin: 0;
+    padding-left: 20px;
+    padding-top: 20px;
+    background-color: #dcdbdb;
+    user-select: none;
+}
+
+#start {
+    text-align: center;
+}
+
+#start-btn {
+    margin-top: 100px;
+}
+
+article {
+    width: auto;
+    background-color: #dcdbdb;
+
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+
+section {
+    padding: 5px;
+    height: 375px;
+    width: 375px;
+    margin: 30px;
+    box-sizing: border-box;
+}
+
+section img {
+    transition: all .2s ease-in-out;
+    max-width: 100%;
+    height: 100%;
+}
+
+section img:hover {
+    transform: scale(1.05);
+}
+
+#ingredients-form ul {
+    list-style-type: none;
+    line-height: 30px;
+    padding: 0;
+}
+
+#ingredients-form ul label {
+    user-select: none;
+}
+
+#order-form label {
+    line-height: 25px;
+}
+
+#order-form label input {
+    float: right;
+}
+
+#order-form button {
+    margin-top: 20px;
+}
+
+footer {
+    width: auto;
+    height: 8vw;
+    background-color: #5e5e5e;
+    border-bottom-left-radius: 1vw;
+    border-bottom-right-radius: 1vw;
+}
+
+footer p {
+    text-align: center;
+    padding: 30px;
+    margin: 0;
+    user-select: none;
+}
