@@ -11,16 +11,6 @@ class VarContainer {
     }
 }
 
-/* Function to dynamically create HTML Lists.
- * The first argument is the list to be printed
- * The second is the action to be performed on every element before printing
- */
-function buildList(input, action) {
-    for (element in input) {
-        document.write('<li>' + action(element) + '</li>');
-    }
-}
-
 function setNewUrl(url, title = 'default') {
     window.history.pushState({urlPath: url}, title, url);
 }
