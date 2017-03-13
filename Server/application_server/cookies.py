@@ -9,7 +9,9 @@ Cookieliste = []
 timestamp = 0
 
 
-def cookietest(self, cookiebekommen):
+
+#depricated
+def cookietestalt(self, cookiebekommen):
     if testobcookiebereitsinliste():
         if cookiebekommen["exp_date"] >= time.time() * 1000 :
             return True
