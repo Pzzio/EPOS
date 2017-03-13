@@ -194,7 +194,7 @@ class LocalDatastore {
 
     getArticleById(articleId) {
         return this.getAllArticles().articles.find(function (article, index) {
-            return article.id == articleId
+            return article.id == articleId;
         });
     }
 
@@ -390,86 +390,84 @@ function checkForletsInDOM() {
     replaceletsInDOM();
 }
 
-function goToArticleView(url, update) {
-    doGet(url, function (json) {
-        let img_container = document.createElement('SECTION');
-        let img = document.createElement('IMG');
-        img.setAttribute('src', json.thumb_img_url);
-        img_container.appendChild(img);
+function goToArticleView(id, update) {
+    let json = dataStore.getArticleById(id);
+    let img_container = document.createElement('SECTION');
+    let img = document.createElement('IMG');
+    img.setAttribute('src', json.thumb_img_url);
+    img_container.appendChild(img);
 
-        let button = document.createElement('BUTTON');
-        button.setAttribute('id', 'addToCart');
-        button.setAttribute('value', 'In den Warenkorb');
+    let button = document.createElement('BUTTON');
+    button.setAttribute('id', 'addToCart');
+    button.setAttribute('value', 'In den Warenkorb');
 
-        let container = document.getElementsByTagName('article')[0];
+    let container = document.getElementsByTagName('article')[0];
 
-	while (container.firstChild) {
-            container.removeChild(container.firstChild);
-        }
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
 
-        let section = document.createElement('SECTION');
-        section.setAttribute('id', 'ingredients-form');
+    let section = document.createElement('SECTION');
+    section.setAttribute('id', 'ingredients-form');
 
-        let list = document.createElement('UL');
+    let list = document.createElement('UL');
 
-        for (property in json) {
-            let list_element = document.createElement('LI');
+    for (property in json) {
+        let list_element = document.createElement('LI');
 
-            let label_1 = document.createElement('LABEL');
-            label_1.setAttribute('value', 'Zutaten usw.');
+        let label_1 = document.createElement('LABEL');
+        label_1.innerHTML = 'Zutaten usw.';
 
-            let label_2 = document.createElement('LABEL');
-            label_2.setAttribute('value', 'Zutaten usw.');
+        let label_2 = document.createElement('LABEL');
+        label_2.innerHTML = 'Zutaten usw.';
 
-            let input_1 = document.createElement('INPUT');
-            input_1.setAttribute('type', 'checkbox');
-            input_1.setAttribute('name', 'zutat');
-            input_1.setAttribute('value', 'zutat');
+        let input_1 = document.createElement('INPUT');
+        input_1.setAttribute('type', 'checkbox');
+        input_1.setAttribute('name', 'zutat');
+        input_1.innerHTML = 'zutat';
 
-            let input_2 = document.createElement('INPUT');
-            input_1.setAttribute('type', 'checkbox');
-            input_1.setAttribute('name', 'zutat');
-            input_1.setAttribute('value', 'zutat');
+        let input_2 = document.createElement('INPUT');
+        input_1.setAttribute('type', 'checkbox');
+        input_1.setAttribute('name', 'zutat');
+        input_1.innerHTML = 'zutat';
 
-            label_1.appendChild(input_1);
-            label_2.appendChild(input_2);
-            list_element.appendChild(label_1);
-            list_element.appendChild(label_2);
-            list.appendChild(list_element);
-        }
+        label_1.appendChild(input_1);
+        label_2.appendChild(input_2);
+        list_element.appendChild(label_1);
+        list_element.appendChild(label_2);
+        list.appendChild(list_element);
+    }
 
-        container.appendChild(img_container);
-        container.appendChild(list);
-        container.appendChild(button);
-    });
+    container.appendChild(img_container);
+    container.appendChild(list);
+    container.appendChild(button);
 
     if (update) {
         return;
     }
 
-    setNewUrl(url, url);
+    setNewUrl('/article/' + id, '' + id);
 }
 function goToArticles(update) {
-    doGet('/articles', function (json) {
+    let json = dataStore.getAllArticles();
 
-        let container = document.getElementsByTagName('article')[0];
+    let container = document.getElementsByTagName('article')[0];
 
-        while (container.firstChild) {
-            container.removeChild(container.firstChild);
-        }
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
 
-        for (let i = 0; i < json.articles.length; i++) {
-            let img = document.createElement('IMG');
-            img.setAttribute('src', 'pizza-salami.jpg'/*json.articles[i].thumb_img_url*/);
-            img.setAttribute('onclick', 'goToArticleView(' + json.articles[i].id + ')');
+    for (let i = 0; i < json.articles.length; i++) {
+        let img = document.createElement('IMG');
+        img.setAttribute('src', 'pizza-salami.jpg'/*json.articles[i].thumb_img_url*/);
+        img.setAttribute('onclick', 'goToArticleView(' + json.articles[i].id + ')');
 
-            let section = document.createElement('SECTION');
-            section.setAttribute('id', json.articles[i].id);
+        let section = document.createElement('SECTION');
+        section.setAttribute('id', json.articles[i].id);
 
-            section.appendChild(img);
-            container.appendChild(section);
-        }
-    });
+        section.appendChild(img);
+        container.appendChild(section);
+    }
 
     if (update) {
         return;
@@ -479,71 +477,67 @@ function goToArticles(update) {
 }
 
 function goToCheckout(update) {
-    doGet('/articles', function () {
+    let container = document.getElementsByTagName('article')[0];
 
-        let container = document.getElementsByTagName('article')[0];
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
 
-        while (container.firstChild) {
-            container.removeChild(container.firstChild);
-        }
+    let section_1 = document.createElement('SECTION');
+    section_1.setAttribute('id', 'order-form');
 
-        let section_1 = document.createElement('SECTION');
-        section_1.setAttribute('id', 'order-form');
+    let fields = [
+        {content: 'Name:', type: 'text', name: 'name'},
+        {content: 'Vorname:', type: 'text', name: 'vorname'},
+        {content: 'E-Mail:', type: 'email', name: 'email'},
+        {content: 'Telefon:', type: 'tel', name: 'tel'},
+        {content: 'Straße:', type: 'text', name: 'strasse'},
+        {content: 'Hausnummer:', type: 'text', name: 'hausnr'},
+        {content: 'PLZ:', type: 'text', name: 'plz'},
+        {content: 'Ort:', type: 'text', name: 'ort'},
+        {content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
+    ];
+    for (let i = 0; i < fields.length; i++) {
+        let label = document.createElement('LABEL');
+        let input = document.createElement('INPUT');
+        let breakln = document.createElement('BR');
 
+        label.innerHTML = fields[i].content;
 
-        let fields = [
-            {content: 'Name:', type: 'text', name: 'name'},
-            {content: 'Vorname:', type: 'text', name: 'vorname'},
-            {content: 'E-Mail:', type: 'email', name: 'email'},
-            {content: 'Telefon:', type: 'tel', name: 'tel'},
-            {content: 'Straße:', type: 'text', name: 'strasse'},
-            {content: 'Hausnummer:', type: 'text', name: 'hausnr'},
-            {content: 'PLZ:', type: 'text', name: 'plz'},
-            {content: 'Ort:', type: 'text', name: 'ort'},
-            {content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
-        ];
-        for (let i = 0; i < fields.length; i++) {
-            let label = document.createElement('LABEL');
-            let input = document.createElement('INPUT');
-            let breakln = document.createElement('BR');
+        input.setAttribute('type', fields[i].type);
+        input.setAttribute('name', fields[i].name);
 
-            label.innerHTML = fields[i].content;
+        label.appendChild(input);
+        section_1.appendChild(label);
+        section_1.appendChild(breakln);
+    }
 
-            input.setAttribute('type', fields[i].type);
-            input.setAttribute('name', fields[i].name);
+    let button = document.createElement('BUTTON');
+    button.innerHTML = ('value', 'Kostenpflichtig bestellen');
+    button.setAttribute('id', 'order');
+    section_1.appendChild(button);
 
-            label.appendChild(input);
-            section_1.appendChild(label);
-            section_1.appendChild(breakln);
-        }
+    let section_2 = document.createElement('SECTION');
+    section_2.setAttribute('id', 'ship-cart-total');
 
-        let button = document.createElement('BUTTON');
-        button.innerHTML = ('value', 'Kostenpflichtig bestellen');
-        button.setAttribute('id', 'order');
-        section_1.appendChild(button);
+    fields = [
+        {content: 'Artikel Anzahl: 999'},
+        {content: 'Artikel 1: Ketchup'},
+        {content: 'Artikel 2: noch  mehr Ketchup'},
+        {content: 'Gesamtpreis: 5€'}
+    ];
+    for (let i = 0; i < fields.length; i++) {
+        let label = document.createElement('LABEL');
+        let breakln = document.createElement('BR');
 
-        let section_2 = document.createElement('SECTION');
-        section_2.setAttribute('id', 'ship-cart-total');
+        label.innerHTML = fields[i].content;
 
-        fields = [
-            {content: 'Artikel Anzahl: 999'},
-            {content: 'Artikel 1: Ketchup'},
-            {content: 'Artikel 2: noch  mehr Ketchup'},
-            {content: 'Gesamtpreis: 5€'}
-        ];
-        for (let i = 0; i < fields.length; i++) {
-            let label = document.createElement('LABEL');
-            let breakln = document.createElement('BR');
+        section_2.appendChild(label);
+        section_2.appendChild(breakln);
+    }
 
-            label.innerHTML = fields[i].content;
-
-            section_2.appendChild(label);
-            section_2.appendChild(breakln);
-        }
-
-        container.appendChild(section_1);
-        container.appendChild(section_2);
-    });
+    container.appendChild(section_1);
+    container.appendChild(section_2);
 
     if (update) {
         return;
@@ -552,23 +546,22 @@ function goToCheckout(update) {
     setNewUrl('/checkout', 'checkout');
 }
 function goToIndex(update) {
-    doGet('/', function () {
-        let container = document.getElementsByTagName('article')[0];
+    let container = document.getElementsByTagName('article')[0];
 
-        while (container.firstChild) {
-            container.removeChild(container.firstChild);
-        }
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
 
-        let button = document.createElement('BUTTON');
-        button.setAttribute('id', 'start-btn');
-        button.setAttribute('onclick', 'goToArticles()');
+    let button = document.createElement('BUTTON');
+    button.setAttribute('id', 'start-btn');
+    button.setAttribute('onclick', 'goToArticles()');
+    button.innerHTML = 'Jetzt bestellen';
 
-        let section = document.createElement('SECTION');
-        section.setAttribute('id', 'start');
-        section.appendChild(button);
+    let section = document.createElement('SECTION');
+    section.setAttribute('id', 'start');
+    section.appendChild(button);
 
-        container.appendChild(section);
-    });
+    container.appendChild(section);
 
     if (update) {
         return;
@@ -585,10 +578,11 @@ function foreward(url, update) {
         goToCheckout(update);
     }
     else if (url === '/') {
+        console.log('in index now');
         goToIndex(update);
     }
     else {
-        goToArticleView(url, update);
+        goToArticleView(url.split('/').slice(-1)[0], update);
     }
 }
 
@@ -695,15 +689,19 @@ function initMain() {
         }, etag)
     }
 
-    let url = window.location.href;
-    console.log(url);
-    window.history.replaceState({urlPath: url}, '', url);
-
-    isInitialized = true
+    isInitialized = true;
 }
 
+let url = window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, "");
+url = '/' + url;
+console.log(url);
+window.history.replaceState({urlPath: url}, '', url);
 window.addEventListener('popstate', function (event) {
     foreward(window.history.state.urlPath, true);
 });
 
 initMain();
+
+if (url !== '/') {
+    foreward(window.history.state.urlPath, true);
+}
