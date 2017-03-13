@@ -261,7 +261,7 @@ def make_request_handler_class():
         # Get the file path.
         # dem = paths.
         cache_it = True
-        if len(paths) == 1 and paths[0] in virtual_routes:
+        if len(paths) >= 1 and paths[0] in virtual_routes:
           cache_it = False
           rpath = "/"
 
