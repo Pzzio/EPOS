@@ -263,14 +263,12 @@ def make_request_handler_class():
                 # dem = paths.
                 cache_it = True
                 if (0 < len(paths) < 3) and paths[0] in virtual_routes:
-
                     if len(paths) == 2 and (
                                     paths[0] != virtual_routes[1] or not re.compile("^[0-9]+$").match(paths[1])):
                         self.send_error(http.HTTPStatus.NOT_FOUND, 'Could not find ' + rpath)
                         return
-
-                cache_it = False
-                rpath = "/"
+                    cache_it = False
+                    rpath = "/"
 
                 path = "../Client" + rpath
 
