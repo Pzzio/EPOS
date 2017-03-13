@@ -287,7 +287,14 @@ function doGet(url, callbackAction, etag = null) {
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
-            callbackAction(JSON.parse(xhttp.responseText), this.status, this.getResponseHeader('ETag'));
+            payload = xhttp.responseText;
+            try {
+                payload = JSON.parse(payload)
+            }
+            catch (err) {
+                console.log("invalid JSON payload")
+            }
+            callbackAction((!payload || payload === "") ? null : payload, this.status, this.getResponseHeader('ETag'));
         }
     };
     xhttp.open('GET', url, true);
