@@ -1,7 +1,7 @@
 
 import time
-
 import Queue
+import bspJobsystem
 
 class Cookiemanager:
 
@@ -81,7 +81,6 @@ class Cookiemanager:
 
 
 
-    q = Queue.Queue()
 
     jobs = {
         "NEUES_COOKIE_EINFUEGEN": _neuencookie,
@@ -89,26 +88,14 @@ class Cookiemanager:
         "COOKIE_VALIDATE": _cookietest
     }
 
-    class Job(object):
-        def __init__(self, jobbeschreibung, cookie, returnwert):
-            self.jobbeschreibung = jobbeschreibung
-            self.cookie = cookie
-            self.returnwert = returnwert
 
-
-    def querryabarbeiten(self):
-        while not self.q.empty():
-            next_job = self.q.get()
-            next_job.returnwert = self.jobs[next_job.jobbeschreibung](
-                next_job.cookie)  # im grunde eine switch/case anweisung für die einzelnen funktionen
-
-
+    ju = bspJobsystem.bspJobsystem(jobs)
 
 
     def neuescookieeinfuegen(self, cookie):
         returnwert = False
-        self.q.put(self.Job("NEUES_COOKIE_EINFUEGEN", cookie, returnwert))
-        self.querryabarbeiten()
+        self.ju.q.put(self.ju.Job("NEUES_COOKIE_EINFUEGEN", cookie, returnwert,self))
+        self.ju.querryabarbeiten()
         return returnwert
 
 
@@ -125,4 +112,12 @@ class Cookiemanager:
         self.querryabarbeiten()
         return returnwert
 
+
+
+
+def test():
     cookie = {"cookie_value": 1, "exp_date": time.time() * 1000}
+    c = Cookiemanager()
+    c.neuescookieeinfuegen(cookie)
+
+test()
