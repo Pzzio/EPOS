@@ -220,7 +220,7 @@ def make_request_handler_class():
 
                         self.end_headers()
                         return
-                        articles = business_data.get_all_shipping_methods()
+                    articles = business_data.get_all_shipping_methods()
                     self.send_response(200)  # OK
                     self.send_header('Content-type', self.APPLICATION_MIME)
                     self.send_header('ETag', rev)
