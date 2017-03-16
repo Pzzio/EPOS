@@ -85,10 +85,8 @@ class Cookiemanager:
                 return True
         return False
 
-
-
-
     q = Queue.Queue()
+
     cookie = {"cookie_value": 1, "exp_date": time.time() * 1000}
 
     jobs = {
@@ -98,30 +96,37 @@ class Cookiemanager:
     }
 
     class Job(object):
-        def __init__(self, jobbeschreibung, cookie):
+        def __init__(self, jobbeschreibung, cookie, returnwert):
             self.jobbeschreibung = jobbeschreibung
             self.cookie = cookie
+            self.returnwert = returnwert
 
 
     def querryabarbeiten(self):
         while not self.q.empty():
             next_job = self.q.get()
-            self.jobs[next_job.jobbeschreibung](
+            next_job.returnwert = self.jobs[next_job.jobbeschreibung](
                 next_job.cookie)  # im grunde eine switch/case anweisung für die einzelnen funktionen
 
 
     def neuescookieeinfuegen(self, cookie):
-        self.q.put(self.Job("NEUES_COOKIE_EINFUEGEN", cookie))
+        returnwert = False
+        self.q.put(self.Job("NEUES_COOKIE_EINFUEGEN", cookie, returnwert))
         self.querryabarbeiten()
+        return returnwert
 
 
     def cookierefreshen(self,cookie):
-        self.q.put(self.Job("COOKIE_REFRESH", cookie))
+        returnwert = False
+        self.q.put(self.Job("COOKIE_REFRESH", cookie, returnwert))
         self.querryabarbeiten()
+        return returnwert
 
 
     def cookietestobvalid(self,cookie):
-        self.q.put(self.Job("COOKIE_VALIDATE", cookie))
+        returnwert = False
+        self.q.put(self.Job("COOKIE_VALIDATE", cookie,returnwert))
         self.querryabarbeiten()
+        return returnwert
 
 
