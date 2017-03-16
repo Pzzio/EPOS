@@ -406,7 +406,7 @@ function goToArticleView(id, update) {
 
     let button = document.createElement('BUTTON');
     button.setAttribute('id', 'addToCart');
-    button.setAttribute('value', 'In den Warenkorb');
+    button.innerHTML = 'In den Warenkorb';
 
     let container = document.getElementsByTagName('article')[0];
 
@@ -421,6 +421,7 @@ function goToArticleView(id, update) {
 
     for (property in json) {
         let list_element = document.createElement('LI');
+        list_element.setAttribute('id', 'ingredients-form');
 
         let label_1 = document.createElement('LABEL');
         label_1.innerHTML = 'Zutaten usw.';
@@ -434,9 +435,9 @@ function goToArticleView(id, update) {
         input_1.innerHTML = 'zutat';
 
         let input_2 = document.createElement('INPUT');
-        input_1.setAttribute('type', 'checkbox');
-        input_1.setAttribute('name', 'zutat');
-        input_1.innerHTML = 'zutat';
+        input_2.setAttribute('type', 'checkbox');
+        input_2.setAttribute('name', 'zutat');
+        input_2.innerHTML = 'zutat';
 
         label_1.appendChild(input_1);
         label_2.appendChild(input_2);
@@ -550,7 +551,7 @@ function goToCheckout(update) {
         return;
     }
 
-    setNewUrl('/checkout', 'checkout');
+    setNewUrl('/cart/checkout', 'checkout');
 }
 function goToIndex(update) {
     let container = document.getElementsByTagName('article')[0];
@@ -581,11 +582,10 @@ function foreward(url, update) {
     if (url === '/articles') {
         goToArticles(update);
     }
-    else if (url === '/checkout') {
+    else if (url === '/cart') {
         goToCheckout(update);
     }
     else if (url === '/') {
-        console.log('in index now');
         goToIndex(update);
     }
     else {
@@ -695,7 +695,7 @@ function initMain() {
             }
         }, etag)
     }
-
+    console.log('initialized');
     isInitialized = true;
 }
 
