@@ -1,11 +1,24 @@
+// NotVue library for the Pzz.io project
+// A library to dynamically bind variables in the DOM to JS and vice versa
+// ...might behave similar to vue.js but is definitely not vue.js
 
+// NotVue's globals
+var vueInstance = {};           // global reference to vue object
+var dynamicElements = [];       // holds all elements which contain {{variable}} innerHTML
+var internalData = {};          // holds all data, accessed only via the data-getter
+
+// NotVue's constructor
+// Expects an object with all its settings, mainly el and data
+function NotVue(params) {
+    // save a reference to the vue instance (currently only one possible)
+    vueInstance = this;
 
     // save all element references with dynamic content in them
     registerAllDynamicElements();
 
     // TODO sanity check if el is present in params object
 
-    this.el = params.el;
+    this.el = params.el; 
 
     // during setting up getter/setter empty
     this.internalData = params.data;
@@ -20,6 +33,7 @@
     });
 
     setupInputElements();
+    
     replaceVarsInDOM();
 }
 
@@ -37,6 +51,7 @@ function registerAllDynamicElements() {
             if (element.innerHTML.length > 0) {
                 if (element.innerHTML.match(/.*\{.*\}.*/)) {
                     var dynamicElement = {}; 
+
                     dynamicElement.element = element;
                     dynamicElement.initialContent = element.innerHTML;
 

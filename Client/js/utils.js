@@ -14,7 +14,7 @@ class LocalDatastore {
 
         this.MAIN_DATA_ARTICLES = 'MAIN_DATA_ARTICLES';
         this.MAIN_DATA_INGREDIENTS = 'MAIN_DATA_INGREDIENTS';
-        this.MAIN_DATA_ORDER_METHODS = 'MAIN_DATA_ORDER_METHODS';
+        this.MAIN_DATA_SHIPPING_METHODS = 'MAIN_DATA_SHIPPING_METHODS';
         this.MAIN_DATA_PAYMENT_METHODS = 'MAIN_DATA_PAYMENT_METHODS';
         this.MAIN_DATA_TAXES = 'MAIN_DATA_TAXES';
         this.MAIN_DATA_CART = 'MAIN_DATA_CART';
@@ -54,15 +54,15 @@ class LocalDatastore {
         return ingredients
     }
 
-    getOrderMethods() {
-        let orderMethods = localStorage.getItem(this.MAIN_DATA_ORDER_METHODS);
-        if (orderMethods === null)
+    getshippingMethods() {
+        let shippingMethods = localStorage.getItem(this.MAIN_DATA_SHIPPING_METHODS);
+        if (shippingMethods === null)
             return false;
-        orderMethods = JSON.parse(orderMethods);
-        if (orderMethods.length === 0)
+        shippingMethods = JSON.parse(shippingMethods);
+        if (shippingMethods.length === 0)
             return false;
 
-        return orderMethods
+        return shippingMethods
     }
 
     getTaxes() {
@@ -124,10 +124,10 @@ class LocalDatastore {
         localStorage.setItem(this.MAIN_DATA_TAXES, JSON.stringify(taxes))
     }
 
-    saveOrderMethods(orderMethods) {
-        if (orderMethods === null)
+    saveshippingMethods(shippingMethods) {
+        if (shippingMethods === null)
             return false;
-        localStorage.setItem(this.MAIN_DATA_ORDER_METHODS, JSON.stringify(orderMethods))
+        localStorage.setItem(this.MAIN_DATA_SHIPPING_METHODS, JSON.stringify(shippingMethods))
     }
 
     savePaymentMethods(paymentMethods) {
@@ -157,9 +157,9 @@ class LocalDatastore {
         return localStorage.getItem(this.MAIN_DATA_CART) === null
     }
 
-    clearOrderMethods() {
-        localStorage.removeItem(this.MAIN_DATA_ORDER_METHODS);
-        return localStorage.getItem(this.MAIN_DATA_ORDER_METHODS) === null
+    clearshippingMethods() {
+        localStorage.removeItem(this.MAIN_DATA_SHIPPING_METHODS);
+        return localStorage.getItem(this.MAIN_DATA_SHIPPING_METHODS) === null
     }
 
     clearPaymentMethods() {
@@ -251,9 +251,9 @@ class LocalDatastore {
         });
     }
 
-    getOrderMethodById(orderMethodId) {
-        return this.getOrderMethods().order_methods.find(function (orderMethod, index) {
-            return orderMethod.id == orderMethodId
+    getshippingMethodById(shippingMethodId) {
+        return this.getshippingMethods().shipping_methods.find(function (shippingMethod, index) {
+            return shippingMethod.id == shippingMethodId
         });
     }
 
@@ -287,7 +287,14 @@ function doGet(url, callbackAction, etag = null) {
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
-            callbackAction(JSON.parse(xhttp.responseText), this.status, this.getResponseHeader('ETag'));
+            payload = xhttp.responseText;
+            try {
+                payload = JSON.parse(payload)
+            }
+            catch (err) {
+                console.log("invalid JSON payload")
+            }
+            callbackAction((!payload || payload === "") ? null : payload, this.status, this.getResponseHeader('ETag'));
         }
     };
     xhttp.open('GET', url, true);
@@ -485,7 +492,7 @@ function goToCheckout(update) {
     }
 
     let section_1 = document.createElement('SECTION');
-    section_1.setAttribute('id', 'order-form');
+    section_1.setAttribute('id', 'shipping-form');
 
     let fields = [
         {content: 'Name:', type: 'text', name: 'name'},
@@ -515,7 +522,7 @@ function goToCheckout(update) {
 
     let button = document.createElement('BUTTON');
     button.innerHTML = ('value', 'Kostenpflichtig bestellen');
-    button.setAttribute('id', 'order');
+    button.setAttribute('id', 'shipping');
     section_1.appendChild(button);
 
     let section_2 = document.createElement('SECTION');
@@ -588,7 +595,7 @@ function foreward(url, update) {
 
 function initMain() {
     if (!dataStore.getRevisions()) {
-        rev_setup = {articles: null, ingredients: null, ordermethods: null, paymentmethods: null, taxes: null};
+        rev_setup = {articles: null, ingredients: null, shippingmethods: null, paymentmethods: null, taxes: null};
         dataStore.saveRevisions(rev_setup)
     }
 
@@ -631,21 +638,21 @@ function initMain() {
             }
         }, etag)
     }
-    if (!dataStore.getOrderMethods()) {
-        doGet('/ordermethods', function (data, status, newETag) {
-            dataStore.saveOrderMethods(data)
+    if (!dataStore.getshippingMethods()) {
+        doGet('/shippingmethods', function (data, status, newETag) {
+            dataStore.saveshippingMethods(data)
         })
     } else {
-        let etag = dataStore.getRevisions().ordermethods;
-        doGet('/ordermethods', function (data, status, newEtag) {
+        let etag = dataStore.getRevisions().shippingmethods;
+        doGet('/shippingmethods', function (data, status, newEtag) {
             switch (status) {
                 case 304:
                     //all fine
                     break;
                 case 200:
-                    dataStore.saveOrderMethods(data);
+                    dataStore.saveshippingMethods(data);
                     let newrevs = dataStore.getRevisions();
-                    newrevs.ordermethods = newEtag;
+                    newrevs.shippingmethods = newEtag;
                     dataStore.saveRevisions(newrevs)
             }
         }, etag)

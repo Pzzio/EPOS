@@ -97,16 +97,16 @@ class Datastore:
     result.taxes = taxes
     return result
 
-  def get_order_methods_info(self):
-    order_methods_info = self.primary.order_methods_info
+  def get_shipping_methods_info(self):
+    shipping_methods_info = self.primary.shipping_methods_info
     result = JsonDto()
-    result.order_methods_info = order_methods_info
+    result.shipping_methods_info = shipping_methods_info
     return result
 
-  def get_all_order_methods(self):
-    order_methods = self.primary.order_methods
+  def get_all_shipping_methods(self):
+    shipping_methods = self.primary.shipping_methods
     result = JsonDto()
-    result.order_methods = order_methods
+    result.shipping_methods = shipping_methods
     return result
 
   def get_payment_methods_info(self):
@@ -121,8 +121,8 @@ class Datastore:
     result.payment_methods = payment_methods
     return result
 
-  def insert_full_checkout(self, full_order_request):
-    # TODO; call ins costumer, payment, order
+  def insert_full_checkout(self, full_shipping_request):
+    # TODO; call ins costumer, payment, shipping
     return True
 
   def insert_costumer(self, costumer):
@@ -141,9 +141,9 @@ class Datastore:
     # self.primary.payments.append(payment_entry)
     # self.primary.payments_info['max_id'] = next_id
 
-  def insert_order(self, order):
+  def insert_shipping(self, shipping):
     return
-    # next_id = self.primary.orders_info['max_id'] = ++self.primary.orders_info['max_id']
-    # order_entry = JsonDto()
-    # self.primary.orders.append(order_entry)
-    # self.primary.orders_info['max_id'] = next_id
+    # next_id = self.primary.shippings_info['max_id'] = ++self.primary.shippings_info['max_id']
+    # shipping_entry = JsonDto()
+    # self.primary.shippings.append(shipping_entry)
+    # self.primary.shippings_info['max_id'] = next_id

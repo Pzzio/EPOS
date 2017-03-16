@@ -90,6 +90,7 @@
       "name": "Cheese",
       "thumb_img_url": "/ingredientimg/thumb/thumb_1.svg",
       "desc": "TEXT TEXT",
+      "price": 0.5,
       "tax_id": 1
     },
     {
@@ -97,6 +98,7 @@
       "name": "Garlic",
       "thumb_img_url": "/ingredientimg/thumb/thumb_2.svg",
       "desc": "TEXT TEXT",
+      "price": 0.5,
       "tax_id": 1
     },
     {
@@ -104,13 +106,15 @@
       "name": "Bacon",
       "thumb_img_url": "/ingredientimg/thumb/thumb_3.svg",
       "desc": "TEXT TEXT",
+      "price": 0.5,
       "tax_id": 1
     },
     {
       "id": 3,
-      "name": "Mais",
+      "name": "Corn",
       "thumb_img_url": "/ingredientimg/thumb/thumb_4.svg",
       "desc": "TEXT TEXT",
+      "price": 0.5,
       "tax_id": 1
     }
   ],
@@ -130,22 +134,18 @@
       "amount": 0.07
     }
   ],
-  "order_methods_info": {
+  "shipping_methods_info": {
     "revision": 0,
     "max_id": 2
   },
-  "order_methods": [
+  "shipping_methods": [
     {
       "id": 0,
-      "name": "Local Order"
+      "name": "Local pickup"
     },
     {
       "id": 1,
-      "name": "Telephone Order"
-    },
-    {
-      "id": 2,
-      "name": "Online Order"
+      "name": "Delivery"
     }
   ],
   "payment_methods_info": {
@@ -203,27 +203,27 @@
     {
       "id": 1,
       "costumer_id": 1,
-      "order_id": 1,
+      "shipping_id": 1,
       "payment_method_id": 1,
       "date_create": "2012-04-23T18:25:43.511Z",
       "date_finalize": "2012-04-23T18:25:47.725Z",
       "status": "PAYMENT_STATUS_FINALIZED"
     }
   ],
-  "orders_info": {
+  "shippings_info": {
     "revision": 0,
     "max_id": 0
   },
-  "orders": [
+  "shippings": [
     {
       "id": 0,
       "costumer_id": 0,
       "payment_id": 0,
-      "order_method_id": 2,
+      "shipping_method_id": 2,
       "delivery_tour_id": 0,
       "tos_accepted": true,
       "date_create": "2012-04-23T18:25:43.511Z",
-      "status": "ORDER_STATUS_PENDING",
+      "status": "shipping_STATUS_PENDING",
       "articles": [
         {
           "id": 0,
