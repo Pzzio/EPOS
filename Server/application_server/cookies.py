@@ -94,23 +94,33 @@ class Cookiemanager:
 
     def neuescookieeinfuegen(self, cookie):
         returnwert = False
-        self.ju.q.put(self.ju.Job("NEUES_COOKIE_EINFUEGEN", cookie, returnwert,self))
+
+        job = self.ju.Job("NEUES_COOKIE_EINFUEGEN", cookie, returnwert,self)
+
+        self.ju.q.put(job)
         self.ju.querryabarbeiten()
-        return returnwert
+
+        return job.returnwert
 
 
     def cookierefreshen(self,cookie):
         returnwert = False
-        self.q.put(self.Job("COOKIE_REFRESH", cookie, returnwert))
+
+        job = self.Job("COOKIE_REFRESH", cookie, returnwert)
+
+        self.q.put(job)
         self.querryabarbeiten()
-        return returnwert
+        return job.returnwert
 
 
     def cookietestobvalid(self,cookie):
         returnwert = False
-        self.q.put(self.Job("COOKIE_VALIDATE", cookie,returnwert))
+
+        job = self.Job("COOKIE_VALIDATE", cookie,returnwert)
+
+        self.q.put(job)
         self.querryabarbeiten()
-        return returnwert
+        return job.returnwert
 
 
 
@@ -118,6 +128,6 @@ class Cookiemanager:
 def test():
     cookie = {"cookie_value": 1, "exp_date": time.time() * 1000}
     c = Cookiemanager()
-    c.neuescookieeinfuegen(cookie)
+    print c.neuescookieeinfuegen(cookie)
 
 test()
