@@ -1,7 +1,4 @@
-import os
-import io
-import sys
-import json
+
 import time
 
 import Queue
@@ -14,10 +11,6 @@ class Cookiemanager:
     timestamp = 0
 
 
-
-
-
-    import Queue
 
     q = Queue.Queue()
     cookie = {"cookie_value":1 , "exp_date": time.time() * 1000 }
@@ -85,9 +78,10 @@ class Cookiemanager:
                 return True
         return False
 
-    q = Queue.Queue()
 
-    cookie = {"cookie_value": 1, "exp_date": time.time() * 1000}
+
+
+    q = Queue.Queue()
 
     jobs = {
         "NEUES_COOKIE_EINFUEGEN": _neuencookie,
@@ -107,6 +101,8 @@ class Cookiemanager:
             next_job = self.q.get()
             next_job.returnwert = self.jobs[next_job.jobbeschreibung](
                 next_job.cookie)  # im grunde eine switch/case anweisung für die einzelnen funktionen
+
+
 
 
     def neuescookieeinfuegen(self, cookie):
@@ -129,4 +125,4 @@ class Cookiemanager:
         self.querryabarbeiten()
         return returnwert
 
-
+    cookie = {"cookie_value": 1, "exp_date": time.time() * 1000}
