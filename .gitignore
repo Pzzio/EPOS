@@ -1,3 +1,4 @@
 *.swp
 *.tmp
 *.db
+Server/application_server/__*
