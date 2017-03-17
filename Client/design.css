@@ -3,10 +3,14 @@ body, html {
     padding: 0;
 }
 
+html {
+    height: 100%;
+}
+
 body {
     width: 1280px;
-    height: 100%;
     margin: auto;
+    min-height: 100%;
 }
 
 @media screen and (max-width: 1280px) {
@@ -16,13 +20,10 @@ body {
 }
 
 header {
-    width: 100%;
-    background-image: url("pizza-banner.png");
-    background-size: cover;
-    border-top-right-radius: 1vw;
-    border-top-left-radius: 1vw;
+    //width: 1280px;
     line-height: 8vw;
     position: relative;
+    z-index: 1;
 }
 
 header label h1 {
@@ -31,6 +32,17 @@ header label h1 {
     font-family: "Brush Script MT", serif;
     font-size: 5vw;
     user-select: none;
+}
+
+header::after {
+    z-index: -1;
+    display: block;
+    position: relative;
+    background-image: linear-gradient(to top, rgba(255, 255, 255, 0) 0, #fff 100%);
+    margin-top: -150px;
+    height: 150px;
+    width: 100%;
+    content: '';
 }
 
 #shopping-cart-btn {
@@ -77,7 +89,7 @@ article {
     width: auto;
 
     overflow-y: scroll;
-    height: 40vw;
+    height: 100%;
 
     padding: 0;
     margin: 0;
@@ -142,7 +154,7 @@ footer {
 
 footer p {
     text-align: center;
-    padding: 30px;
+    padding: 0px;
     margin: 0;
     user-select: none;
 }
@@ -160,7 +172,8 @@ footer p {
 
 #flyoutMenu.show {
     transform: translate3d(0vw, 0, 0);
-}  
+    z-index: 1;
+}
 
 #transparentMenu {
     width: 60vw;

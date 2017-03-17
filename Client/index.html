@@ -7,199 +7,202 @@
 </head>
 
 <body>
-<header>
-    <label onclick="goToIndex()"><h1>Rosetti's Pizza</h1></label>
-    <button id="shopping-cart-btn" onclick="showMenu();"></button>
-</header>
+<div class="bg">
+    <header>
+        <div id="sharp">
+            <label onclick="goToIndex()"><h1>Rosetti's Pizza</h1></label>
+            <button id="shopping-cart-btn" onclick="showMenu();"></button>
+        </div>
+    </header>
 
-<div id="instruction" class="bg">
-    <label>
-        <h2>Herzlich Willkommen bei Rosetti's Pizza {{message}}</h2>
-    </label>
+    <div id="instruction">
+        <label>
+            <h2>Herzlich Willkommen bei Rosetti's Pizza {{message}}</h2>
+        </label>
+    </div>
+
+    <article>
+        <section id="start">
+            <button id="start-btn" onclick="goToArticles()">Jetzt bestellen</button>
+        </section>
+
+        <!-- GridView aller Pizzen STATE 2
+            <section>
+                <img src="pizza-salami.jpg">
+            </section>
+
+            <section>
+                <img src="pizza-salami.jpg">
+            </section>
+
+            <section>
+                <img src="pizza-salami.jpg">
+            </section>
+
+            <section>
+                <img src="pizza-salami.jpg">
+            </section>
+
+            <section>
+                <img src="pizza-salami.jpg">
+            </section>
+
+            <section>
+                <img src="pizza-salami.jpg">
+            </section>
+
+            <section>
+                <img src="pizza-salami.jpg">
+            </section>
+
+            <section>
+                <img src="pizza-salami.jpg">
+            </section>
+
+            <section>
+                <img src="pizza-salami.jpg">
+            </section>
+        -->
+
+        <!-- DetailView der ausgewählten Pizza STATE 3
+            <section>
+                <img src="pizza-salami.jpg">
+            </section>
+
+            <section id="ingredients-form">
+                <ul>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="zutat" value="zutat">
+                            Zutaten usw
+                        </label>
+                        <label>
+                            <input type="checkbox" name="zutat" value="zutat">
+                            Zutaten usw
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="zutat" value="zutat">
+                            Zutaten usw
+                        </label>
+                        <label>
+                            <input type="checkbox" name="zutat" value="zutat">
+                            Zutaten usw
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="zutat" value="zutat">
+                            Zutaten usw
+                        </label>
+                        <label>
+                            <input type="checkbox" name="zutat" value="zutat">
+                            Zutaten usw
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="zutat" value="zutat">
+                            Zutaten usw
+                        </label>
+                        <label>
+                            <input type="checkbox" name="zutat" value="zutat">
+                            Zutaten usw
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="zutat" value="zutat">
+                            Zutaten usw
+                        </label>
+                        <label>
+                            <input type="checkbox" name="zutat" value="zutat">
+                            Zutaten usw
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="zutat" value="zutat">
+                            Zutaten usw
+                        </label>
+                        <label>
+                            <input type="checkbox" name="zutat" value="zutat">
+                            Zutaten usw
+                        </label>
+                    </li>
+                </ul>
+
+                <button id="addToCart">In den Warenkorb</button>
+            </section>
+        -->
+
+        <!-- Shopping Cart STATE 4 -->
+
+        <!-- OrderForm STATE 5
+
+        <section id="order-form">
+
+            <label>
+                Name:
+                <input nv-model="nachName" type="text" name="name" required></input>
+            </label><br>
+
+            <label>
+                Vorname:
+                <input nv-model="vorName" type="text" name="vorname" required></input>
+            </label><br>
+
+            <label>
+                E-Mail:
+                <input nv-model="email" type="email" name="email" required></input>
+            </label><br>
+
+            <label>
+                Telefon:
+                <input nv-model="telefon" type="tel" name="tel" required></input>
+            </label><br>
+
+            <label>
+                Strasse:
+                <input nv-model="strasse" type="text" name="strasse" required></input>
+            </label><br>
+
+            <label>
+                Hausnummer:
+                <input nv-model="hausNr" type="text" name="hausnr" required></input>
+            </label><br>
+
+            <label>
+                PLZ:
+                <input nv-model="plz" type="text" name="plz" required></input>
+            </label><br>
+
+            <label>
+                Ort:
+                <input nv-model="ort" type="text" name="ort" required></input>
+            </label><br>
+
+            <label>
+                Zusatzinfos:
+                <input nv-model="zusatzInfo" type="text" name="zusatzinfos"></input>
+            </label><br>
+
+            <button id="order" onclick="onOrderBtn();">
+                kostenpflichtig bestellen
+            </button>
+        </section>
+
+        <section id="ship-cart-total">
+
+            <label>Artikel Anzahl: 9999</label><br>
+            <label>Artikel 1: Ketchup</label><br>
+            <label>Artikel 2: noch mehr Ketchup</label><br><br>
+            <label>Gesamtpreis: 5€</label>
+
+        </section>-->
+    </article>
 </div>
-
-<article class="bg">
-    <section id="start">
-        <button id="start-btn" onclick="goToArticles()">Jetzt bestellen</button>
-    </section>
-
-    <!-- GridView aller Pizzen STATE 2
-        <section>
-            <img src="pizza-salami.jpg">
-        </section>
-
-        <section>
-            <img src="pizza-salami.jpg">
-        </section>
-
-        <section>
-            <img src="pizza-salami.jpg">
-        </section>
-
-        <section>
-            <img src="pizza-salami.jpg">
-        </section>
-
-        <section>
-            <img src="pizza-salami.jpg">
-        </section>
-
-        <section>
-            <img src="pizza-salami.jpg">
-        </section>
-
-        <section>
-            <img src="pizza-salami.jpg">
-        </section>
-
-        <section>
-            <img src="pizza-salami.jpg">
-        </section>
-
-        <section>
-            <img src="pizza-salami.jpg">
-        </section>
-    -->
-
-    <!-- DetailView der ausgewählten Pizza STATE 3
-        <section>
-            <img src="pizza-salami.jpg">
-        </section>
-
-        <section id="ingredients-form">
-            <ul>
-                <li>
-                    <label>
-                        <input type="checkbox" name="zutat" value="zutat">
-                        Zutaten usw
-                    </label>
-                    <label>
-                        <input type="checkbox" name="zutat" value="zutat">
-                        Zutaten usw
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="checkbox" name="zutat" value="zutat">
-                        Zutaten usw
-                    </label>
-                    <label>
-                        <input type="checkbox" name="zutat" value="zutat">
-                        Zutaten usw
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="checkbox" name="zutat" value="zutat">
-                        Zutaten usw
-                    </label>
-                    <label>
-                        <input type="checkbox" name="zutat" value="zutat">
-                        Zutaten usw
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="checkbox" name="zutat" value="zutat">
-                        Zutaten usw
-                    </label>
-                    <label>
-                        <input type="checkbox" name="zutat" value="zutat">
-                        Zutaten usw
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="checkbox" name="zutat" value="zutat">
-                        Zutaten usw
-                    </label>
-                    <label>
-                        <input type="checkbox" name="zutat" value="zutat">
-                        Zutaten usw
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="checkbox" name="zutat" value="zutat">
-                        Zutaten usw
-                    </label>
-                    <label>
-                        <input type="checkbox" name="zutat" value="zutat">
-                        Zutaten usw
-                    </label>
-                </li>
-            </ul>
-
-            <button id="addToCart">In den Warenkorb</button>
-        </section>
-    -->
-
-    <!-- Shopping Cart STATE 4 -->
-
-    <!-- OrderForm STATE 5
-
-    <section id="order-form">
-
-        <label>
-            Name:
-            <input nv-model="nachName" type="text" name="name" required></input>
-        </label><br>
-
-        <label>
-            Vorname:
-            <input nv-model="vorName" type="text" name="vorname" required></input>
-        </label><br>
-
-        <label>
-            E-Mail:
-            <input nv-model="email" type="email" name="email" required></input>
-        </label><br>
-
-        <label>
-            Telefon:
-            <input nv-model="telefon" type="tel" name="tel" required></input>
-        </label><br>
-
-        <label>
-            Strasse:
-            <input nv-model="strasse" type="text" name="strasse" required></input>
-        </label><br>
-
-        <label>
-            Hausnummer:
-            <input nv-model="hausNr" type="text" name="hausnr" required></input>
-        </label><br>
-
-        <label>
-            PLZ:
-            <input nv-model="plz" type="text" name="plz" required></input>
-        </label><br>
-
-        <label>
-            Ort:
-            <input nv-model="ort" type="text" name="ort" required></input>
-        </label><br>
-
-        <label>
-            Zusatzinfos:
-            <input nv-model="zusatzInfo" type="text" name="zusatzinfos"></input>
-        </label><br>
-
-        <button id="order" onclick="onOrderBtn();">
-            kostenpflichtig bestellen
-        </button>
-    </section>
-
-    <section id="ship-cart-total">
-
-        <label>Artikel Anzahl: 9999</label><br>
-        <label>Artikel 1: Ketchup</label><br>
-        <label>Artikel 2: noch mehr Ketchup</label><br><br>
-        <label>Gesamtpreis: 5€</label>
-
-    </section>-->
-</article>
-
 <footer>
     <p>Copyright by Pzz.io-Project</p>
 </footer>
