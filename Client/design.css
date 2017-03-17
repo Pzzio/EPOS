@@ -145,11 +145,12 @@ footer p {
     width: 100vw;
     height: 100vh;
     position: fixed;
-	color: #FFFFFF;
+    color: #FFFFFF;
     top: 0;
     left: 0;
     transform: translate3d(100vw, 0, 0);
     transition: transform .3s cubic-bezier(0, .52, 0, 1);
+    overflow: scroll;
 }
 
 #flyoutMenu.show {
@@ -159,16 +160,17 @@ footer p {
 #transparentMenu {
     width: 66vw;
     height: 100vh;
-	float: left;
+    float: left;
+    position: fixed;
 }
 
 #warenkorb {
     border-bottom-left-radius: 1vw;
     border-top-left-radius: 1vw;
     width: 33vw;
-	background-color: #868686;
+    background-color: #868686;
     height: 100vh;
-	float: right;
+    float: right;
 }
 
 #shp-cart-content {
@@ -182,5 +184,5 @@ footer p {
 }
 
 #warenkorb h1 {
-	text-align: center;
+    text-align: center;
 }
