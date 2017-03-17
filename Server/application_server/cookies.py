@@ -46,6 +46,7 @@ class Cookiemanager:
         for cookie in self.Cookieliste:
             if cookie["cookie_value"] == cookiebekommen["cookie_value"]:
                 if cookie["exp_date"] >= time.time() * 1000:
+
                     #print "cookie getestet"
                     return True
         return False
@@ -102,16 +103,16 @@ class Cookiemanager:
     }
 
 
-    ju = bspJobsystem.bspJobsystem(jobs)
+    jobsystem = bspJobsystem.bspJobsystem(jobs)
 
 
     def neuescookieeinfuegen(self, cookie):
         returnwert = False
 
-        job = self.ju.Job("NEUES_COOKIE_EINFUEGEN", cookie, returnwert,self)
+        job = self.jobsystem.Job("NEUES_COOKIE_EINFUEGEN", cookie, returnwert,self)
 
-        self.ju.q.put(job)
-        self.ju.querryabarbeiten()
+        self.jobsystem.q.put(job)
+        self.jobsystem.querryabarbeiten()
 
         return job.returnwert
 
@@ -119,29 +120,37 @@ class Cookiemanager:
     def cookierefreshen(self,cookie):
         returnwert = False
 
-        job = self.Job("COOKIE_REFRESH", cookie, returnwert)
+        job = self.jobsystem.Job("COOKIE_REFRESH", cookie, returnwert,self)
 
         self.q.put(job)
-        self.querryabarbeiten()
+        self.jobsystem.querryabarbeiten()
         return job.returnwert
 
 
     def cookietestobvalid(self,cookie):
         returnwert = False
 
-        job = self.Job("COOKIE_VALIDATE", cookie,returnwert)
+        job = self.jobsystem.Job("COOKIE_VALIDATE", cookie,returnwert,self)
 
-        self.q.put(job)
-        self.querryabarbeiten()
+        self.jobsystem.q.put(job)
+        self.jobsystem.querryabarbeiten()
         return job.returnwert
 
 
 
 
 def test():
-    cookie = {"cookie_value": 1}
+    #cookie = {"cookie_value": 1 , "exp_date": 0}
     c = Cookiemanager()
 
-    print (c.neuescookieeinfuegen(cookie))
+    for i in range(1,55):
+        cookie = c.cookieerzeugenmitValue(i)
 
+        print(i)
+        print (c.neuescookieeinfuegen(cookie))
+        print (c.cookietestobvalid(cookie))
+
+    while not c.neuescookieeinfuegen(cookie):
+        print ()
+    print("erfolg")
 test()

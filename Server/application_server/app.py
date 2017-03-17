@@ -137,30 +137,20 @@ def make_request_handler_class():
 
             if self.headers["cookies"] and not self.headers["cookies"] == "":
                 cookie = c.cookieerzeugenmitValue(self.headers["cookies"])
-
             else:
                 neuescookie = c.neuenCookieerzeugen()
-
                 if (c.neuescookieeinfuegen(neuescookie)):
-
                     self.send_header('Set-Cookie',c.CookieValueausgeben(neuescookie))
-
                 else:
-
                     self.send_error(503)
                     return
-
-
 
             if not c.cookietestobvalid(cookie):
 
                 neuescookie = c.neuenCookieerzeugen()
 
-
                 if(c.neuescookieeinfuegen(neuescookie)):
-
-                     self.send_header('Set-Cookie',neuescookie.cookie_value)
-
+                    self.send_header('Set-Cookie',neuescookie.cookie_value)
                 else:
                     self.send_error(503)
                     return
