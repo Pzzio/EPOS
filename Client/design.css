@@ -5,6 +5,7 @@ body, html {
 
 body {
     width: 1280px;
+    height: 100%;
     margin: auto;
 }
 
@@ -56,8 +57,12 @@ header label h1 {
     margin: 0;
     padding-left: 20px;
     padding-top: 20px;
-    background-color: #dcdbdb;
     user-select: none;
+}
+
+.bg {
+    background: url("art_background.jpg") no-repeat fixed;
+    background-size: 100% 100%;
 }
 
 #start {
@@ -70,7 +75,9 @@ header label h1 {
 
 article {
     width: auto;
-    background-color: #dcdbdb;
+
+    overflow-y: scroll;
+    height: 40vw;
 
     padding: 0;
     margin: 0;
@@ -79,6 +86,10 @@ article {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
+}
+
+article::-webkit-scrollbar {
+    display: none;
 }
 
 section {
@@ -124,7 +135,7 @@ section img:hover {
 footer {
     width: auto;
     height: 8vw;
-    background-color: #5e5e5e;
+    background-color: #3299b4;
     border-bottom-left-radius: 1vw;
     border-bottom-right-radius: 1vw;
 }
