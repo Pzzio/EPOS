@@ -51,7 +51,7 @@ class LocalDatastore {
         if (ingredients.length === 0)
             return false;
 
-        return ingredients
+        return ingredients;
     }
 
     getshippingMethods() {
@@ -292,7 +292,12 @@ function doGet(url, callbackAction, etag = null) {
                 payload = JSON.parse(payload)
             }
             catch (err) {
-                console.log("invalid JSON payload")
+                if (this.status == 304) {
+                    console.log("Data up to date, status 304 (Not Modified)");
+                }
+                else {
+                    console.log("Invalid JSON payload");
+                }
             }
             callbackAction((!payload || payload === "") ? null : payload, this.status, this.getResponseHeader('ETag'));
         }
@@ -399,6 +404,7 @@ function checkForletsInDOM() {
 
 function goToArticleView(id, update) {
     let json = dataStore.getArticleById(id);
+
     let img_container = document.createElement('SECTION');
     let img = document.createElement('IMG');
     img.setAttribute('src', json.thumb_img_url);
@@ -406,7 +412,10 @@ function goToArticleView(id, update) {
 
     let button = document.createElement('BUTTON');
     button.setAttribute('id', 'addToCart');
+    button.setAttribute('onclick', 'addToCart(' + id + ')');
     button.innerHTML = 'In den Warenkorb';
+
+    document.getElementsByTagName('h2')[0].innerHTML = json.name;
 
     let container = document.getElementsByTagName('article')[0];
 
@@ -419,30 +428,24 @@ function goToArticleView(id, update) {
 
     let list = document.createElement('UL');
 
-    for (property in json) {
+    let ingr = json.extra_ingredients;
+    for (let i = 0; i < ingr.length; i++) {
         let list_element = document.createElement('LI');
         list_element.setAttribute('id', 'ingredients-form');
 
-        let label_1 = document.createElement('LABEL');
-        label_1.innerHTML = 'Zutaten usw.';
+        let label = document.createElement('LABEL');
+        let extra_ingredient = (dataStore.getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
+            return ingredient.id == ingr[i].id;
+        }));
+        label.innerHTML = extra_ingredient.name;
 
-        let label_2 = document.createElement('LABEL');
-        label_2.innerHTML = 'Zutaten usw.';
+        let input = document.createElement('INPUT');
+        input.setAttribute('type', 'checkbox');
+        input.setAttribute('name', 'zutat');
+        input.setAttribute('content', ingr[i].id);
 
-        let input_1 = document.createElement('INPUT');
-        input_1.setAttribute('type', 'checkbox');
-        input_1.setAttribute('name', 'zutat');
-        input_1.innerHTML = 'zutat';
-
-        let input_2 = document.createElement('INPUT');
-        input_2.setAttribute('type', 'checkbox');
-        input_2.setAttribute('name', 'zutat');
-        input_2.innerHTML = 'zutat';
-
-        label_1.appendChild(input_1);
-        label_2.appendChild(input_2);
-        list_element.appendChild(label_1);
-        list_element.appendChild(label_2);
+        label.appendChild(input);
+        list_element.appendChild(label);
         list.appendChild(list_element);
     }
 
@@ -458,6 +461,8 @@ function goToArticleView(id, update) {
 }
 function goToArticles(update) {
     let json = dataStore.getAllArticles();
+
+    document.getElementsByTagName('h2')[0].innerHTML = 'Bitte waehlen Sie Ihre Bestellung';
 
     let container = document.getElementsByTagName('article')[0];
 
@@ -485,6 +490,8 @@ function goToArticles(update) {
 }
 
 function goToCheckout(update) {
+    document.getElementsByTagName('h2')[0].innerHTML = 'Bitte tragen Sie ihre persoenlichen Daten ein';
+
     let container = document.getElementsByTagName('article')[0];
 
     while (container.firstChild) {
@@ -499,7 +506,7 @@ function goToCheckout(update) {
         {content: 'Vorname:', type: 'text', name: 'vorname'},
         {content: 'E-Mail:', type: 'email', name: 'email'},
         {content: 'Telefon:', type: 'tel', name: 'tel'},
-        {content: 'Straße:', type: 'text', name: 'strasse'},
+        {content: 'Strasse:', type: 'text', name: 'strasse'},
         {content: 'Hausnummer:', type: 'text', name: 'hausnr'},
         {content: 'PLZ:', type: 'text', name: 'plz'},
         {content: 'Ort:', type: 'text', name: 'ort'},
@@ -532,7 +539,7 @@ function goToCheckout(update) {
         {content: 'Artikel Anzahl: 999'},
         {content: 'Artikel 1: Ketchup'},
         {content: 'Artikel 2: noch  mehr Ketchup'},
-        {content: 'Gesamtpreis: 5€'}
+        {content: 'Gesamtpreis: ' + dataStore.getCart().total_price + ' Euro'}
     ];
     for (let i = 0; i < fields.length; i++) {
         let label = document.createElement('LABEL');
@@ -554,6 +561,8 @@ function goToCheckout(update) {
     setNewUrl('/cart/checkout', 'checkout');
 }
 function goToIndex(update) {
+    document.getElementsByTagName('h2')[0].innerHTML = 'Herzlich Willkommen bei Rosettis Pizza';
+
     let container = document.getElementsByTagName('article')[0];
 
     while (container.firstChild) {
@@ -578,7 +587,43 @@ function goToIndex(update) {
     setNewUrl('/', 'index');
 }
 
-function foreward(url, update) {
+function addToCart(id) {
+    let cart;
+    if (!dataStore.getCart()) {
+        cart = {};
+        cart.articles = [];
+        cart.total_price = 0;
+    }
+    else {
+        cart = dataStore.getCart();
+    }
+    let article = {};
+
+    article.id = cart.articles.length;
+    article.article_id = id;
+
+    let extra_ingredients = [];
+
+    let checkboxes = document.getElementsByTagName('input');
+    for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            extra_ingredients.push({id: checkboxes[i].getAttribute('content')});
+            checkboxes[i].checked = false;
+        }
+    }
+
+    article.extra_ingredients = extra_ingredients;
+    article.amount = 1;
+    cart.articles.push(article);
+
+    cart.total_price += dataStore.getArticleById(id).base_price;
+
+    dataStore.saveCart(cart);
+
+    alert(dataStore.getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!');
+}
+
+function forward(url, update) {
     if (url === '/articles') {
         goToArticles(update);
     }
@@ -695,20 +740,18 @@ function initMain() {
             }
         }, etag)
     }
-    console.log('initialized');
     isInitialized = true;
 }
 
 let url = window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, "");
 url = '/' + url;
-console.log(url);
 window.history.replaceState({urlPath: url}, '', url);
 window.addEventListener('popstate', function (event) {
-    foreward(window.history.state.urlPath, true);
+    forward(window.history.state.urlPath, true);
 });
 
 initMain();
 
 if (url !== '/') {
-    foreward(window.history.state.urlPath, true);
+    forward(window.history.state.urlPath, true);
 }
