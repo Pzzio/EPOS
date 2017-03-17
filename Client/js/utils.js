@@ -460,7 +460,7 @@ function goToArticleView(id, update) {
     setNewUrl('/article/' + id, '' + id);
 }
 function goToArticles(update) {
-    let json = dataStore.getAllArticles();
+    let json = dataStore.getAllArticlesBrief();;;;;;;;;;;;;;;;;;;;
 
     document.getElementsByTagName('h2')[0].innerHTML = 'Bitte waehlen Sie Ihre Bestellung';
 
@@ -472,7 +472,7 @@ function goToArticles(update) {
 
     for (let i = 0; i < json.articles.length; i++) {
         let img = document.createElement('IMG');
-        img.setAttribute('src', 'pizza-salami.jpg'/*json.articles[i].thumb_img_url*/);
+        img.setAttribute('src', json.articles[i].thumb_img_url);
         img.setAttribute('onclick', 'goToArticleView(' + json.articles[i].id + ')');
 
         let section = document.createElement('SECTION');
