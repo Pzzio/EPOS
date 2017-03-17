@@ -1,250 +1,807 @@
 {
-   "articles_info":{
-      "size":3,
-      "max_id":2
-   },
-   "articles":[
-      {
-         "id":0,
-         "name":"Pizza Magherita",
-         "img_url":"/pizzaimg/0.svg",
-         "thumb_img_url":"/pizzaimg/thumb/0_thumb.svg",
-         "desc":"TEXT TEXT",
-         "base_ingredients":[
+  "articles_info": {
+    "revision": 0,
+    "max_id": 12
+  },
+  "articles": [
+    {
+      "id": 0,
+      "name": "Pizza Margherita",
+      "img_url": "/pizzaimg/margherita.png",
+      "thumb_img_url": "/pizzaimg/margherita.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 2
+        }
+      ],
+      "base_price": 6.90,
+      "tax_id": 0
+    },
+    {
+      "id": 1,
+      "name": "Pizza Romana",
+      "img_url": "/pizzaimg/romana.png",
+      "thumb_img_url": "/pizzaimg/romana.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 5
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 5
+        }
+      ],
+      "base_price": 7.90,
+      "tax_id": 0
+    },
+    {
+      "id": 2,
+      "name": "Pizza Prosciutto",
+      "img_url": "/pizzaimg/prosciutto.png",
+      "thumb_img_url": "/pizzaimg/prosciutto.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 6
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 1
+        },
+        {
+          "id": 6
+        }
+      ],
+      "base_price": 7.90,
+      "tax_id": 0
+    },
+    {
+      "id": 3,
+      "name": "Pizza Toskana",
+      "img_url": "/pizzaimg/toskana.png",
+      "thumb_img_url": "/pizzaimg/toskana.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 9
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 1
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 9
+        }
+      ],
+      "base_price": 7.90,
+      "tax_id": 0
+    },
+    {
+      "id": 4,
+      "name": "Pizza Funghi",
+      "img_url": "/pizzaimg/funghi.png",
+      "thumb_img_url": "/pizzaimg/funghi.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 9
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 1
+        },
+        {
+          "id": 9
+        }
+      ],
+      "base_price": 7.90,
+      "tax_id": 0
+    },
+    {
+      "id": 5,
+      "name": "Pizza Salami",
+      "img_url": "/pizzaimg/salami.png",
+      "thumb_img_url": "/pizzaimg/salami.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 7
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 1
+        },
+        {
+          "id": 7
+        }
+      ],
+      "base_price": 8.20,
+      "tax_id": 0
+    },
+    {
+      "id": 6,
+      "name": "Pizza Tonno",
+      "img_url": "/pizzaimg/tonno.png",
+      "thumb_img_url": "/pizzaimg/tonno.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 5
+        },
+        {
+          "id": 8
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 1
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 5
+        },
+        {
+          "id": 8
+        }
+      ],
+      "base_price": 8.20,
+      "tax_id": 0
+    },
+    {
+      "id": 7,
+      "name": "Pizza Quattro Stagione",
+      "img_url": "/pizzaimg/quattro-stagione.png",
+      "thumb_img_url": "/pizzaimg/quattro-stagione.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 9
+        },
+        {
+          "id": 11
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 1
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 9
+        },
+        {
+          "id": 11
+        }
+      ],
+      "base_price": 8.20,
+      "tax_id": 0
+    },
+    {
+      "id": 8,
+      "name": "Pizza Provinciale",
+      "img_url": "/pizzaimg/provinciale.png",
+      "thumb_img_url": "/pizzaimg/provinciale.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 9
+        },
+        {
+          "id": 11
+        },
+        {
+          "id": 13
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 1
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 9
+        },
+        {
+          "id": 11
+        },
+        {
+          "id": 13
+        }
+      ],
+      "base_price": 8.20,
+      "tax_id": 0
+    },
+    {
+      "id": 9,
+      "name": "Pizza Hawaii",
+      "img_url": "/pizzaimg/hawaii.png",
+      "thumb_img_url": "/pizzaimg/hawaii.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 12
+        },
+        {
+          "id": 15
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 1
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 12
+        },
+        {
+          "id": 15
+        }
+      ],
+      "base_price": 8.20,
+      "tax_id": 0
+    },
+    {
+      "id": 10,
+      "name": "Pizza Capricciosa",
+      "img_url": "/pizzaimg/capricciosa.png",
+      "thumb_img_url": "/pizzaimg/capricciosa.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 9
+        },
+        {
+          "id": 11
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 1
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 9
+        },
+        {
+          "id": 11
+        }
+      ],
+      "base_price": 8.90,
+      "tax_id": 0
+    },
+    {
+      "id": 11,
+      "name": "Pizza Rusticana",
+      "img_url": "/pizzaimg/rusticana.png",
+      "thumb_img_url": "/pizzaimg/rusticana.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 9
+        },
+        {
+          "id": 11
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 1
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 9
+        },
+        {
+          "id": 11
+        }
+      ],
+      "base_price": 8.90,
+      "tax_id": 0
+    },
+    {
+      "id": 12,
+      "name": "Pizza Frutti Di Mare",
+      "img_url": "/pizzaimg/frutti-di-mare.png",
+      "thumb_img_url": "/pizzaimg/frutti-di-mare.png",
+      "desc": "",
+      "base_ingredients": [
+        {
+          "id": 0
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 5
+        },
+        {
+          "id": 22
+        }
+      ],
+      "extra_ingredients": [
+        {
+          "id": 1
+        },
+        {
+          "id": 5
+        },
+        {
+          "id": 22
+        }
+      ],
+      "base_price": 9.90,
+      "tax_id": 0
+    }
+  ],
+  "ingredients_info": {
+    "revision": 0,
+    "max_id": 21
+  },
+  "ingredients": [
+    {
+      "id": 0,
+      "name": "Tomaten",
+      "thumb_img_url": "/ingredientimg/tomatoes.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 1,
+      "name": "Käse",
+      "thumb_img_url": "/ingredientimg/cheese.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Kapern",
+      "thumb_img_url": "/ingredientimg/capers.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 3,
+      "name": "Sardellen",
+      "thumb_img_url": "/ingredientimg/anchovies.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 4,
+      "name": "Oliven",
+      "thumb_img_url": "/ingredientimg/olives.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 5,
+      "name": "Zwiebeln",
+      "thumb_img_url": "/ingredientimg/onions.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 6,
+      "name": "Schinken",
+      "thumb_img_url": "/ingredientimg/ham.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 7,
+      "name": "Salami",
+      "thumb_img_url": "/ingredientimg/salami.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 8,
+      "name": "Thunfisch",
+      "thumb_img_url": "/ingredientimg/tuna.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 9,
+      "name": "Champignons",
+      "thumb_img_url": "/ingredientimg/champignons.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 10,
+      "name": "Peperoni",
+      "thumb_img_url": "/ingredientimg/peppers.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 11,
+      "name": "Artischocken",
+      "thumb_img_url": "/ingredientimg/artichokes.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 12,
+      "name": "Bacon",
+      "thumb_img_url": "/ingredientimg/bacon.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 13,
+      "name": "Mais",
+      "thumb_img_url": "/ingredientimg/corn.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 14,
+      "name": "Knoblauch",
+      "thumb_img_url": "/ingredientimg/garlic.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 15,
+      "name": "Ananas",
+      "thumb_img_url": "/ingredientimg/pineapple.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 16,
+      "name": "Ei",
+      "thumb_img_url": "/ingredientimg/egg.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 17,
+      "name": "Rucola",
+      "thumb_img_url": "/ingredientimg/arugula.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 18,
+      "name": "Parma-Schinken",
+      "thumb_img_url": "/ingredientimg/parma.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 19,
+      "name": "Parmesan",
+      "thumb_img_url": "/ingredientimg/parmesan.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 20,
+      "name": "Gorgonzola",
+      "thumb_img_url": "/ingredientimg/gorgonzola.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    },
+    {
+      "id": 21,
+      "name": "Meeresfrüchte",
+      "thumb_img_url": "/ingredientimg/seafood.png",
+      "desc": "",
+      "price": 0.5,
+      "tax_id": 1
+    }
+  ],
+  "taxes_info": {
+    "revision": 0,
+    "max_id": 1
+  },
+  "taxes": [
+    {
+      "id": 0,
+      "type": "VAT_Type_1",
+      "amount": 0.19
+    },
+    {
+      "id": 1,
+      "type": "VAT_Type_2",
+      "amount": 0.07
+    }
+  ],
+  "shipping_methods_info": {
+    "revision": 0,
+    "max_id": 2
+  },
+  "shipping_methods": [
+    {
+      "id": 0,
+      "name": "Local Order"
+    },
+    {
+      "id": 1,
+      "name": "Telephone Order"
+    },
+    {
+      "id": 2,
+      "name": "Online Order"
+    }
+  ],
+  "payment_methods_info": {
+    "revision": 0,
+    "max_id": 2
+  },
+  "payment_methods": [
+    {
+      "id": 0,
+      "name": "PayPal",
+      "location": "/payment/paypal"
+    },
+    {
+      "id": 1,
+      "name": "Sofortüberweisung",
+      "location": "/payment/sofortueberweisung"
+    },
+    {
+      "id": 2,
+      "name": "CCBill",
+      "location": "/payment/ccbill"
+    },
+    {
+      "id": 3,
+      "name": "100% FREE NO VIRUS GRATIS GRATUITO 100% LEGIT DOWNLOAD NOW!",
+      "location": "/payment/free"
+    }
+  ],
+  "costumers_info": {
+    "revision": 0,
+    "max_id": 0
+  },
+  "customers": [
+    {
+      "id": 0,
+      "type": "Person",
+      "email": "jane-doe@xyz.edu",
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "telephone": "(425) 123-4567",
+      "address": {
+        "addressCountry": "US",
+        "addressLocality": "Seattle",
+        "addressRegion": "WA",
+        "postalCode": "98052",
+        "streetAddress": "20341 Whitworth Institute 405 N. Whitworth"
+      }
+    }
+  ],
+  "payments_info": {
+    "revision": 0,
+    "max_id": 0
+  },
+  "payments": [
+    {
+      "id": 1,
+      "costumer_id": 1,
+      "order_id": 1,
+      "payment_method_id": 1,
+      "date_create": "2012-04-23T18:25:43.511Z",
+      "date_finalize": "2012-04-23T18:25:47.725Z",
+      "status": "PAYMENT_STATUS_FINALIZED"
+    }
+  ],
+  "orders_info": {
+    "revision": 0,
+    "max_id": 0
+  },
+  "orders": [
+    {
+      "id": 0,
+      "costumer_id": 0,
+      "payment_id": 0,
+      "order_method_id": 2,
+      "delivery_tour_id": 0,
+      "tos_accepted": true,
+      "date_create": "2012-04-23T18:25:43.511Z",
+      "status": "ORDER_STATUS_PENDING",
+      "articles": [
+        {
+          "id": 0,
+          "pizza_id": 0,
+          "name": "Pizza Magerita",
+          "thumb_img": "/pizzapics/id",
+          "base_price": 1.11,
+          "tax_value": 0.19,
+          "extra_ingredients": [
             {
-               "id":0
-            },
-            {
-               "id":1
+              "id": 0,
+              "name": "Cheese",
+              "base_price": 1,
+              "tax_value": 0.07,
+              "total_price": 1.07
             }
-         ],
-         "extra_ingredients":[
-            {
-               "id":2
-            },
-            {
-               "id":3
-            }
-         ],
-         "base_price":5,
-         "tax_id":0
-      },
-      {
-         "id":1,
-         "name":"Pizza Salami",
-         "img_url":"/pizzaimg/1.svg",
-         "thumb_img_url":"/pizzaimg/thumb/1_thumb.svg",
-         "desc":"TEXT TEXT",
-         "base_ingredients":[
-            {
-               "id":0
-            },
-            {
-               "id":1
-            }
-         ],
-         "extra_ingredients":[
-            {
-               "id":2
-            },
-            {
-               "id":3
-            }
-         ],
-         "base_price":5,
-         "tax_id":0
-      },
-      {
-         "id":2,
-         "name":"Pizza Terror",
-         "img_url":"/pizzaimg/2.svg",
-         "thumb_img_url":"/pizzaimg/thumb/2_thumb.svg",
-         "desc":"TEXT TEXT",
-         "base_ingredients":[
-            {
-               "id":0
-            },
-            {
-               "id":1
-            }
-         ],
-         "extra_ingredients":[
-            {
-               "id":2
-            },
-            {
-               "id":3
-            }
-         ],
-         "base_price":5,
-         "tax_id":0
-      }
-   ],
-   "ingredients_info":{
-      "size":4,
-      "max_id":3
-   },
-   "ingredients":[
-      {
-         "id":0,
-         "name":"Cheese",
-         "thumb_img_url":"/ingredientimg/thumb/thumb_1.svg",
-         "desc":"TEXT TEXT",
-         "tax_id":1
-      },
-      {
-         "id":1,
-         "name":"Garlic",
-         "thumb_img_url":"/ingredientimg/thumb/thumb_2.svg",
-         "desc":"TEXT TEXT",
-         "tax_id":1
-      },
-      {
-         "id":2,
-         "name":"Bacon",
-         "thumb_img_url":"/ingredientimg/thumb/thumb_3.svg",
-         "desc":"TEXT TEXT",
-         "tax_id":1
-      },
-      {
-         "id":3,
-         "name":"Mais",
-         "thumb_img_url":"/ingredientimg/thumb/thumb_4.svg",
-         "desc":"TEXT TEXT",
-         "tax_id":1
-      }
-   ],
-   "taxes_info":{
-      "size":2,
-      "max_id":1
-   },
-   "taxes":[
-      {
-         "id":0,
-         "type":"VAT_Type_1",
-         "amount":0.19
-      },
-      {
-         "id":1,
-         "type":"VAT_Type_2",
-         "amount":0.07
-      }
-   ],
-   "order_methods_info":{
-      "size":3,
-      "max_id":2
-   },
-   "order_methods":[
-      {
-         "id":0,
-         "name":"Local Order"
-      },
-      {
-         "id":1,
-         "name":"Telephone Order"
-      },
-      {
-         "id":2,
-         "name":"Online Order"
-      }
-   ],
-   "payment_methods_info":{
-      "size":3,
-      "max_id":2
-   },
-   "payment_methods":[
-      {
-         "id":0,
-         "name":"PayPal",
-         "location":"/payment/paypal"
-      },
-      {
-         "id":1,
-         "name":"Sofortüberweisung",
-         "location":"/payment/sofortueberweisung"
-      },
-      {
-         "id":2,
-         "name":"CCBill",
-         "location":"/payment/ccbill"
-      },
-      {
-         "id":3,
-         "name":"100% FREE NO VIRUS GRATIS GRATUITO 100% LEGIT DOWNLOAD NOW!",
-         "location":"/payment/free"
-      }
-   ],
-   "costumers_info":{
-      "size":1,
-      "max_id":0
-   },
-   "customers":[
-      {
-         "id":0,
-         "type":"Person",
-         "email":"jane-doe@xyz.edu",
-         "first_name":"Jane",
-         "last_name":"Doe",
-         "telephone":"(425) 123-4567",
-         "address":{
-            "addressCountry":"US",
-            "addressLocality":"Seattle",
-            "addressRegion":"WA",
-            "postalCode":"98052",
-            "streetAddress":"20341 Whitworth Institute 405 N. Whitworth"
-         }
-      }
-   ],
-   "payments_info":{
-      "size":1,
-      "max_id":0
-   },
-   "payments":[
-      {
-         "id":1,
-         "costumer_id":1,
-         "order_id":1,
-         "payment_method_id":1,
-         "date_create":"2012-04-23T18:25:43.511Z",
-         "date_finalize":"2012-04-23T18:25:47.725Z",
-         "status":"PAYMENT_STATUS_FINALIZED"
-      }
-   ],
-   "orders_info":{
-      "size":1,
-      "max_id":0
-   },
-   "orders":[
-      {
-         "id":0,
-         "costumer_id":0,
-         "payment_id":0,
-         "order_method_id":2,
-         "delivery_tour_id":0,
-         "tos_accepted":true,
-         "date_create":"2012-04-23T18:25:43.511Z",
-         "status":"ORDER_STATUS_PENDING",
-         "articles":[
-            {
-               "id":0,
-               "pizza_id":0,
-               "name":"Pizza Magerita",
-               "thumb_img":"/pizzapics/thumb/id",
-               "base_price":1.11,
-               "tax_value":0.19,
-               "extra_ingredients":[
-                  {
-                     "id":0,
-                     "name":"Cheese",
-                     "base_price":1,
-                     "tax_value":0.07,
-                     "total_price":1.07
-                  }
-               ],
-               "total_price":2.39
-            }
-         ],
-         "total_price":2.39
-      }
-   ]
+          ],
+          "total_price": 2.39
+        }
+      ],
+      "total_price": 2.39
+    }
+  ]
 }
