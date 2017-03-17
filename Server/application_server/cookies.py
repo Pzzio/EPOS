@@ -1,7 +1,7 @@
 
 import time
 import queue
-import bspJobsystem
+from Server.application_server import bspJobsystem
 
 
 class Cookiemanager:
@@ -11,23 +11,35 @@ class Cookiemanager:
 
     timestamp = 0
 
+    cookie_livespan = 5 #lebensdauer des cookies in Sekunden
+
 
 
     q = queue.Queue()
-    cookie = {"cookie_value":1 , "exp_date": time.time() * 1000 }
+
+
+
+    def _newID(self):
+        return str(time.time()) #TODO  derzeit ist der neue name einfach die zeit
 
 
 
 
 
+    def cookieerzeugenmitValue(self,cookieValue): #es wird ein cookie in unserem Format erzeugt welches den übergeenen Value hat aber den exp_date = 0
+        Cookie = {"cookie_value": cookieValue,"exp_date":0}
+        return Cookie
 
-    #depricated
-    def _cookietestalt( self, cookiebekommen):
-        if self._testobcookiebereitsinliste(cookiebekommen):
-            if cookiebekommen["exp_date"] >= time.time() * 1000 :
-                return True
+    def neuenCookieerzeugen(self): #komplet neuer cookie erzeugt (nicht in liste eingefügt) exp_timer = aktuelle zeit + cookielivespan
+        Cookie = self.cookieerzeugenmitValue(self, self._newID(self))
+        Cookie["exp_date"] = (time.time() + self.cookie_livespan) * 1000
+        return Cookie
 
-        return False
+    def CookieValueausgeben(self,Cookie):
+        return Cookie["cookie_value"]
+
+
+
 
 
     def _cookietest(self, cookiebekommen):
@@ -39,7 +51,7 @@ class Cookiemanager:
         return False
 
 
-    def _neuencookie(self,neuescookie):
+    def _neuencookieeinfuegen(self,neuescookie):
         if len(self.Cookieliste) >= 50:
             if self.timestamp < time.time() * 1000:
                 self._inlisteaufreumen()
@@ -84,7 +96,7 @@ class Cookiemanager:
 
 
     jobs = {
-        "NEUES_COOKIE_EINFUEGEN": _neuencookie,
+        "NEUES_COOKIE_EINFUEGEN": _neuencookieeinfuegen,
         "COOKIE_REFRESH": _cookierefresh,
         "COOKIE_VALIDATE": _cookietest
     }
@@ -127,7 +139,7 @@ class Cookiemanager:
 
 
 def test():
-    cookie = {"cookie_value": 1, "exp_date": time.time() * 1000}
+    cookie = {"cookie_value": 1}
     c = Cookiemanager()
 
     print (c.neuescookieeinfuegen(cookie))

@@ -11,7 +11,8 @@ from socketserver import ThreadingMixIn
 
 
 from Server.application_server.datastore import Datastore
-from cookies import cookies
+
+from Server.application_server import cookies
 import time
 
 
@@ -131,27 +132,39 @@ def make_request_handler_class():
             # logging.debug('Init Time: %s' % str(int(1360287003083988472 % 1000000000)).zfill(9))
 
 
+
             #TODO Davids Zeugs
 
+            if self.headers["cookies"] and not self.headers["cookies"] == "":
+                cookie = c.cookieerzeugenmitValue(self.headers["cookies"])
 
-            if "Cookie" in self.headers:
-                cookie = self.headers["cookies"]
-                #TODO cookie in unsere form bringen ( cookie = {"cookie_value":1 , "exp_date": (time.time() + 5 ) *1000} )
             else:
-                neuescookie = {"cookie_value": 1, "exp_date": (time.time() + 5) * 1000}
-                # TODO neues Cookie erstellen (neuescookie)
+                neuescookie = c.neuenCookieerzeugen()
+
                 if (c.neuescookieeinfuegen(neuescookie)):
-                    #TODO send set_Cookie
+
+                    self.send_header('Set-Cookie',c.CookieValueausgeben(neuescookie))
+
                 else:
-                    #TODO send error kein neuer cookie konnte erstellt werden (zu viele sesions)
+
+                    self.send_error(503)
+                    return
+
+
 
             if not c.cookietestobvalid(cookie):
-                neuescookie = {"cookie_value": 1, "exp_date": (time.time() + 5) * 1000}
-                #TODO neues Cookie erstellen (neuescookie)
+
+                neuescookie = c.neuenCookieerzeugen()
+
+
                 if(c.neuescookieeinfuegen(neuescookie)):
-                    #TODO send set_Cookie
+
+                     self.send_header('Set-Cookie',neuescookie.cookie_value)
+
                 else:
-                    #TODO send error kein neuer cookie konnte erstellt werden (zu viele sesions)
+                    self.send_error(503)
+                    return
+
 
 
 
