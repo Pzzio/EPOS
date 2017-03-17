@@ -437,7 +437,12 @@ function goToArticleView(id, update) {
         let extra_ingredient = (dataStore.getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
-        label.innerHTML = extra_ingredient.name;
+        //label.innerHTML = extra_ingredient.name;
+
+        let ingredient_img = document.createElement('IMG');
+        ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
+
+        label.appendChild(ingredient_img);
 
         let input = document.createElement('INPUT');
         input.setAttribute('type', 'checkbox');
