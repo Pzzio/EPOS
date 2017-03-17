@@ -118,14 +118,6 @@ def make_request_handler_class():
 
         APPLICATION_MIME = "application/com.rosettis.pizzaservice"
 
-        def do_HEAD(self):
-            '''
-            Handle a HEAD request.
-            '''
-            logging.debug('HEADER %s' % (self.path))
-            self.send_response(http.HTTPStatus.OK)
-            self.send_header('Content-type', self.APPLICATION_MIME)
-            self.end_headers()
 
         def check_content_type(self, type):
             if not type or not type.startswith(self.APPLICATION_MIME):
@@ -225,6 +217,7 @@ def make_request_handler_class():
                     self.end_headers()
                     self.wfile.write(bytes(articles, "utf-8"))
                     print((datetime.now() - starttime).microseconds)
+                    return
 
                 elif len(paths) == 1 and paths[0] == "ingredients":
                     rev = str(business_data.get_ingredients_revision())
@@ -233,7 +226,6 @@ def make_request_handler_class():
                         self.send_response(http.HTTPStatus.NOT_MODIFIED)
                         self.send_header('ETag', rev)
                         self.send_header('Cache-control', "public, max-age=60")
-
                         self.end_headers()
                         return
 
@@ -244,6 +236,7 @@ def make_request_handler_class():
                     ingredients = business_data.get_all_ingredients()
                     self.wfile.write(bytes(ingredients, "utf-8"))
                     print((datetime.now() - starttime).microseconds)
+                    return
 
                 elif len(paths) == 1 and paths[0] == "taxes":
                     rev = str(business_data.get_taxes_revision())
@@ -263,6 +256,7 @@ def make_request_handler_class():
                     self.end_headers()
                     self.wfile.write(bytes(articles, "utf-8"))
                     print((datetime.now() - starttime).microseconds)
+                    return
 
                 elif len(paths) == 1 and paths[0] == "shippingmethods":
                     rev = str(business_data.get_shipping_methods_revision())
