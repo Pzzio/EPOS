@@ -10,6 +10,9 @@ import sys
 from datetime import datetime
 
 from Server.application_server.datastore import Datastore
+import cookies
+import time
+
 
 VERSION = 1.0
 
@@ -60,6 +63,9 @@ def make_request_handler_class():
     datastore = Datastore()
     business_data = BusinessData(datastore)
 
+    #TODO schaun ob das die richtige stelle ist
+    c = cookies.Cookiemanager()
+
     class MyRequestHandler(http.server.BaseHTTPRequestHandler):
         '''
         Factory generated request handler class that contain
@@ -85,6 +91,34 @@ def make_request_handler_class():
 
         def do_GET(self):
             # logging.debug('Init Time: %s' % str(int(1360287003083988472 % 1000000000)).zfill(9))
+
+
+            #TODO Davids Zeugs
+
+
+            if "Cookie" in self.headers:
+                cookie = self.headers["cookies"]
+                #TODO cookie in unsere form bringen ( cookie = {"cookie_value":1 , "exp_date": (time.time() + 5 ) *1000} )
+            else:
+                neuescookie = {"cookie_value": 1, "exp_date": (time.time() + 5) * 1000}
+                # TODO neues Cookie erstellen (neuescookie)
+                if (c.neuescookieeinfuegen(neuescookie)):
+                    #TODO send set_Cookie
+                else:
+                    #TODO send error kein neuer cookie konnte erstellt werden (zu viele sesions)
+
+            if not c.cookietestobvalid(cookie):
+                neuescookie = {"cookie_value": 1, "exp_date": (time.time() + 5) * 1000}
+                #TODO neues Cookie erstellen (neuescookie)
+                if(c.neuescookieeinfuegen(neuescookie)):
+                    #TODO send set_Cookie
+                else:
+                    #TODO send error kein neuer cookie konnte erstellt werden (zu viele sesions)
+
+
+
+
+
             starttime = datetime.now()
             '''
             Handle a GET request.

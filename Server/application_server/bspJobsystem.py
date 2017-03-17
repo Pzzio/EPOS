@@ -1,8 +1,8 @@
-import Queue
+import queue
 
 class bspJobsystem:
 
-    q = Queue.Queue()
+    q = queue.Queue()
 
     def __init__(self,jobs):
         self.jobs = jobs

@@ -1,7 +1,8 @@
 
 import time
-import Queue
+import queue
 import bspJobsystem
+
 
 class Cookiemanager:
 
@@ -12,7 +13,7 @@ class Cookiemanager:
 
 
 
-    q = Queue.Queue()
+    q = queue.Queue()
     cookie = {"cookie_value":1 , "exp_date": time.time() * 1000 }
 
 
@@ -33,7 +34,7 @@ class Cookiemanager:
         for cookie in self.Cookieliste:
             if cookie["cookie_value"] == cookiebekommen["cookie_value"]:
                 if cookie["exp_date"] >= time.time() * 1000:
-                    print "cookie getestet"
+                    #print "cookie getestet"
                     return True
         return False
 
@@ -47,7 +48,7 @@ class Cookiemanager:
         neuescookie["exp_date"] = (time.time() + 5 ) *1000
         self.Cookieliste.append(neuescookie)
 
-        print "neus Cookie eingefuegt"
+        #print "neus Cookie eingefuegt"
         return True
 
 
@@ -66,7 +67,7 @@ class Cookiemanager:
             self.Cookieliste.remove(cookiezumrefresh)
             cookiezumrefresh["exp_date"] = (time.time() + 5 ) *1000
             self.Cookieliste.append(cookiezumrefresh)
-            print "cookie wurde refresht"
+            #print "cookie wurde refresht"
             return True
         else:
             return self._neuencookie(cookiezumrefresh)
@@ -128,6 +129,7 @@ class Cookiemanager:
 def test():
     cookie = {"cookie_value": 1, "exp_date": time.time() * 1000}
     c = Cookiemanager()
-    print c.neuescookieeinfuegen(cookie)
+
+    print (c.neuescookieeinfuegen(cookie))
 
 test()
