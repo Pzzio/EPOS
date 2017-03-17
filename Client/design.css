@@ -139,3 +139,48 @@ footer p {
     margin: 0;
     user-select: none;
 }
+
+
+#flyoutMenu {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+	color: #FFFFFF;
+    top: 0;
+    left: 0;
+    transform: translate3d(100vw, 0, 0);
+    transition: transform .3s cubic-bezier(0, .52, 0, 1);
+}
+
+#flyoutMenu.show {
+    transform: translate3d(0vw, 0, 0);
+}
+
+#transparentMenu {
+    width: 66vw;
+    height: 100vh;
+	float: left;
+}
+
+#warenkorb {
+    border-bottom-left-radius: 1vw;
+    border-top-left-radius: 1vw;
+    width: 33vw;
+	background-color: #868686;
+    height: 100vh;
+	float: right;
+}
+
+#shp-cart-content {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.shp-cart-row td {
+    border: solid black;
+}
+
+#warenkorb h1 {
+	text-align: center;
+}
