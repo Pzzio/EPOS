@@ -9,14 +9,19 @@ from datetime import datetime
 from http.server import HTTPServer
 from socketserver import ThreadingMixIn
 
+from cookies import *
+from datastore import *
 
-from Server.application_server.datastore import Datastore
+# from cookies import Cookiemanager
+# from datastore import JsonDto, Datastore  # will work even if PyCharm cries
 
-from Server.application_server import cookies
-import time
+#from Server.application_server.datastore import Datastore
+
+#from Server.application_server import cookies
 
 
-from datastore import JsonDto, Datastore  # will work even if PyCharm cries
+
+
 
 
 virtual_routes = ["articles", "article", "cart"]
@@ -102,7 +107,7 @@ def make_request_handler_class():
     business_data = BusinessData(datastore)
 
     #TODO schaun ob das die richtige stelle ist
-    c = cookies.Cookiemanager()
+    c = Cookiemanager()
 
 
     class MyRequestHandler(http.server.BaseHTTPRequestHandler):
@@ -135,8 +140,19 @@ def make_request_handler_class():
 
             #TODO Davids Zeugs
 
+
+
             if self.headers["cookies"] and not self.headers["cookies"] == "":
                 cookie = c.cookieerzeugenmitValue(self.headers["cookies"])
+                if not c.cookietestobvalid(cookie):
+
+                    neuescookie = c.neuenCookieerzeugen()
+
+                    if (c.neuescookieeinfuegen(neuescookie)):
+                        self.send_header('Set-Cookie', neuescookie.cookie_value)
+                    else:
+                        self.send_error(503)
+                        return
             else:
                 neuescookie = c.neuenCookieerzeugen()
                 if (c.neuescookieeinfuegen(neuescookie)):
@@ -145,15 +161,7 @@ def make_request_handler_class():
                     self.send_error(503)
                     return
 
-            if not c.cookietestobvalid(cookie):
 
-                neuescookie = c.neuenCookieerzeugen()
-
-                if(c.neuescookieeinfuegen(neuescookie)):
-                    self.send_header('Set-Cookie',neuescookie.cookie_value)
-                else:
-                    self.send_error(503)
-                    return
 
 
 

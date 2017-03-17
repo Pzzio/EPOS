@@ -1,6 +1,7 @@
 import queue
 
-class bspJobsystem:
+
+class Jobsystem:
 
     q = queue.Queue()
 

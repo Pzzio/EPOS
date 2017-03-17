@@ -1,7 +1,7 @@
-
-import time
 import queue
-from Server.application_server import bspJobsystem
+import time
+
+from bspJobsystem import Jobsystem
 
 
 class Cookiemanager:
@@ -31,7 +31,7 @@ class Cookiemanager:
         return Cookie
 
     def neuenCookieerzeugen(self): #komplet neuer cookie erzeugt (nicht in liste eingefügt) exp_timer = aktuelle zeit + cookielivespan
-        Cookie = self.cookieerzeugenmitValue(self, self._newID(self))
+        Cookie = self.cookieerzeugenmitValue(self._newID())
         Cookie["exp_date"] = (time.time() + self.cookie_livespan) * 1000
         return Cookie
 
@@ -102,8 +102,7 @@ class Cookiemanager:
         "COOKIE_VALIDATE": _cookietest
     }
 
-
-    jobsystem = bspJobsystem.bspJobsystem(jobs)
+    jobsystem = Jobsystem(jobs)
 
 
     def neuescookieeinfuegen(self, cookie):
