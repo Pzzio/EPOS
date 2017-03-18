@@ -20,7 +20,6 @@ body {
 }
 
 header {
-    //width: 1280px;
     line-height: 8vw;
     position: relative;
     z-index: 1;
@@ -40,8 +39,8 @@ header::after {
     position: relative;
     background-image: linear-gradient(to top, rgba(255, 255, 255, 0) 0, #fff 100%);
     margin-top: -150px;
-    height: 150px;
-    width: 100%;
+    height: 200px;
+    width: auto;
     content: '';
 }
 
@@ -74,7 +73,7 @@ header::after {
 
 .bg {
     background: url("art_background.jpg") no-repeat fixed;
-    background-size: 100% 100%;
+    background-size: 100%;
 }
 
 #start {
@@ -146,10 +145,11 @@ section img:hover {
 
 footer {
     width: auto;
-    height: 8vw;
-    background-color: #3299b4;
+    line-height: 8vw;
+    position: relative;
     border-bottom-left-radius: 1vw;
     border-bottom-right-radius: 1vw;
+    z-index: 1;
 }
 
 footer p {
