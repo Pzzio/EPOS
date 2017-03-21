@@ -1,9 +1,3 @@
-let $scope = {test: "Hey!"};
-let bodyContent;
-let elementsWithlets = [];
-let elementCnt = 0;
-let lockInput = false;
-
 let isInitialized = false;
 
 class LocalDatastore {
@@ -338,70 +332,6 @@ function doPost(url, callbackAction, cartPayload) {
     xhttp.send(cartPayload);
 }
 
-function escapeRegExp(str) {
-    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-}
-function replaceAll(str, find, replace) {
-    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
-}
-
-function replaceletsInDOM(classToFocus) {
-    if (bodyContent == undefined) {
-        bodyContent = document.body.innerHTML;
-    }
-    let all = bodyContent;
-
-    for (property in $scope) {
-        if ($scope.hasOwnProperty(property)) {
-            all = replaceAll(all, "{{" + property + "}}", $scope[property]);
-        }
-    }
-    document.body.innerHTML = all;
-    if (classToFocus !== undefined && document.getElementsByClassName(classToFocus)[0] !== undefined) {
-        document.getElementsByClassName(classToFocus)[0].onfocus = function () {
-            this.value = this.value;
-        };
-        document.getElementsByClassName(classToFocus)[0].focus();
-    }
-}
-
-function checkForletsInDOM() {
-    let allTags = document.body.getElementsByTagName('*');
-    for (let i = 0; i < allTags.length; i++) {
-        if (new RegExp('{{[a-z|A-Z]*}}', 'g').test('' + allTags[i].value)) {
-            allTags[i].className += elementCnt;
-            elementCnt++;
-            let letName = ('' + allTags[i].value).match(/{{[a-z|A-Z]*}}/)[0].replace('{{', '').replace('}}', '');
-            elementsWithlets.push(new letContainer(allTags[i], letName));
-        }
-    }
-
-    document.onkeydown = function (e) {
-        if (e.keyCode === 17) {
-            lockInput = true;
-        }
-    };
-    document.onkeyup = function (e) {
-        if (!lockInput) {
-            let target = (e.target) ? e.target : e.srcElement;
-
-            for (let i = 0; i < elementsWithlets.length; i++) {
-                if (elementsWithlets[i].element.className === target.className) {
-                    $scope[elementsWithlets[i].name] = target.value;
-                }
-            }
-            replaceletsInDOM(target.className);
-        }
-        else {
-            if (e.keyCode === 17) {
-                lockInput = false;
-            }
-        }
-    };
-
-    replaceletsInDOM();
-}
-
 function goToArticleView(id, update) {
     let json = dataStore.getArticleById(id);
 
@@ -454,9 +384,13 @@ function goToArticleView(id, update) {
         list.appendChild(list_element);
     }
 
+    let list_section = document.createElement('SECTION');
+    list_section.setAttribute('id', 'ingredients-form');
+    list_section.appendChild(list);
+    list_section.appendChild(button);
+
     container.appendChild(img_container);
-    container.appendChild(list);
-    container.appendChild(button);
+    container.appendChild(list_section);
 
     if (update) {
         return;
@@ -465,7 +399,7 @@ function goToArticleView(id, update) {
     setNewUrl('/article/' + id, '' + id);
 }
 function goToArticles(update) {
-    let json = dataStore.getAllArticlesBrief();;;;;;;;;;;;;;;;;;;;
+    let json = dataStore.getAllArticlesBrief();
 
     document.getElementsByTagName('h2')[0].innerHTML = 'Bitte waehlen Sie Ihre Bestellung';
 
@@ -507,15 +441,15 @@ function goToCheckout(update) {
     section_1.setAttribute('id', 'shipping-form');
 
     let fields = [
-        {content: 'Name:', type: 'text', name: 'name'},
-        {content: 'Vorname:', type: 'text', name: 'vorname'},
-        {content: 'E-Mail:', type: 'email', name: 'email'},
-        {content: 'Telefon:', type: 'tel', name: 'tel'},
-        {content: 'Strasse:', type: 'text', name: 'strasse'},
-        {content: 'Hausnummer:', type: 'text', name: 'hausnr'},
-        {content: 'PLZ:', type: 'text', name: 'plz'},
-        {content: 'Ort:', type: 'text', name: 'ort'},
-        {content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
+        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name'},
+        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname'},
+        {nvupdate: 'email', content: 'E-Mail:', type: 'email', name: 'email'},
+        {nvupdate: 'telefon', content: 'Telefon:', type: 'tel', name: 'tel'},
+        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse'},
+        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr'},
+        {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz'},
+        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort'},
+        {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
     ];
     for (let i = 0; i < fields.length; i++) {
         let label = document.createElement('LABEL');
@@ -524,6 +458,7 @@ function goToCheckout(update) {
 
         label.innerHTML = fields[i].content;
 
+        input.setAttribute('nv-model', fields[i].nvupdate);
         input.setAttribute('type', fields[i].type);
         input.setAttribute('name', fields[i].name);
 
@@ -541,7 +476,7 @@ function goToCheckout(update) {
     section_2.setAttribute('id', 'ship-cart-total');
 
     fields = [
-        {content: 'Artikel Anzahl: 999'},
+        {content: 'Artikel Anzahl: ' + dataStore.getCart().articles.length},
         {content: 'Artikel 1: Ketchup'},
         {content: 'Artikel 2: noch  mehr Ketchup'},
         {content: 'Gesamtpreis: ' + dataStore.getCart().total_price + ' Euro'}
@@ -626,6 +561,100 @@ function addToCart(id) {
     dataStore.saveCart(cart);
 
     alert(dataStore.getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!');
+
+    let cart_table = document.getElementsByTagName('tbody')[0];
+
+    let row = document.createElement('TR');
+    row.setAttribute('class', 'shp-cart-art-row');
+
+    let col = document.createElement('TD');
+    col.innerHTML = article.amount;
+    row.appendChild(col);
+
+    col = document.createElement('TD');
+    col.innerHTML = dataStore.getArticleById(id).name;
+    row.appendChild(col);
+
+    col = document.createElement('TD');
+    col.innerHTML = article.extra_ingredients;
+    row.appendChild(col);
+
+    col = document.createElement('TD');
+    col.innerHTML = dataStore.getArticleById(id).base_price;
+    row.appendChild(col);
+
+    col = document.createElement('TD');
+    col.innerHTML = article.amount * dataStore.getArticleById(id).base_price;
+    row.appendChild(col);
+
+    cart_table.removeChild(cart_table.lastChild);
+    cart_table.appendChild(row);
+
+    row = document.createElement("TR");
+    row.setAttribute('class', 'shp-cart-endrow');
+
+    col = document.createElement('TD');
+    col.setAttribute('colspan', '4');
+    col.innerHTML = 'Gesamtpreis';
+    row.appendChild(col);
+
+    col = document.createElement('TD');
+    col.innerHTML = dataStore.getCart().total_price + '€';
+    row.appendChild(col);
+
+    cart_table.appendChild(row);
+}
+
+function buildCartFromLocalStorage() {
+    let cart = dataStore.getCart();
+    let cart_table = document.getElementsByTagName('tbody')[0];
+
+    let row;
+    let col;
+
+    for (let i = 0; i < cart.articles.length; i++) {
+        row = document.createElement('TR');
+        row.setAttribute('class', 'shp-cart-art-row');
+
+        let article = dataStore.getArticleById(cart.articles[i].article_id);
+        console.log(article);
+
+        col = document.createElement('TD');
+        col.innerHTML = 1;
+        row.appendChild(col);
+
+        col = document.createElement('TD');
+        col.innerHTML = article.name;
+        row.appendChild(col);
+
+        col = document.createElement('TD');
+        col.innerHTML = JSON.stringify(article.extra_ingredients);
+        row.appendChild(col);
+
+        col = document.createElement('TD');
+        col.innerHTML = article.base_price;
+        row.appendChild(col);
+
+        col = document.createElement('TD');
+        col.innerHTML = article.base_price;
+        row.appendChild(col);
+
+        cart_table.appendChild(row);
+    }
+
+    row = document.createElement("TR");
+    row.setAttribute('class', 'shp-cart-endrow');
+
+    col = document.createElement('TD');
+    col.setAttribute('colspan', '4');
+    col.innerHTML = 'Gesamtpreis';
+    row.appendChild(col);
+
+    col = document.createElement('TD');
+    col.innerHTML = dataStore.getCart().total_price + '€';
+    row.appendChild(col);
+
+    cart_table.appendChild(row);
 }
 
 function forward(url, update) {
@@ -745,6 +774,9 @@ function initMain() {
             }
         }, etag)
     }
+
+    buildCartFromLocalStorage();
+
     isInitialized = true;
 }
 
