@@ -9,7 +9,20 @@ from datetime import datetime
 from http.server import HTTPServer
 from socketserver import ThreadingMixIn
 
-from datastore import JsonDto, Datastore  # will work even if PyCharm cries
+from cookies import *
+from datastore import *
+
+# from cookies import Cookiemanager
+# from datastore import JsonDto, Datastore  # will work even if PyCharm cries
+
+#from Server.application_server.datastore import Datastore
+
+#from Server.application_server import cookies
+
+
+
+
+
 
 virtual_routes = ["articles", "article", "cart"]
 
@@ -89,6 +102,14 @@ def make_request_handler_class():
     locally.
     '''
 
+
+    datastore = Datastore()
+    business_data = BusinessData(datastore)
+
+    #TODO schaun ob das die richtige stelle ist
+    c = Cookiemanager()
+
+
     class MyRequestHandler(http.server.BaseHTTPRequestHandler):
         '''
         Factory generated request handler class that contain
@@ -97,14 +118,6 @@ def make_request_handler_class():
 
         APPLICATION_MIME = "application/com.rosettis.pizzaservice"
 
-        def do_HEAD(self):
-            '''
-            Handle a HEAD request.
-            '''
-            logging.debug('HEADER %s' % (self.path))
-            self.send_response(http.HTTPStatus.OK)
-            self.send_header('Content-type', self.APPLICATION_MIME)
-            self.end_headers()
 
         def check_content_type(self, type):
             if not type or not type.startswith(self.APPLICATION_MIME):
@@ -114,6 +127,39 @@ def make_request_handler_class():
 
         def do_GET(self):
             # logging.debug('Init Time: %s' % str(int(1360287003083988472 % 1000000000)).zfill(9))
+
+
+
+            #TODO Davids Zeugs
+
+
+
+            if self.headers["cookies"] and not self.headers["cookies"] == "":
+                cookie = c.cookieerzeugenmitValue(self.headers["cookies"])
+                if not c.cookietestobvalid(cookie):
+
+                    neuescookie = c.neuenCookieerzeugen()
+
+                    if (c.neuescookieeinfuegen(neuescookie)):
+                        self.send_header('Set-Cookie', neuescookie.cookie_value)
+                    else:
+                        self.send_error(503)
+                        return
+            else:
+                neuescookie = c.neuenCookieerzeugen()
+                if (c.neuescookieeinfuegen(neuescookie)):
+                    self.send_header('Set-Cookie',c.CookieValueausgeben(neuescookie))
+                else:
+                    self.send_error(503)
+                    return
+
+
+
+
+
+
+
+
             starttime = datetime.now()
             '''
             Handle a GET request.
@@ -171,6 +217,7 @@ def make_request_handler_class():
                     self.end_headers()
                     self.wfile.write(bytes(articles, "utf-8"))
                     print((datetime.now() - starttime).microseconds)
+                    return
 
                 elif len(paths) == 1 and paths[0] == "ingredients":
                     rev = str(business_data.get_ingredients_revision())
@@ -179,7 +226,6 @@ def make_request_handler_class():
                         self.send_response(http.HTTPStatus.NOT_MODIFIED)
                         self.send_header('ETag', rev)
                         self.send_header('Cache-control', "public, max-age=60")
-
                         self.end_headers()
                         return
 
@@ -190,6 +236,7 @@ def make_request_handler_class():
                     ingredients = business_data.get_all_ingredients()
                     self.wfile.write(bytes(ingredients, "utf-8"))
                     print((datetime.now() - starttime).microseconds)
+                    return
 
                 elif len(paths) == 1 and paths[0] == "taxes":
                     rev = str(business_data.get_taxes_revision())
@@ -209,6 +256,7 @@ def make_request_handler_class():
                     self.end_headers()
                     self.wfile.write(bytes(articles, "utf-8"))
                     print((datetime.now() - starttime).microseconds)
+                    return
 
                 elif len(paths) == 1 and paths[0] == "shippingmethods":
                     rev = str(business_data.get_shipping_methods_revision())
