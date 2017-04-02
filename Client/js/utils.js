@@ -92,13 +92,11 @@ class LocalDatastore {
         return revisions
     }
 
-
     saveAllIngredients(ingredients_JSON) {
         if (ingredients_JSON === null)
             return false;
         localStorage.setItem(this.MAIN_DATA_INGREDIENTS, JSON.stringify(ingredients_JSON))
     }
-
 
     saveCart(cart_JSON) {
         if (cart_JSON === null)
@@ -304,7 +302,7 @@ function doGet(url, callbackAction, etag = null) {
     xhttp.send(null);
 }
 
-function doPost(url, callbackAction, cartPayload) {
+function doPost(url, cartPayload) {
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (this.readyState === 4) {
@@ -327,9 +325,9 @@ function doPost(url, callbackAction, cartPayload) {
             }
         }
     };
-    xhttp.open('POST', url, true);
-    xhttp.setRequestHeader('Content-Type', APPLICATION_MIME);
-    xhttp.send(cartPayload);
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', APPLICATION_MIME);
+    xhr.send(cartPayload);
 }
 
 function goToArticleView(id, update) {
@@ -398,6 +396,7 @@ function goToArticleView(id, update) {
 
     setNewUrl('/article/' + id, '' + id);
 }
+
 function goToArticles(update) {
     let json = dataStore.getAllArticlesBrief();
 
@@ -461,6 +460,9 @@ function goToCheckout(update) {
         input.setAttribute('nv-model', fields[i].nvupdate);
         input.setAttribute('type', fields[i].type);
         input.setAttribute('name', fields[i].name);
+        if (fields[i].name !== 'zusatzinfos') {
+            input.required = true;
+        }
 
         label.appendChild(input);
         section_1.appendChild(label);
@@ -468,24 +470,25 @@ function goToCheckout(update) {
     }
 
     let button = document.createElement('BUTTON');
-    button.innerHTML = ('value', 'Kostenpflichtig bestellen');
+    button.innerHTML = 'Kostenpflichtig bestellen';
     button.setAttribute('id', 'shipping');
+    button.setAttribute('onclick', 'doPost("/cart/checkout", JSON.stringify(dataStore.getCart()))');
     section_1.appendChild(button);
 
     let section_2 = document.createElement('SECTION');
     section_2.setAttribute('id', 'ship-cart-total');
 
     fields = [
-        {content: 'Artikel Anzahl: ' + dataStore.getCart().articles.length},
-        {content: 'Artikel 1: Ketchup'},
-        {content: 'Artikel 2: noch  mehr Ketchup'},
-        {content: 'Gesamtpreis: ' + dataStore.getCart().total_price + ' Euro'}
+        ('Artikel Anzahl: ' + dataStore.getCart().articles.length)
     ];
+
+    fields.push('Gesamtpreis: ' + priceToString(dataStore.getCart().total_price));
+
     for (let i = 0; i < fields.length; i++) {
         let label = document.createElement('LABEL');
         let breakln = document.createElement('BR');
 
-        label.innerHTML = fields[i].content;
+        label.innerHTML = fields[i];
 
         section_2.appendChild(label);
         section_2.appendChild(breakln);
@@ -500,6 +503,7 @@ function goToCheckout(update) {
 
     setNewUrl('/cart/checkout', 'checkout');
 }
+
 function goToIndex(update) {
     document.getElementsByTagName('h2')[0].innerHTML = 'Herzlich Willkommen bei Rosettis Pizza';
 
@@ -564,45 +568,11 @@ function addToCart(id) {
 
     let cart_table = document.getElementsByTagName('tbody')[0];
 
-    let row = document.createElement('TR');
-    row.setAttribute('class', 'shp-cart-art-row');
+    while (cart_table.firstChild != cart_table.lastChild) {
+        cart_table.removeChild(cart_table.lastChild);
+    }
 
-    let col = document.createElement('TD');
-    col.innerHTML = article.amount;
-    row.appendChild(col);
-
-    col = document.createElement('TD');
-    col.innerHTML = dataStore.getArticleById(id).name;
-    row.appendChild(col);
-
-    col = document.createElement('TD');
-    col.innerHTML = article.extra_ingredients;
-    row.appendChild(col);
-
-    col = document.createElement('TD');
-    col.innerHTML = dataStore.getArticleById(id).base_price;
-    row.appendChild(col);
-
-    col = document.createElement('TD');
-    col.innerHTML = article.amount * dataStore.getArticleById(id).base_price;
-    row.appendChild(col);
-
-    cart_table.removeChild(cart_table.lastChild);
-    cart_table.appendChild(row);
-
-    row = document.createElement("TR");
-    row.setAttribute('class', 'shp-cart-endrow');
-
-    col = document.createElement('TD');
-    col.setAttribute('colspan', '4');
-    col.innerHTML = 'Gesamtpreis';
-    row.appendChild(col);
-
-    col = document.createElement('TD');
-    col.innerHTML = dataStore.getCart().total_price + '€';
-    row.appendChild(col);
-
-    cart_table.appendChild(row);
+    buildCartFromLocalStorage();
 }
 
 function buildCartFromLocalStorage() {
@@ -615,8 +585,9 @@ function buildCartFromLocalStorage() {
     for (let i = 0; i < cart.articles.length; i++) {
         row = document.createElement('TR');
         row.setAttribute('class', 'shp-cart-art-row');
+        row.setAttribute('id', 'row ' + i);
 
-        let article = dataStore.getArticleById(cart.articles[i].article_id);
+        let article = cart.articles[i];
         console.log(article);
 
         col = document.createElement('TD');
@@ -624,19 +595,33 @@ function buildCartFromLocalStorage() {
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = article.name;
+        col.innerHTML = dataStore.getArticleById(article.article_id).name;
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = JSON.stringify(article.extra_ingredients);
+        col.innerHTML = (function () {
+            let extras = article.extra_ingredients;
+            let output = "";
+            for (let i = 0; i < extras.length; i++) {
+                output += (dataStore.getIngredientById(extras[i].id).name);
+                output += ",\n";
+            }
+            return output.substring(0, output.length - 2);
+        })();
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = article.base_price;
+        col.innerHTML = priceToString(dataStore.getArticleById(article.article_id).base_price);
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = article.base_price;
+        col.innerHTML = priceToString(dataStore.getArticleById(article.article_id).base_price);
+        row.appendChild(col);
+
+        col = document.createElement('BUTTON');
+        col.innerHTML = 'entfernen';
+        col.setAttribute('onclick',
+            'function() {document.getElementsByTagName("tbody")[0].removeChild(document.getElementById("row ' + i + '")); buildCartFromLocalStorage();}');
         row.appendChild(col);
 
         cart_table.appendChild(row);
@@ -651,17 +636,39 @@ function buildCartFromLocalStorage() {
     row.appendChild(col);
 
     col = document.createElement('TD');
-    col.innerHTML = dataStore.getCart().total_price + '€';
+    col.innerHTML = priceToString(dataStore.getCart().total_price);
     row.appendChild(col);
 
     cart_table.appendChild(row);
+}
+
+function priceToString(price) {
+    price = price + '';
+    let price_parts = price.split(".");
+    price = price_parts[0] + ',';
+
+    if (price_parts[1].length > 2) {
+        price += price_parts[1].substring(0, 2);
+    }
+    else if (price_parts[1].length == 1) {
+        price += price_parts[1];
+        price += '0';
+    }
+    else if (price_parts[1].length == 0) {
+        price += '00';
+    }
+    else {
+        price += price_parts[1];
+    }
+
+    return price + ' €';
 }
 
 function forward(url, update) {
     if (url === '/articles') {
         goToArticles(update);
     }
-    else if (url === '/cart') {
+    else if (url === '/cart/checkout') {
         goToCheckout(update);
     }
     else if (url === '/') {
