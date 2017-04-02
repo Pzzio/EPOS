@@ -110,7 +110,6 @@ function goToArticleView(id, update) {
         let extra_ingredient = (dataStore.getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
-        //label.innerHTML = extra_ingredient.name;
 
         let ingredient_img = document.createElement('IMG');
         ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
@@ -315,7 +314,7 @@ function addToCart(id) {
 
 
     dataStore.saveCart(cart);
-    updateCart();
+    //updateCart();
     alert(dataStore.getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!');
 
     let cart_table = document.getElementsByTagName('tbody')[0];
