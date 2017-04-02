@@ -256,27 +256,20 @@ class LocalDatastore {
     }
 }
 
+const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
+/**
+ * @requires "LocalDatastore.js"
+ * @type {LocalDatastore}
+ */
 const dataStore = new LocalDatastore();
-
-class letContainer {
-    constructor(element, name) {
-        this.element = element;
-        this.name = name;
-    }
-}
 
 function setNewUrl(url, title = 'default') {
     window.history.pushState({urlPath: url}, title, url);
 }
 
-const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
 
-function performXhr(url, method, headers, callbackAction) {
-
-}
-
-function doGet(url, callbackAction, etag = null) {
-    let xhttp = new XMLHttpRequest();
+function performXhr(url, method, headers, data, callbackAction) {
+    const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
             payload = xhttp.responseText;
@@ -294,12 +287,20 @@ function doGet(url, callbackAction, etag = null) {
             callbackAction((!payload || payload === "") ? null : payload, this.status, this.getResponseHeader('ETag'));
         }
     };
-    xhttp.open('GET', url, true);
+    xhttp.open(method, url, true);
     xhttp.setRequestHeader('Content-Type', APPLICATION_MIME);
-    if (etag) {
-        xhttp.setRequestHeader('If-None-Match', etag);
+    for (header in headers) {
+        xhttp.setRequestHeader(headers[header].identifier, headers[header].value)
     }
-    xhttp.send(null);
+    xhttp.send((!data || data == '') ? null : data);
+}
+
+function doGet(url, callbackAction, etag = null) {
+    let headers = [{identifier: "Content-Type", value: APPLICATION_MIME}];
+    if (etag)
+        headers.push({identifier: "If-None-Match", value: etag});
+    performXhr(url, "GET", headers, null, callbackAction)
+
 }
 
 function doPost(url, cartPayload) {
@@ -399,7 +400,7 @@ function goToArticleView(id, update) {
 
 function goToArticles(update) {
     let json = dataStore.getAllArticlesBrief();
-
+  
     document.getElementsByTagName('h2')[0].innerHTML = 'Bitte waehlen Sie Ihre Bestellung';
 
     let container = document.getElementsByTagName('article')[0];
@@ -415,6 +416,12 @@ function goToArticles(update) {
 
         let section = document.createElement('SECTION');
         section.setAttribute('id', json.articles[i].id);
+        section.setAttribute('class', 'tooltip');
+
+        let tooltip = document.createElement('SPAN');
+        tooltip.setAttribute('class', 'tooltiptext');
+        tooltip.innerHTML = json.articles[i].name;
+        section.appendChild(tooltip);
 
         section.appendChild(img);
         container.appendChild(section);
@@ -501,12 +508,12 @@ function goToCheckout(update) {
         return;
     }
 
-    setNewUrl('/cart/checkout', 'checkout');
+    setNewUrl('/cart', 'checkout');
 }
 
 function goToIndex(update) {
-    document.getElementsByTagName('h2')[0].innerHTML = 'Herzlich Willkommen bei Rosettis Pizza';
-
+    document.getElementsByTagName('h2')[0].innerHTML = '{{message}}';
+    replaceVarsInDOM();
     let container = document.getElementsByTagName('article')[0];
 
     while (container.firstChild) {
@@ -562,8 +569,9 @@ function addToCart(id) {
 
     cart.total_price += dataStore.getArticleById(id).base_price;
 
-    dataStore.saveCart(cart);
 
+    dataStore.saveCart(cart);
+    updateCart();
     alert(dataStore.getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!');
 
     let cart_table = document.getElementsByTagName('tbody')[0];
@@ -679,6 +687,14 @@ function forward(url, update) {
     }
 }
 
+function updateCart() {
+    let total_cart_price = dataStore.getCart().total_price;
+    if (total_cart_price) {
+        notVue.data.template_total_cart_price = total_cart_price.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+        replaceVarsInDOM()
+    }
+}
+
 function initMain() {
     if (!dataStore.getRevisions()) {
         rev_setup = {articles: null, ingredients: null, shippingmethods: null, paymentmethods: null, taxes: null};
@@ -785,6 +801,8 @@ function initMain() {
     buildCartFromLocalStorage();
 
     isInitialized = true;
+    updateCart()
+
 }
 
 let url = window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, "");
@@ -792,6 +810,7 @@ url = '/' + url;
 window.history.replaceState({urlPath: url}, '', url);
 window.addEventListener('popstate', function (event) {
     forward(window.history.state.urlPath, true);
+
 });
 
 initMain();
