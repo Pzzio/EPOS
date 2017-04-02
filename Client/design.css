@@ -149,7 +149,7 @@ footer p {
 
 #flyoutMenu.show {
     transform: translate3d(0vw, 0, 0);
-}  
+}
 
 #transparentMenu {
     width: 60vw;
