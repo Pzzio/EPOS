@@ -11,8 +11,8 @@ class Cookiemanager:
 
     timestamp = 0
 
-    cookie_livespan = 5 #lebensdauer des cookies in Sekunden
-    cookie_anzahl_limit = 50  # maximale anzahl an Kookies gleichzeitig
+    cookie_livespan = 600 #lebensdauer des cookies in Sekunden (default 10m)
+    cookie_anzahl_limit = 50  # maximale anzahl an Kookies gleichzeitig(default 50)
 
 
 
@@ -27,16 +27,16 @@ class Cookiemanager:
 
 
 
-    def cookieerzeugenmitValue(self,cookieValue): #es wird ein cookie in unserem Format erzeugt welches den übergeenen Value hat aber den exp_date = 0
+    def createCookiewithValue(self,cookieValue): #es wird ein cookie in unserem Format erzeugt welches den übergeenen Value hat aber den exp_date = 0
         Cookie = {"cookie_value": cookieValue,"exp_date":0}
         return Cookie
 
-    def neuenCookieerzeugen(self): #komplet neuer cookie erzeugt (nicht in liste eingefügt) exp_timer = aktuelle zeit + cookielivespan
+    def createnewCookie(self): #komplet neuer cookie erzeugt (nicht in liste eingefügt) exp_timer = aktuelle zeit + cookielivespan
         Cookie = self.cookieerzeugenmitValue(self._newID())
         Cookie["exp_date"] = (time.time() + self.cookie_livespan) * 1000
         return Cookie
 
-    def CookieValueausgeben(self,Cookie):
+    def getCookieValue(self,Cookie):
         return Cookie["cookie_value"]
 
 
@@ -47,13 +47,13 @@ class Cookiemanager:
         for cookie in self.Cookieliste:
             if cookie["cookie_value"] == cookiebekommen["cookie_value"]:
                 if cookie["exp_date"] >= time.time() * 1000:
-                    self._cookierefresh(cookiebekommen)
+                    self._refreshCookie(cookiebekommen)
                     #print "cookie getestet"
                     return True
-        return self._cookierefresh()
+        return self._refreshCookie()
 
 
-    def _neuencookieeinfuegen(self,neuescookie):
+    def _insertNewCookie(self,neuescookie):
         if len(self.Cookieliste) >= self.cookie_anzahl_limit:
             if self.timestamp < time.time() * 1000:
                 self._inlisteaufreumen()
@@ -75,7 +75,7 @@ class Cookiemanager:
                 self.timestamp = cookie["exp_date"]
 
 
-    def _cookierefresh(self, cookiezumrefresh):
+    def _refreshCookie(self, cookiezumrefresh):
         if self._testobcookiebereitsinliste(cookiezumrefresh):
 
             # TODO nicht sicher ob das funktioniert (welches Cookie wird entfernt)
@@ -86,7 +86,7 @@ class Cookiemanager:
             #print "cookie wurde refresht"
             return True
         else:
-            return self._neuencookie(cookiezumrefresh)
+            return self._insertNewCookie(cookiezumrefresh)
 
 
     def _testobcookiebereitsinliste(self,cookiezumtesten):
@@ -100,15 +100,15 @@ class Cookiemanager:
 
 
     jobs = {
-        "NEUES_COOKIE_EINFUEGEN": _neuencookieeinfuegen,
-        "COOKIE_REFRESH": _cookierefresh,
+        "NEUES_COOKIE_EINFUEGEN": _insertNewCookie,
+        "COOKIE_REFRESH": _refreshCookie,
         "COOKIE_VALIDATE": _cookietest
     }
 
     jobsystem = Jobsystem(jobs)
 
 
-    def neuescookieeinfuegen(self, cookie):
+    def insertNewCookie(self, cookie):
         returnwert = False
 
         job = self.jobsystem.Job("NEUES_COOKIE_EINFUEGEN", cookie, returnwert,self)
@@ -119,7 +119,7 @@ class Cookiemanager:
         return job.returnwert
 
 
-    def cookierefreshen(self,cookie):
+    def refreshCookie(self,cookie):
         returnwert = False
 
         job = self.jobsystem.Job("COOKIE_REFRESH", cookie, returnwert,self)
@@ -129,7 +129,7 @@ class Cookiemanager:
         return job.returnwert
 
 
-    def cookietestobvalid(self,cookie):
+    def testCookie(self,cookie):
         returnwert = False
 
         job = self.jobsystem.Job("COOKIE_VALIDATE", cookie,returnwert,self)

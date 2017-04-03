@@ -136,13 +136,13 @@ def make_request_handler_class():
 
                 cookie.load(self.headers["cookie"])
 
-                cookie_internal = c.cookieerzeugenmitValue(cookie['SSID'].value)
+                cookie_internal = c.createCookiewithValue(cookie['SSID'].value)
 
-                if not c.cookietestobvalid(cookie_internal):
+                if not c.testCookie(cookie_internal):
 
-                    neuescookie = c.neuenCookieerzeugen()
+                    neuescookie = c.createnewCookie()
 
-                    if (c.neuescookieeinfuegen(neuescookie)):
+                    if (c.insertNewCookie(neuescookie)):
 
                         cookie['SSID'] = neuescookie['cookie_value']
 
@@ -158,10 +158,10 @@ def make_request_handler_class():
 
                     # pass to resource
             else:
-                neuescookie = c.neuenCookieerzeugen()
-                if (c.neuescookieeinfuegen(neuescookie)):
+                neuescookie = c.createnewCookie()
+                if (c.insertNewCookie(neuescookie)):
                     self.intermediate_headers.append(
-                        ("Set-Cookie", "SSID=" + c.CookieValueausgeben(neuescookie) + "; Path=/"))
+                        ("Set-Cookie", "SSID=" + c.getCookieValue(neuescookie) + "; Path=/"))
                     return True
                 else:
                     self.finalize_header(503, "")
