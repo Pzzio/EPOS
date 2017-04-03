@@ -431,8 +431,10 @@ def make_request_handler_class():
                     self.finalize_header(response_status, "")
                     # TODO, create & send JsonError
 
-                    # TODO; send http.HTTPStatus.CONFLICT if validation raised "EPOSCheckoutPriceConflictError" or "EPOSCheckoutArticleIngredientConflict"
-                    # TODO; send http.HTTPStatus.NOT_FOUND if validation raised "EPOSCheckoutArticleNotFoundError" or "EPOSCheckoutIngredientNotFoundError"
+                    # TODO; send http.HTTPStatus.CONFLICT if validation
+                    # raised "EPOSCheckoutPriceConflictError" or "EPOSCheckoutArticleIngredientConflict"
+                    # TODO; send http.HTTPStatus.NOT_FOUND if validation
+                    # raised "EPOSCheckoutArticleNotFoundError" or "EPOSCheckoutIngredientNotFoundError"
 
     return MyRequestHandler
 
