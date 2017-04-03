@@ -1,4 +1,5 @@
 let isInitialized = false;
+let go_back_uri = [];
 
 const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
 /**
@@ -8,9 +9,10 @@ const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
 const dataStore = new LocalDatastore();
 
 function setNewUrl(url, title = 'default') {
+    console.log(go_back_uri);
+    go_back_uri.push('/' + window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, ""));
     window.history.pushState({urlPath: url}, title, url);
 }
-
 
 function performXhr(url, method, headers, data, callbackAction) {
     const xhttp = new XMLHttpRequest();
@@ -229,10 +231,10 @@ function goToCheckout(update) {
     section_2.setAttribute('id', 'ship-cart-total');
 
     fields = [
-        ('Artikel Anzahl: ' + dataStore.getCart().articles.length)
+        ('Artikel Anzahl: ' + (dataStore.getCart().total_price ? dataStore.getCart().total_price:0))
     ];
 
-    fields.push('Gesamtpreis: ' + priceToString(dataStore.getCart().total_price));
+    fields.push('Gesamtpreis: ' + priceToString((dataStore.getCart().total_price ? dataStore.getCart().total_price:0)));
 
     for (let i = 0; i < fields.length; i++) {
         let label = document.createElement('LABEL');
@@ -561,8 +563,8 @@ let url = window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, "");
 url = '/' + url;
 window.history.replaceState({urlPath: url}, '', url);
 window.addEventListener('popstate', function (event) {
+    go_back_uri.push('/' + window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, ""));
     forward(window.history.state.urlPath, true);
-
 });
 
 initMain();
