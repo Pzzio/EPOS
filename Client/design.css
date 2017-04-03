@@ -3,9 +3,15 @@ body, html {
     padding: 0;
 }
 
+html {
+    height: 100%;
+}
+
 body {
     width: 1280px;
     margin: auto;
+    min-height: 100%;
+    font-family: sans-serif;
 }
 
 @media screen and (max-width: 1280px) {
@@ -15,21 +21,27 @@ body {
 }
 
 header {
-    width: 100%;
-    background-image: url("pizza-banner.png");
-    background-size: cover;
-    border-top-right-radius: 1vw;
-    border-top-left-radius: 1vw;
     line-height: 8vw;
     position: relative;
+    z-index: 1;
 }
 
 header label h1 {
     text-align: center;
     margin: 0;
-    font-family: "Brush Script MT", serif;
     font-size: 5vw;
     user-select: none;
+}
+
+header::after {
+    z-index: -1;
+    display: block;
+    position: relative;
+    background-image: linear-gradient(to top, rgba(255, 255, 255, 0) 0, #fff 100%);
+    margin-top: -150px;
+    height: 200px;
+    width: auto;
+    content: '';
 }
 
 #shopping-cart-btn {
@@ -52,12 +64,36 @@ header label h1 {
     transform: scale(1.05);
 }
 
+#back-btn {
+    width: 8vw;
+    height: 8vw;
+    position: absolute;
+    left: 5px;
+    top: 8px;
+
+    background: transparent url("goback.png") no-repeat;
+    background-size: 80%;
+    border: none;
+    outline: none;
+
+    transition: all .2s ease-in-out;
+    cursor: pointer;
+}
+
+#back-btn:hover {
+    transform: scale(1.05);
+}
+
 #instruction label * {
     margin: 0;
     padding-left: 20px;
     padding-top: 20px;
-    background-color: #dcdbdb;
     user-select: none;
+}
+
+.bg {
+    background: url("art_background.jpg") no-repeat fixed;
+    background-size: 100%;
 }
 
 #start {
@@ -66,11 +102,27 @@ header label h1 {
 
 #start-btn {
     margin-top: 100px;
+    border-radius: 25px;
+    padding: 0 15px 0 15px;
+    background: linear-gradient(to bottom,
+    rgba(0, 140, 186, 0) 0%,
+    rgba(0, 140, 186, 0) 50%,
+    rgba(0, 140, 186, 1) 50%,
+    rgba(0, 140, 186, 1) 100%) no-repeat;
+    background-size: 100% 200%;
+    border: solid medium #008CBA;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    transition: all .2s ease-out;
+    cursor: pointer;
+}
+
+#start-btn:hover {
+    background-position: 0 100%;
+    color: white;
 }
 
 article {
     width: auto;
-    background-color: #dcdbdb;
 
     padding: 0;
     margin: 0;
@@ -79,6 +131,10 @@ article {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
+}
+
+article::-webkit-scrollbar {
+    display: none;
 }
 
 section {
@@ -123,15 +179,16 @@ section img:hover {
 
 footer {
     width: auto;
-    height: 8vw;
-    background-color: #5e5e5e;
+    line-height: 8vw;
+    position: relative;
     border-bottom-left-radius: 1vw;
     border-bottom-right-radius: 1vw;
+    z-index: 1;
 }
 
 footer p {
     text-align: center;
-    padding: 30px;
+    padding: 0px;
     margin: 0;
     user-select: none;
 }
@@ -149,6 +206,7 @@ footer p {
 
 #flyoutMenu.show {
     transform: translate3d(0vw, 0, 0);
+    z-index: 1;
 }
 
 #transparentMenu {
