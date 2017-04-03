@@ -32,7 +32,7 @@ class Cookiemanager:
         return Cookie
 
     def createnewCookie(self): #komplet neuer cookie erzeugt (nicht in liste eingefügt) exp_timer = aktuelle zeit + cookielivespan
-        Cookie = self.cookieerzeugenmitValue(self._newID())
+        Cookie = self.createCookiewithValue(self._newID())
         Cookie["exp_date"] = (time.time() + self.cookie_livespan) * 1000
         return Cookie
 
