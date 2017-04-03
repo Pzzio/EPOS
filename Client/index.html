@@ -43,6 +43,9 @@
     <div id="warenkorb">
         <h1>Warenkorb</h1>
         <button onclick="goToCheckout()">Zur Kasse</button>
+        <br>
+        <br>
+
         <table id="shp-cart-content">
             <tr class="shp-cart-row">
                 <td>
@@ -60,6 +63,7 @@
                 <td>
                     Preis
                 </td>
+                <td><button onclick="(function(){dataStore.clearCart(); buildCartFromLocalStorage();})()">alles<br>entfernen</button></td>
             </tr>
         </table>
     </div>
