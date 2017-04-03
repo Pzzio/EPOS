@@ -58,7 +58,7 @@ class Cookiemanager:
                 self._inlisteaufreumen()
         if len(self.Cookieliste) >= 50:
             return False
-        neuescookie["exp_date"] = (time.time() + 5 ) *1000
+        neuescookie["exp_date"] = (time.time() + 120) * 1000  # toMillis(now_sec + 120 sec)
         self.Cookieliste.append(neuescookie)
 
         #print "neus Cookie eingefuegt"
@@ -78,7 +78,7 @@ class Cookiemanager:
         if self._testobcookiebereitsinliste(cookiezumrefresh):
 
             self.Cookieliste.remove(cookiezumrefresh)
-            cookiezumrefresh["exp_date"] = (time.time() + 5 ) *1000
+            cookiezumrefresh["exp_date"] = (time.time() + 50) * 1000
             self.Cookieliste.append(cookiezumrefresh)
             #print "cookie wurde refresht"
             return True
@@ -133,23 +133,5 @@ class Cookiemanager:
 
         self.jobsystem.q.put(job)
         self.jobsystem.querryabarbeiten()
+        print(job.returnwert)
         return job.returnwert
-
-
-
-
-def test():
-    #cookie = {"cookie_value": 1 , "exp_date": 0}
-    c = Cookiemanager()
-
-    for i in range(1,55):
-        cookie = c.cookieerzeugenmitValue(i)
-
-        print(i)
-        print (c.neuescookieeinfuegen(cookie))
-        print (c.cookietestobvalid(cookie))
-
-    while not c.neuescookieeinfuegen(cookie):
-        print ()
-    print("erfolg")
-test()
