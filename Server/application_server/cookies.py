@@ -98,7 +98,6 @@ class Cookiemanager:
 
 
 
-
     jobs = {
         "NEUES_COOKIE_EINFUEGEN": _insertNewCookie,
         "COOKIE_REFRESH": _refreshCookie,
