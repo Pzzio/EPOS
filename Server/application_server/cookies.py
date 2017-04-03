@@ -50,7 +50,7 @@ class Cookiemanager:
                     self._refreshCookie(cookiebekommen)
                     #print "cookie getestet"
                     return True
-        return self._refreshCookie()
+        return self._refreshCookie(cookiebekommen)
 
 
     def _insertNewCookie(self,neuescookie):
