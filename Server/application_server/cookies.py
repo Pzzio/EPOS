@@ -78,13 +78,15 @@ class Cookiemanager:
     def _refreshCookie(self, cookiezumrefresh):
         if self._testobcookiebereitsinliste(cookiezumrefresh):
 
-            # TODO nicht sicher ob das funktioniert (welches Cookie wird entfernt)
+            for cookie in self.Cookieliste:
+                if cookie["cookie_value"] == cookiezumrefresh["cookie_value"]:
+                    cookie["exp_date"] = (time.time() + self.cookie_livespan) * 1000
+                    return True
 
-            self.Cookieliste.remove(cookiezumrefresh)
-            cookiezumrefresh["exp_date"] = (time.time() + self.cookie_livespan) * 1000
-            self.Cookieliste.append(cookiezumrefresh)
+            return self._insertNewCookie(cookiezumrefresh)
+
             #print "cookie wurde refresht"
-            return True
+
         else:
             return self._insertNewCookie(cookiezumrefresh)
 
