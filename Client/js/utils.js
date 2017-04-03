@@ -100,11 +100,11 @@ function goToArticleView(id, update) {
     section.setAttribute('id', 'ingredients-form');
 
     let list = document.createElement('UL');
+    list.setAttribute('id', 'ingredients-form')
 
     let ingr = json.extra_ingredients;
     for (let i = 0; i < ingr.length; i++) {
         let list_element = document.createElement('LI');
-        list_element.setAttribute('id', 'ingredients-form');
 
         let label = document.createElement('LABEL');
         let extra_ingredient = (dataStore.getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
