@@ -11,7 +11,7 @@
     <header>
         <label><h1 onclick="goToIndex()">Rosettis Pizza</h1></label>
         <button id="shopping-cart-btn" onclick="showMenu()"></button>
-        <button id="back-btn" onclick="window.history.back()"></button>
+        <button id="back-btn" onclick="(function(){console.log(go_back_uri); if (go_back_uri.length > 0) forward(go_back_uri.pop()); go_back_uri.pop();})()"></button>
     </header>
 
     <div id="instruction">
