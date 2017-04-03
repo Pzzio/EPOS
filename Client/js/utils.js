@@ -1,290 +1,19 @@
-let $scope = {test: "Hey!"};
-let bodyContent;
-let elementsWithlets = [];
-let elementCnt = 0;
-let lockInput = false;
-
 let isInitialized = false;
 
-class LocalDatastore {
-
-    constructor() {
-        if (typeof(Storage) == "undefined")
-            return 42;
-
-        this.MAIN_DATA_ARTICLES = 'MAIN_DATA_ARTICLES';
-        this.MAIN_DATA_INGREDIENTS = 'MAIN_DATA_INGREDIENTS';
-        this.MAIN_DATA_SHIPPING_METHODS = 'MAIN_DATA_SHIPPING_METHODS';
-        this.MAIN_DATA_PAYMENT_METHODS = 'MAIN_DATA_PAYMENT_METHODS';
-        this.MAIN_DATA_TAXES = 'MAIN_DATA_TAXES';
-        this.MAIN_DATA_CART = 'MAIN_DATA_CART';
-        this.MAIN_REVISIONS = 'MAIN_REVISIONS'
-    }
-
-    getAllArticles() {
-        let articles = localStorage.getItem(this.MAIN_DATA_ARTICLES);
-        if (articles === null)
-            return false;
-        articles = JSON.parse(articles);
-        if (articles.length === 0)
-            return false;
-
-        return articles
-    }
-
-    getAllIngredients() {
-        let ingredients = localStorage.getItem(this.MAIN_DATA_INGREDIENTS);
-        if (ingredients === null)
-            return false;
-        ingredients = JSON.parse(ingredients);
-        if (ingredients.length === 0)
-            return false;
-
-        return ingredients
-    }
-
-    getCart() {
-        let ingredients = localStorage.getItem(this.MAIN_DATA_CART);
-        if (ingredients === null)
-            return false;
-        ingredients = JSON.parse(ingredients);
-        if (ingredients.length === 0)
-            return false;
-
-        return ingredients;
-    }
-
-    getshippingMethods() {
-        let shippingMethods = localStorage.getItem(this.MAIN_DATA_SHIPPING_METHODS);
-        if (shippingMethods === null)
-            return false;
-        shippingMethods = JSON.parse(shippingMethods);
-        if (shippingMethods.length === 0)
-            return false;
-
-        return shippingMethods
-    }
-
-    getTaxes() {
-        let taxes = localStorage.getItem(this.MAIN_DATA_TAXES);
-        if (taxes === null)
-            return false;
-        taxes = JSON.parse(taxes);
-        if (taxes.length === 0)
-            return false;
-
-        return taxes
-    }
-
-    getPaymentMethods() {
-        let paymentMethods = localStorage.getItem(this.MAIN_DATA_PAYMENT_METHODS);
-        if (paymentMethods === null)
-            return false;
-        paymentMethods = JSON.parse(paymentMethods);
-        if (paymentMethods.length === 0)
-            return false;
-
-        return paymentMethods
-    }
-
-    getRevisions() {
-        let revisions = localStorage.getItem(this.MAIN_REVISIONS);
-        if (revisions === null)
-            return false;
-        revisions = JSON.parse(revisions);
-        if (revisions.length === 0)
-            return false;
-
-        return revisions
-    }
-
-
-    saveAllIngredients(ingredients_JSON) {
-        if (ingredients_JSON === null)
-            return false;
-        localStorage.setItem(this.MAIN_DATA_INGREDIENTS, JSON.stringify(ingredients_JSON))
-    }
-
-
-    saveCart(cart_JSON) {
-        if (cart_JSON === null)
-            return false;
-        localStorage.setItem(this.MAIN_DATA_CART, JSON.stringify(cart_JSON))
-    }
-
-    saveAllArticles(article_JSON) {
-        if (article_JSON === null)
-            return false;
-        localStorage.setItem(this.MAIN_DATA_ARTICLES, JSON.stringify(article_JSON))
-    }
-
-    saveTaxes(taxes) {
-        if (taxes === null)
-            return false;
-        localStorage.setItem(this.MAIN_DATA_TAXES, JSON.stringify(taxes))
-    }
-
-    saveshippingMethods(shippingMethods) {
-        if (shippingMethods === null)
-            return false;
-        localStorage.setItem(this.MAIN_DATA_SHIPPING_METHODS, JSON.stringify(shippingMethods))
-    }
-
-    savePaymentMethods(paymentMethods) {
-        if (paymentMethods === null)
-            return false;
-        localStorage.setItem(this.MAIN_DATA_PAYMENT_METHODS, JSON.stringify(paymentMethods))
-    }
-
-    saveRevisions(revisions) {
-        if (revisions === null)
-            return false;
-        localStorage.setItem(this.MAIN_REVISIONS, JSON.stringify(revisions))
-    }
-
-    clearArticles() {
-        localStorage.removeItem(this.MAIN_DATA_ARTICLES);
-        return localStorage.getItem(this.MAIN_DATA_ARTICLES) === null
-    }
-
-    clearIngredients() {
-        localStorage.removeItem(this.MAIN_DATA_INGREDIENTS);
-        return localStorage.getItem(this.MAIN_DATA_INGREDIENTS) === null
-    }
-
-    clearCart() {
-        localStorage.removeItem(this.MAIN_DATA_CART);
-        return localStorage.getItem(this.MAIN_DATA_CART) === null
-    }
-
-    clearshippingMethods() {
-        localStorage.removeItem(this.MAIN_DATA_SHIPPING_METHODS);
-        return localStorage.getItem(this.MAIN_DATA_SHIPPING_METHODS) === null
-    }
-
-    clearPaymentMethods() {
-        localStorage.removeItem(this.MAIN_DATA_PAYMENT_METHODS);
-        return localStorage.getItem(this.MAIN_DATA_PAYMENT_METHODS) === null
-    }
-
-    clearRevisions() {
-        localStorage.removeItem(this.MAIN_REVISIONS);
-        return localStorage.getItem(this.MAIN_REVISIONS) === null
-    }
-
-    clearTaxes() {
-        localStorage.removeItem(this.MAIN_DATA_TAXES);
-        return localStorage.getItem(this.MAIN_DATA_TAXES) === null
-    }
-
-    getAllArticlesBrief() {
-        let result = null;
-        let articles = {articles: []};
-
-        this.getAllArticles().articles.forEach(function (element, index, array) {
-            articles.articles.push({id: element.id, thumb_img_url: element.thumb_img_url, name: element.name})
-        });
-
-        if (articles.articles.length != 0)
-            result = articles;
-
-        return result
-
-    }
-
-    getArticleById(articleId) {
-        return this.getAllArticles().articles.find(function (article, index) {
-            return article.id == articleId;
-        });
-    }
-
-    getExtraIngredientsFromArticleById(articleId) {
-        let article = this.getArticleById(articleId);
-        if (!article)
-            return null;
-
-        let ingredients = {ingredients: []};
-        let result = null;
-
-        article.extra_ingredients.forEach(function (element, index, array) {
-            let ingredient = this.getIngredientById(element.id);
-            if (ingredient)
-                ingredients.ingredients.push(ingredient)
-        }, this);
-
-        if (ingredients.ingredients.length != 0)
-            result = ingredients;
-
-        return result
-    }
-
-    getBaseIngredientsFromArticleById(articleId) {
-        let article = this.getArticleById(articleId);
-        if (!article)
-            return null;
-
-        let ingredients = {ingredients: []};
-        let result = null;
-
-        article.base_ingredients.forEach(function (element, index, array) {
-            let ingredient = this.getIngredientById(element.id);
-            if (ingredient)
-                ingredients.ingredients.push(ingredient)
-        }, this);
-
-        if (ingredients.ingredients.length != 0)
-            result = ingredients;
-
-        return result
-
-    }
-
-    getIngredientById(ingredientId) {
-        return this.getAllIngredients().ingredients.find(function (ingredient, index) {
-            return ingredient.id == ingredientId
-        })
-    }
-
-    getTaxById(taxId) {
-        return this.getTaxes().taxes.find(function (tax, index) {
-            return tax.id == taxId
-        });
-    }
-
-    getshippingMethodById(shippingMethodId) {
-        return this.getshippingMethods().shipping_methods.find(function (shippingMethod, index) {
-            return shippingMethod.id == shippingMethodId
-        });
-    }
-
-    getPaymentMethodById(paymentMethodId) {
-        return this.getPaymentMethods().payment_methods.find(function (paymentMethod, index) {
-            return paymentMethod.id == paymentMethodId
-        });
-    }
-}
-
+const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
+/**
+ * @requires "LocalDatastore.js"
+ * @type {LocalDatastore}
+ */
 const dataStore = new LocalDatastore();
-
-class letContainer {
-    constructor(element, name) {
-        this.element = element;
-        this.name = name;
-    }
-}
 
 function setNewUrl(url, title = 'default') {
     window.history.pushState({urlPath: url}, title, url);
 }
 
-const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
 
-function performXhr(url, method, headers, callbackAction) {
-
-}
-
-function doGet(url, callbackAction, etag = null) {
-    let xhttp = new XMLHttpRequest();
+function performXhr(url, method, headers, data, callbackAction) {
+    const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
             payload = xhttp.responseText;
@@ -302,15 +31,23 @@ function doGet(url, callbackAction, etag = null) {
             callbackAction((!payload || payload === "") ? null : payload, this.status, this.getResponseHeader('ETag'));
         }
     };
-    xhttp.open('GET', url, true);
+    xhttp.open(method, url, true);
     xhttp.setRequestHeader('Content-Type', APPLICATION_MIME);
-    if (etag) {
-        xhttp.setRequestHeader('If-None-Match', etag);
+    for (header in headers) {
+        xhttp.setRequestHeader(headers[header].identifier, headers[header].value)
     }
-    xhttp.send(null);
+    xhttp.send((!data || data == '') ? null : data);
 }
 
-function doPost(url, callbackAction, cartPayload) {
+function doGet(url, callbackAction, etag = null) {
+    let headers = [{identifier: "Content-Type", value: APPLICATION_MIME}];
+    if (etag)
+        headers.push({identifier: "If-None-Match", value: etag});
+    performXhr(url, "GET", headers, null, callbackAction)
+
+}
+
+function doPost(url, cartPayload) {
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (this.readyState === 4) {
@@ -333,73 +70,9 @@ function doPost(url, callbackAction, cartPayload) {
             }
         }
     };
-    xhttp.open('POST', url, true);
-    xhttp.setRequestHeader('Content-Type', APPLICATION_MIME);
-    xhttp.send(cartPayload);
-}
-
-function escapeRegExp(str) {
-    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-}
-function replaceAll(str, find, replace) {
-    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
-}
-
-function replaceletsInDOM(classToFocus) {
-    if (bodyContent == undefined) {
-        bodyContent = document.body.innerHTML;
-    }
-    let all = bodyContent;
-
-    for (property in $scope) {
-        if ($scope.hasOwnProperty(property)) {
-            all = replaceAll(all, "{{" + property + "}}", $scope[property]);
-        }
-    }
-    document.body.innerHTML = all;
-    if (classToFocus !== undefined && document.getElementsByClassName(classToFocus)[0] !== undefined) {
-        document.getElementsByClassName(classToFocus)[0].onfocus = function () {
-            this.value = this.value;
-        };
-        document.getElementsByClassName(classToFocus)[0].focus();
-    }
-}
-
-function checkForletsInDOM() {
-    let allTags = document.body.getElementsByTagName('*');
-    for (let i = 0; i < allTags.length; i++) {
-        if (new RegExp('{{[a-z|A-Z]*}}', 'g').test('' + allTags[i].value)) {
-            allTags[i].className += elementCnt;
-            elementCnt++;
-            let letName = ('' + allTags[i].value).match(/{{[a-z|A-Z]*}}/)[0].replace('{{', '').replace('}}', '');
-            elementsWithlets.push(new letContainer(allTags[i], letName));
-        }
-    }
-
-    document.onkeydown = function (e) {
-        if (e.keyCode === 17) {
-            lockInput = true;
-        }
-    };
-    document.onkeyup = function (e) {
-        if (!lockInput) {
-            let target = (e.target) ? e.target : e.srcElement;
-
-            for (let i = 0; i < elementsWithlets.length; i++) {
-                if (elementsWithlets[i].element.className === target.className) {
-                    $scope[elementsWithlets[i].name] = target.value;
-                }
-            }
-            replaceletsInDOM(target.className);
-        }
-        else {
-            if (e.keyCode === 17) {
-                lockInput = false;
-            }
-        }
-    };
-
-    replaceletsInDOM();
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', APPLICATION_MIME);
+    xhr.send(cartPayload);
 }
 
 function goToArticleView(id, update) {
@@ -437,7 +110,6 @@ function goToArticleView(id, update) {
         let extra_ingredient = (dataStore.getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
-        //label.innerHTML = extra_ingredient.name;
 
         let ingredient_img = document.createElement('IMG');
         ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
@@ -454,9 +126,13 @@ function goToArticleView(id, update) {
         list.appendChild(list_element);
     }
 
+    let list_section = document.createElement('SECTION');
+    list_section.setAttribute('id', 'ingredients-form');
+    list_section.appendChild(list);
+    list_section.appendChild(button);
+
     container.appendChild(img_container);
-    container.appendChild(list);
-    container.appendChild(button);
+    container.appendChild(list_section);
 
     if (update) {
         return;
@@ -464,9 +140,10 @@ function goToArticleView(id, update) {
 
     setNewUrl('/article/' + id, '' + id);
 }
-function goToArticles(update) {
-    let json = dataStore.getAllArticlesBrief();;;;;;;;;;;;;;;;;;;;
 
+function goToArticles(update) {
+    let json = dataStore.getAllArticlesBrief();
+  
     document.getElementsByTagName('h2')[0].innerHTML = 'Bitte waehlen Sie Ihre Bestellung';
 
     let container = document.getElementsByTagName('article')[0];
@@ -482,6 +159,12 @@ function goToArticles(update) {
 
         let section = document.createElement('SECTION');
         section.setAttribute('id', json.articles[i].id);
+        section.setAttribute('class', 'tooltip');
+
+        let tooltip = document.createElement('SPAN');
+        tooltip.setAttribute('class', 'tooltiptext');
+        tooltip.innerHTML = json.articles[i].name;
+        section.appendChild(tooltip);
 
         section.appendChild(img);
         container.appendChild(section);
@@ -507,15 +190,15 @@ function goToCheckout(update) {
     section_1.setAttribute('id', 'shipping-form');
 
     let fields = [
-        {content: 'Name:', type: 'text', name: 'name'},
-        {content: 'Vorname:', type: 'text', name: 'vorname'},
-        {content: 'E-Mail:', type: 'email', name: 'email'},
-        {content: 'Telefon:', type: 'tel', name: 'tel'},
-        {content: 'Strasse:', type: 'text', name: 'strasse'},
-        {content: 'Hausnummer:', type: 'text', name: 'hausnr'},
-        {content: 'PLZ:', type: 'text', name: 'plz'},
-        {content: 'Ort:', type: 'text', name: 'ort'},
-        {content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
+        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name'},
+        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname'},
+        {nvupdate: 'email', content: 'E-Mail:', type: 'email', name: 'email'},
+        {nvupdate: 'telefon', content: 'Telefon:', type: 'tel', name: 'tel'},
+        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse'},
+        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr'},
+        {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz'},
+        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort'},
+        {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
     ];
     for (let i = 0; i < fields.length; i++) {
         let label = document.createElement('LABEL');
@@ -524,8 +207,12 @@ function goToCheckout(update) {
 
         label.innerHTML = fields[i].content;
 
+        input.setAttribute('nv-model', fields[i].nvupdate);
         input.setAttribute('type', fields[i].type);
         input.setAttribute('name', fields[i].name);
+        if (fields[i].name !== 'zusatzinfos') {
+            input.required = true;
+        }
 
         label.appendChild(input);
         section_1.appendChild(label);
@@ -533,24 +220,25 @@ function goToCheckout(update) {
     }
 
     let button = document.createElement('BUTTON');
-    button.innerHTML = ('value', 'Kostenpflichtig bestellen');
+    button.innerHTML = 'Kostenpflichtig bestellen';
     button.setAttribute('id', 'shipping');
+    button.setAttribute('onclick', 'doPost("/cart/checkout", JSON.stringify(dataStore.getCart()))');
     section_1.appendChild(button);
 
     let section_2 = document.createElement('SECTION');
     section_2.setAttribute('id', 'ship-cart-total');
 
     fields = [
-        {content: 'Artikel Anzahl: 999'},
-        {content: 'Artikel 1: Ketchup'},
-        {content: 'Artikel 2: noch  mehr Ketchup'},
-        {content: 'Gesamtpreis: ' + dataStore.getCart().total_price + ' Euro'}
+        ('Artikel Anzahl: ' + dataStore.getCart().articles.length)
     ];
+
+    fields.push('Gesamtpreis: ' + priceToString(dataStore.getCart().total_price));
+
     for (let i = 0; i < fields.length; i++) {
         let label = document.createElement('LABEL');
         let breakln = document.createElement('BR');
 
-        label.innerHTML = fields[i].content;
+        label.innerHTML = fields[i];
 
         section_2.appendChild(label);
         section_2.appendChild(breakln);
@@ -563,11 +251,12 @@ function goToCheckout(update) {
         return;
     }
 
-    setNewUrl('/cart/checkout', 'checkout');
+    setNewUrl('/cart', 'checkout');
 }
-function goToIndex(update) {
-    document.getElementsByTagName('h2')[0].innerHTML = 'Herzlich Willkommen bei Rosettis Pizza';
 
+function goToIndex(update) {
+    document.getElementsByTagName('h2')[0].innerHTML = '{{message}}';
+    replaceVarsInDOM();
     let container = document.getElementsByTagName('article')[0];
 
     while (container.firstChild) {
@@ -623,16 +312,114 @@ function addToCart(id) {
 
     cart.total_price += dataStore.getArticleById(id).base_price;
 
-    dataStore.saveCart(cart);
 
+    dataStore.saveCart(cart);
+    //updateCart();
     alert(dataStore.getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!');
+
+    let cart_table = document.getElementsByTagName('tbody')[0];
+
+    while (cart_table.firstChild != cart_table.lastChild) {
+        cart_table.removeChild(cart_table.lastChild);
+    }
+
+    buildCartFromLocalStorage();
+}
+
+function buildCartFromLocalStorage() {
+    let cart = dataStore.getCart();
+    let cart_table = document.getElementsByTagName('tbody')[0];
+
+    let row;
+    let col;
+
+    for (let i = 0; i < cart.articles.length; i++) {
+        row = document.createElement('TR');
+        row.setAttribute('class', 'shp-cart-art-row');
+        row.setAttribute('id', 'row ' + i);
+
+        let article = cart.articles[i];
+        console.log(article);
+
+        col = document.createElement('TD');
+        col.innerHTML = 1;
+        row.appendChild(col);
+
+        col = document.createElement('TD');
+        col.innerHTML = dataStore.getArticleById(article.article_id).name;
+        row.appendChild(col);
+
+        col = document.createElement('TD');
+        col.innerHTML = (function () {
+            let extras = article.extra_ingredients;
+            let output = "";
+            for (let i = 0; i < extras.length; i++) {
+                output += (dataStore.getIngredientById(extras[i].id).name);
+                output += ",\n";
+            }
+            return output.substring(0, output.length - 2);
+        })();
+        row.appendChild(col);
+
+        col = document.createElement('TD');
+        col.innerHTML = priceToString(dataStore.getArticleById(article.article_id).base_price);
+        row.appendChild(col);
+
+        col = document.createElement('TD');
+        col.innerHTML = priceToString(dataStore.getArticleById(article.article_id).base_price);
+        row.appendChild(col);
+
+        col = document.createElement('BUTTON');
+        col.innerHTML = 'entfernen';
+        col.setAttribute('onclick',
+            'function() {document.getElementsByTagName("tbody")[0].removeChild(document.getElementById("row ' + i + '")); buildCartFromLocalStorage();}');
+        row.appendChild(col);
+
+        cart_table.appendChild(row);
+    }
+
+    row = document.createElement("TR");
+    row.setAttribute('class', 'shp-cart-endrow');
+
+    col = document.createElement('TD');
+    col.setAttribute('colspan', '4');
+    col.innerHTML = 'Gesamtpreis';
+    row.appendChild(col);
+
+    col = document.createElement('TD');
+    col.innerHTML = priceToString(dataStore.getCart().total_price);
+    row.appendChild(col);
+
+    cart_table.appendChild(row);
+}
+
+function priceToString(price) {
+    price = price + '';
+    let price_parts = price.split(".");
+    price = price_parts[0] + ',';
+
+    if (price_parts[1].length > 2) {
+        price += price_parts[1].substring(0, 2);
+    }
+    else if (price_parts[1].length == 1) {
+        price += price_parts[1];
+        price += '0';
+    }
+    else if (price_parts[1].length == 0) {
+        price += '00';
+    }
+    else {
+        price += price_parts[1];
+    }
+
+    return price + ' €';
 }
 
 function forward(url, update) {
     if (url === '/articles') {
         goToArticles(update);
     }
-    else if (url === '/cart') {
+    else if (url === '/cart/checkout') {
         goToCheckout(update);
     }
     else if (url === '/') {
@@ -640,6 +427,14 @@ function forward(url, update) {
     }
     else {
         goToArticleView(url.split('/').slice(-1)[0], update);
+    }
+}
+
+function updateCart() {
+    let total_cart_price = dataStore.getCart().total_price;
+    if (total_cart_price) {
+        notVue.data.template_total_cart_price = total_cart_price.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+        replaceVarsInDOM()
     }
 }
 
@@ -745,7 +540,12 @@ function initMain() {
             }
         }, etag)
     }
+
+    buildCartFromLocalStorage();
+
     isInitialized = true;
+    updateCart()
+
 }
 
 let url = window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, "");
@@ -753,6 +553,7 @@ url = '/' + url;
 window.history.replaceState({urlPath: url}, '', url);
 window.addEventListener('popstate', function (event) {
     forward(window.history.state.urlPath, true);
+
 });
 
 initMain();

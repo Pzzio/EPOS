@@ -3,9 +3,10 @@
 var notVue = new NotVue({
     el: '#el',
     data: {
-        message: 'This is the content of the message variable'
+        message: 'Herzlich Willkommen bei Rosettis Pizza',
+        template_total_cart_price: 0
     }
-})
+});;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 function onOrderBtn() {
@@ -21,6 +22,7 @@ function onOrderBtn() {
 
         console.log("TODO send all to server");
     }
+
 }
 
 
