@@ -133,5 +133,4 @@ class Cookiemanager:
 
         self.jobsystem.q.put(job)
         self.jobsystem.querryabarbeiten()
-        print(job.returnwert)
         return job.returnwert

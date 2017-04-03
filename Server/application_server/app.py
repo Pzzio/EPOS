@@ -181,8 +181,8 @@ def make_request_handler_class():
             '''
             logging.debug('GET %s' % (self.path))
 
+            # parse relevant request meta-data
             content_type = self.headers['content-type']
-
             args = {}
             idx = self.path.find('?')
             if idx >= 0:
@@ -203,206 +203,15 @@ def make_request_handler_class():
                     logging.debug('ARG[%d] %s=%s' % (i, key, args[key]))
                     i += 1
 
+            #decide for high-level operation or static file serving
+
             paths = list(filter(None, self.path.split("/")))
             if self.check_content_type(content_type):
-                if len(paths) == 1 and paths[0] == "articles":
-
-                    rev = str(business_data.get_articles_revision())
-                    req_etag = self.headers['If-None-Match']
-                    if req_etag and req_etag == rev:
-                        response_status = http.HTTPStatus.NOT_MODIFIED
-                        self.intermediate_headers.append(('ETag', rev))
-                        self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
-                        self.finalize_header(response_status, "")
-                        return
-
-                    articles = business_data.get_all_articles()
-                    response_status = 200  # OK
-                    self.intermediate_headers.append(('ETag', rev))
-                    self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
-                    self.finalize_header(response_status, "")
-                    self.wfile.write(bytes(articles, "utf-8"))
-                    print((datetime.now() - starttime).microseconds)
-                    return
-
-                elif len(paths) == 1 and paths[0] == "ingredients":
-                    rev = str(business_data.get_ingredients_revision())
-                    req_etag = self.headers['If-None-Match']
-                    if req_etag and req_etag == rev:
-                        response_status = http.HTTPStatus.NOT_MODIFIED
-                        self.intermediate_headers.append(('ETag', rev))
-                        self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
-                        self.finalize_header(response_status, "")
-                        return
-
-                    response_status = 200  # OK
-                    self.intermediate_headers.append(('ETag', rev))
-                    self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
-                    self.finalize_header(response_status, "")
-                    ingredients = business_data.get_all_ingredients()
-                    self.wfile.write(bytes(ingredients, "utf-8"))
-                    print((datetime.now() - starttime).microseconds)
-                    return
-
-                elif len(paths) == 1 and paths[0] == "taxes":
-                    rev = str(business_data.get_taxes_revision())
-                    req_etag = self.headers['If-None-Match']
-                    if req_etag and req_etag == rev:
-                        response_status = http.HTTPStatus.NOT_MODIFIED
-                        self.intermediate_headers.append(('ETag', rev))
-                        self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
-
-                        self.finalize_header(response_status, "")
-                        return
-
-                    articles = business_data.get_all_taxes()
-                    response_status = 200  # OK
-                    self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
-                    self.intermediate_headers.append(('ETag', rev))
-                    self.finalize_header(response_status, "")
-                    self.wfile.write(bytes(articles, "utf-8"))
-                    print((datetime.now() - starttime).microseconds)
-                    return
-
-                elif len(paths) == 1 and paths[0] == "shippingmethods":
-                    rev = str(business_data.get_shipping_methods_revision())
-                    req_etag = self.headers['If-None-Match']
-                    if req_etag and req_etag == rev:
-                        response_status = http.HTTPStatus.NOT_MODIFIED
-                        self.intermediate_headers.append(('ETag', rev))
-                        self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
-
-                        self.finalize_header(response_status, "")
-                        return
-                    articles = business_data.get_all_shipping_methods()
-                    response_status = 200  # OK
-                    self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
-                    self.intermediate_headers.append(('ETag', rev))
-                    self.finalize_header(response_status, "")
-                    self.wfile.write(bytes(articles, "utf-8"))
-                    print((datetime.now() - starttime).microseconds)
-
-                elif len(paths) == 1 and paths[0] == "paymentmethods":
-                    rev = str(business_data.get_payment_methods_revision())
-                    req_etag = self.headers['If-None-Match']
-                    if req_etag and req_etag == rev:
-                        response_status = http.HTTPStatus.NOT_MODIFIED
-                        self.intermediate_headers.append(('ETag', rev))
-                        self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
-                        self.finalize_header(response_status, "")
-                        return
-                    articles = business_data.get_all_payment_methods()
-                    response_status = 200  # OK
-                    self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
-                    self.intermediate_headers.append(('ETag', rev))
-                    self.finalize_header(response_status, "")
-                    self.wfile.write(bytes(articles, "utf-8"))
-                    print((datetime.now() - starttime).microseconds)
-
-                # elif len(paths) == 2 and paths[0] == "article" and re.compile("^[0-9]+$").match(paths[1]):
-                #     article_id = paths[1]
-                #     response_status =200)  # OK
-                #     self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME)
-                #     self.finalize_header(response_status, "")
-                #     article = business_data.get_article(article_id)
-                #     self.wfile.write(bytes(article, "utf-8"))
-                #     print((datetime.now() - starttime).microseconds)
-
-                else:
-                    response_status = 404  # OK
-                    self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
-                    self.finalize_header(response_status, "")
-
+                self.handle_business_operation(paths)
+                return
             else:  # serve static files & handle virtual routes  # Get the file path.
-                # dem = paths.
-                cache_it = True
-                if (0 < len(paths) < 3) and paths[0] in virtual_routes:
-                    if len(paths) == 2 and (
-                                    paths[0] != virtual_routes[1] or not re.compile("^[0-9]+$").match(paths[1])):
-                        self.send_error(http.HTTPStatus.NOT_FOUND, 'Could not find ' + rpath)
-                        return
-                    cache_it = False
-                    rpath = "/"
-
-                path = "../Client" + rpath
-
-                logging.debug('FILE %s' % (path))
-
-                # If it is a directory look for index.html
-                # or process it directly if there are 3
-                # trailing slashed.
-                if rpath[-3:] == '///':
-                    dirpath = path
-                elif os.path.exists(path) and os.path.isdir(path):
-                    dirpath = path  # the directory portion
-                    index_files = ['index.html', 'index.htm', ]
-                    for index_file in index_files:
-                        tmppath = path + index_file
-                        if os.path.exists(tmppath):
-                            path = tmppath
-                            break
-
-                # Allow the user to type "///" at the end to see the
-                # directory listing.
-                if os.path.exists(path) and os.path.isfile(path):
-                    # This is valid file, send it as the response
-                    # after determining whether it is a type that
-                    # the server recognizes.
-                    _, ext = os.path.splitext(path)
-                    ext = ext.lower()
-
-                    content_type = mimetypes.types_map[ext]
-                    # content_type = mimes.mimes[ext]
-                    if not content_type:
-                        # Unknown file type or a directory.
-                        # Treat it as plain text.
-                        response_status = 200  # OK
-                        self.intermediate_headers.append(('Content-type', 'text/plain'))
-                        # self.intermediate_headers.append(('Content-Encoding', 'gzip')
-                        self.finalize_header(response_status, "")
-
-                        # f = open(path, 'rb')
-                        # shutil.copyfile(f, self.wfile)
-                        # f.close()
-
-                        with open(path, 'rb') as ifp:
-                            # self.wfile.write(gzip.compress(ifp.read()))
-                            # shutil.copyfile(ifp.read(), self.wfile)
-                            self.wfile.write(ifp.read())
-                        print((datetime.now() - starttime).microseconds)
-                        return
-
-                    with open(path, 'rb') as ifp:
-                        payload = ifp.read()
-                        req_etag = str(self.headers['If-None-Match'])
-                        if req_etag and req_etag == str(hash(payload)):
-                            response_status = http.HTTPStatus.NOT_MODIFIED
-                            self.intermediate_headers.append(('ETag', hash(payload)))
-                            self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
-                            self.intermediate_headers.append(('Expires',
-                                                              str(time.strftime("%a, %d %b %Y %T GMT",
-                                                                                time.gmtime(time.time() + 60)))))
-                            self.intermediate_headers.append(('Last-Modified', 0))
-                            return
-                        self.intermediate_headers.append(('Content-type', content_type))
-                        # self.intermediate_headers.append(('Content-Encoding', 'gzip')
-
-                        if cache_it:
-                            self.intermediate_headers.append(('ETag', hash(payload)))
-                            self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
-                            self.intermediate_headers.append(('Expires',
-                                                              str(time.strftime("%a, %d %b %Y %T GMT",
-                                                                                time.gmtime(time.time() + 60)))))
-                            self.intermediate_headers.append(('Last-Modified', 0))
-
-                        self.finalize_header(200, "")
-                        
-                        # self.wfile.write(gzip.compress(ifp.read()))
-                        self.wfile.write(payload)
-                        # shutil.copyfile(ifp.read(), self.wfile)
-                    print((datetime.now() - starttime).microseconds)
-                else:
-                    self.send_error(http.HTTPStatus.NOT_FOUND, 'Could not find ' + rpath)  # Send 404 Error
+                self.serve_static_content(rpath, paths)
+                return
 
         def do_POST(self):
             '''
@@ -436,6 +245,217 @@ def make_request_handler_class():
                     # TODO; send http.HTTPStatus.NOT_FOUND if validation
                     # raised "EPOSCheckoutArticleNotFoundError" or "EPOSCheckoutIngredientNotFoundError"
 
+        def handle_business_operation(self, paths):
+            if len(paths) == 1 and paths[0] == "articles":
+                self.get_all_articles()
+                return
+
+            elif len(paths) == 1 and paths[0] == "ingredients":
+                self.get_all_ingredients()
+
+                return
+
+            elif len(paths) == 1 and paths[0] == "taxes":
+                self.get_all_taxes()
+
+                return
+
+            elif len(paths) == 1 and paths[0] == "shippingmethods":
+
+                self.get_all_shippingmethods()
+                return
+
+
+            elif len(paths) == 1 and paths[0] == "paymentmethods":
+
+                self.get_all_paymentmethods()
+                return
+
+            else:
+                self.api_call_not_found()
+                return
+
+        def get_all_articles(self):
+            rev = str(business_data.get_articles_revision())
+            req_etag = self.headers['If-None-Match']
+            if req_etag and req_etag == rev:
+                response_status = http.HTTPStatus.NOT_MODIFIED
+                self.intermediate_headers.append(('ETag', rev))
+                self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
+                self.finalize_header(response_status, "")
+                return
+
+            articles = business_data.get_all_articles()
+            response_status = 200  # OK
+            self.intermediate_headers.append(('ETag', rev))
+            self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
+            self.finalize_header(response_status, "")
+            self.wfile.write(bytes(articles, "utf-8"))
+
+        def get_all_ingredients(self):
+            rev = str(business_data.get_ingredients_revision())
+            req_etag = self.headers['If-None-Match']
+            if req_etag and req_etag == rev:
+                response_status = http.HTTPStatus.NOT_MODIFIED
+                self.intermediate_headers.append(('ETag', rev))
+                self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
+                self.finalize_header(response_status, "")
+                return
+
+            response_status = 200  # OK
+            self.intermediate_headers.append(('ETag', rev))
+            self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
+            self.finalize_header(response_status, "")
+            ingredients = business_data.get_all_ingredients()
+            self.wfile.write(bytes(ingredients, "utf-8"))
+
+        def get_all_taxes(self):
+            rev = str(business_data.get_taxes_revision())
+            req_etag = self.headers['If-None-Match']
+            if req_etag and req_etag == rev:
+                response_status = http.HTTPStatus.NOT_MODIFIED
+                self.intermediate_headers.append(('ETag', rev))
+                self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
+
+                self.finalize_header(response_status, "")
+                return
+
+            articles = business_data.get_all_taxes()
+            response_status = 200  # OK
+            self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
+            self.intermediate_headers.append(('ETag', rev))
+            self.finalize_header(response_status, "")
+            self.wfile.write(bytes(articles, "utf-8"))
+
+        def get_all_shippingmethods(self):
+            rev = str(business_data.get_shipping_methods_revision())
+            req_etag = self.headers['If-None-Match']
+            if req_etag and req_etag == rev:
+                response_status = http.HTTPStatus.NOT_MODIFIED
+                self.intermediate_headers.append(('ETag', rev))
+                self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
+
+                self.finalize_header(response_status, "")
+                return
+            articles = business_data.get_all_shipping_methods()
+            response_status = 200  # OK
+            self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
+            self.intermediate_headers.append(('ETag', rev))
+            self.finalize_header(response_status, "")
+            self.wfile.write(bytes(articles, "utf-8"))
+
+        def get_all_paymentmethods(self):
+            rev = str(business_data.get_payment_methods_revision())
+            req_etag = self.headers['If-None-Match']
+            if req_etag and req_etag == rev:
+                response_status = http.HTTPStatus.NOT_MODIFIED
+                self.intermediate_headers.append(('ETag', rev))
+                self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
+                self.finalize_header(response_status, "")
+                return
+            articles = business_data.get_all_payment_methods()
+            response_status = 200  # OK
+            self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
+            self.intermediate_headers.append(('ETag', rev))
+            self.finalize_header(response_status, "")
+            self.wfile.write(bytes(articles, "utf-8"))
+
+        def api_call_not_found(self):
+            response_status = 404  # OK
+            self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
+            self.finalize_header(response_status, "")
+
+        def serve_static_content(self, rpath, paths):
+            # dem = paths.
+            cache_it = True
+            if (0 < len(paths) < 3) and paths[0] in virtual_routes:
+                if len(paths) == 2 and (
+                                paths[0] != virtual_routes[1] or not re.compile("^[0-9]+$").match(paths[1])):
+                    self.send_error(http.HTTPStatus.NOT_FOUND, 'Could not find ' + rpath)
+                    return
+                cache_it = False
+                rpath = "/"
+
+            path = "../Client" + rpath
+
+            logging.debug('FILE %s' % (path))
+
+            # If it is a directory look for index.html
+            # or process it directly if there are 3
+            # trailing slashed.
+            if rpath[-3:] == '///':
+                dirpath = path
+            elif os.path.exists(path) and os.path.isdir(path):
+                dirpath = path  # the directory portion
+                index_files = ['index.html', 'index.htm', ]
+                for index_file in index_files:
+                    tmppath = path + index_file
+                    if os.path.exists(tmppath):
+                        path = tmppath
+                        break
+
+            # Allow the user to type "///" at the end to see the
+            # directory listing.
+            if os.path.exists(path) and os.path.isfile(path):
+                # This is valid file, send it as the response
+                # after determining whether it is a type that
+                # the server recognizes.
+                _, ext = os.path.splitext(path)
+                ext = ext.lower()
+
+                content_type = mimetypes.types_map[ext]
+                # content_type = mimes.mimes[ext]
+                if not content_type:
+                    # Unknown file type or a directory.
+                    # Treat it as plain text.
+                    response_status = 200  # OK
+                    self.intermediate_headers.append(('Content-type', 'text/plain'))
+                    # self.intermediate_headers.append(('Content-Encoding', 'gzip')
+                    self.finalize_header(response_status, "")
+
+                    # f = open(path, 'rb')
+                    # shutil.copyfile(f, self.wfile)
+                    # f.close()
+
+                    with open(path, 'rb') as ifp:
+                        # self.wfile.write(gzip.compress(ifp.read()))
+                        # shutil.copyfile(ifp.read(), self.wfile)
+                        self.wfile.write(ifp.read())
+
+                    return
+
+                with open(path, 'rb') as ifp:
+                    payload = ifp.read()
+                    req_etag = str(self.headers['If-None-Match'])
+                    if req_etag and req_etag == str(hash(payload)):
+                        response_status = http.HTTPStatus.NOT_MODIFIED
+                        self.intermediate_headers.append(('ETag', hash(payload)))
+                        self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
+                        self.intermediate_headers.append(('Expires',
+                                                          str(time.strftime("%a, %d %b %Y %T GMT",
+                                                                            time.gmtime(time.time() + 60)))))
+                        self.intermediate_headers.append(('Last-Modified', 0))
+                        return
+                    self.intermediate_headers.append(('Content-type', content_type))
+                    # self.intermediate_headers.append(('Content-Encoding', 'gzip')
+
+                    if cache_it:
+                        self.intermediate_headers.append(('ETag', hash(payload)))
+                        self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
+                        self.intermediate_headers.append(('Expires',
+                                                          str(time.strftime("%a, %d %b %Y %T GMT",
+                                                                            time.gmtime(time.time() + 60)))))
+                        self.intermediate_headers.append(('Last-Modified', 0))
+
+                    self.finalize_header(200, "")
+
+                    # self.wfile.write(gzip.compress(ifp.read()))
+                    self.wfile.write(payload)
+                    # shutil.copyfile(ifp.read(), self.wfile)
+
+            else:
+                self.send_error(http.HTTPStatus.NOT_FOUND, 'Could not find ' + rpath)  # Send 404 Error
+
     return MyRequestHandler
 
 
@@ -451,10 +471,14 @@ def httpd():
     RequestHandlerClass = make_request_handler_class()
     RequestHandlerClass.server_version = "EPOS Master Server"
     RequestHandlerClass.sys_version = str(VERSION)
+    logging.info("************************************* " +
+                 RequestHandlerClass.server_version + " " + RequestHandlerClass.sys_version +
+                 "*************************************");
 
     server = ThreadedHTTPServer(("", port), RequestHandlerClass)
     logging.info('Server starting %s:%s (level=%s)' % ("", port, ""))
     try:
+        logging.info('Server initialized %s:%s' % ("", port))
         server.serve_forever()
     except KeyboardInterrupt:
         pass
@@ -464,6 +488,7 @@ def httpd():
 
 def main():
     ''' main entry '''
+    logging.getLogger().setLevel(logging.DEBUG)
     httpd()
 
 
