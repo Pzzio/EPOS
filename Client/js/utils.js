@@ -47,13 +47,13 @@ function doGet(url, callbackAction, etag = null) {
 
 }
 
-function doPost(url, cartPayload) {
+function doPost(url, cartPayload, callbackAction) {
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (this.readyState === 4) {
             switch (this.status) {
                 case 200:
-                    //
+                    callbackAction();
                     break;
                 case 400:
                     // Malformed Input was sent
@@ -62,7 +62,6 @@ function doPost(url, cartPayload) {
                     // Checkout price conflict, reload business data
                     break;
                 case 404:
-
                     break;
                 default:
                     console.log("Unknown response in POS: " + url);
@@ -222,7 +221,8 @@ function goToCheckout(update) {
     let button = document.createElement('BUTTON');
     button.innerHTML = 'Kostenpflichtig bestellen';
     button.setAttribute('id', 'shipping');
-    button.setAttribute('onclick', 'doPost("/cart/checkout", JSON.stringify(dataStore.getCart()))');
+    button.setAttribute('onclick',
+        'doPost("/cart/checkout", JSON.stringify(dataStore.getCart()), function(){alert("Checkout successful!"); dataStore.clearCart(); buildCartFromLocalStorage(); })');
     section_1.appendChild(button);
 
     let section_2 = document.createElement('SECTION');
@@ -282,15 +282,7 @@ function goToIndex(update) {
 }
 
 function addToCart(id) {
-    let cart;
-    if (!dataStore.getCart()) {
-        cart = {};
-        cart.articles = [];
-        cart.total_price = 0;
-    }
-    else {
-        cart = dataStore.getCart();
-    }
+    let cart = dataStore.getCart() ? dataStore.getCart() : {articles: [], total_price: 0.0};
     let article = {};
 
     article.id = cart.articles.length;
@@ -307,8 +299,24 @@ function addToCart(id) {
     }
 
     article.extra_ingredients = extra_ingredients;
-    article.amount = 1;
-    cart.articles.push(article);
+
+    let found_in_cart = false;
+
+    for (let i = 0; (i < cart.articles.length) && !found_in_cart; i++){
+        if (cart.articles[i].article_id == article.article_id){
+            if (JSON.stringify(cart.articles[i].extra_ingredients) == JSON.stringify(article.extra_ingredients))
+            {
+                console.log(cart.articles[i]);
+                cart.articles[i].amount++;
+                found_in_cart = true;
+            }
+        }
+    }
+
+    if (!found_in_cart){
+        article.amount = 1;
+        cart.articles.push(article);
+    }
 
     cart.total_price += dataStore.getArticleById(id).base_price;
 
@@ -317,18 +325,17 @@ function addToCart(id) {
     //updateCart();
     alert(dataStore.getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!');
 
-    let cart_table = document.getElementsByTagName('tbody')[0];
-
-    while (cart_table.firstChild != cart_table.lastChild) {
-        cart_table.removeChild(cart_table.lastChild);
-    }
-
     buildCartFromLocalStorage();
 }
 
 function buildCartFromLocalStorage() {
-    let cart = dataStore.getCart();
+    let cart = dataStore.getCart() ? dataStore.getCart() : {articles: [], total_price: 0.0};
     let cart_table = document.getElementsByTagName('tbody')[0];
+
+
+    while (cart_table.firstChild != cart_table.lastChild) {
+        cart_table.removeChild(cart_table.lastChild);
+    }
 
     let row;
     let col;
@@ -339,10 +346,9 @@ function buildCartFromLocalStorage() {
         row.setAttribute('id', 'row ' + i);
 
         let article = cart.articles[i];
-        console.log(article);
 
         col = document.createElement('TD');
-        col.innerHTML = 1;
+        col.innerHTML = article.amount;
         row.appendChild(col);
 
         col = document.createElement('TD');
@@ -366,7 +372,7 @@ function buildCartFromLocalStorage() {
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = priceToString(dataStore.getArticleById(article.article_id).base_price);
+        col.innerHTML = priceToString(article.amount * dataStore.getArticleById(article.article_id).base_price);
         row.appendChild(col);
 
         col = document.createElement('BUTTON');
@@ -387,7 +393,7 @@ function buildCartFromLocalStorage() {
     row.appendChild(col);
 
     col = document.createElement('TD');
-    col.innerHTML = priceToString(dataStore.getCart().total_price);
+    col.innerHTML = priceToString(cart.total_price);
     row.appendChild(col);
 
     cart_table.appendChild(row);
@@ -398,7 +404,10 @@ function priceToString(price) {
     let price_parts = price.split(".");
     price = price_parts[0] + ',';
 
-    if (price_parts[1].length > 2) {
+    if (price_parts.length == 1){
+        price += '00';
+    }
+    else if (price_parts[1].length > 2) {
         price += price_parts[1].substring(0, 2);
     }
     else if (price_parts[1].length == 1) {
