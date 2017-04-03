@@ -12,6 +12,7 @@ from socketserver import ThreadingMixIn
 
 from cookies import *
 from datastore import *
+from validation import RequestValidator
 
 # from cookies import Cookiemanager
 # from datastore import JsonDto, Datastore  # will work even if PyCharm cries
@@ -37,9 +38,15 @@ class BusinessData():
         articles = self.datastore.get_articles()
         return articles.serialize()
 
+    def get_articles_info(self):
+        return self.datastore.get_articles_info()
+
     def get_ingredients(self, id):
         ingredients = self.datastore.get_ingredients(id)
         return ingredients.serialize()
+
+    def get_ingredients_info(self):
+        return self.datastore.get_ingredients_info()
 
     def get_all_ingredients(self):
         all_ingredients = self.datastore.get_all_ingredients()
@@ -86,6 +93,7 @@ class BusinessData():
         return taxes_info
 
 
+requestValidator = RequestValidator()
 datastore = Datastore()
 business_data = BusinessData(datastore)
 
@@ -228,14 +236,21 @@ def make_request_handler_class():
                 try:
                     length = int(self.headers['content-length'])
                     body = self.rfile.read(length)
+
                     checkout = JsonDto(body)
                     # TODO;validate checkout
-                    if datastore.insert_full_checkout(checkout):
-                        response_status = http.HTTPStatus.OK
-                        self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
-                        self.finalize_header(response_status, "")
-                except ValueError or TypeError:  # TODO; expect all errors here
-                    response_status = http.HTTPStatus.BAD_REQUEST
+                    if requestValidator.validate(checkout, datastore):
+                        if datastore.insert_full_checkout(checkout):
+                            response_status = http.HTTPStatus.OK
+                        else:
+                            response_status = http.HTTPStatus.INTERNAL_SERVER_ERROR
+                    else:
+                        response_status = http.HTTPStatus.CONFLICT
+
+                    self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
+                    self.finalize_header(response_status, "")
+                except:  # TODO; expect all errors here
+                    response_status = http.HTTPStatus.INTERNAL_SERVER_ERROR
                     self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
                     self.finalize_header(response_status, "")
                     # TODO, create & send JsonError
