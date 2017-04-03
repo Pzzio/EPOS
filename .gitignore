@@ -1,4 +1,6 @@
 *.swp
 *.tmp
 *.db
+.git
+.idea
 Server/application_server/__*
