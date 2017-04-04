@@ -194,14 +194,14 @@ function goToCheckout(update) {
         //'doPost("/cart/checkout", JSON.stringify(dataStore.getCart()), function(){alert("Checkout successful!"); dataStore.clearCart(); buildCartFromLocalStorage(); forward("/"); })');
 
     let fields = [
-        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name'},
-        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname'},
+        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[\w\s\u002D]+$'},
+        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[\w\s\u002D]+$'},
         {nvupdate: 'email', content: 'E-Mail:', type: 'email', name: 'email'},
-        {nvupdate: 'telefon', content: 'Telefon:', type: 'tel', name: 'tel'},
-        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse'},
-        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'number', name: 'hausnr'},
-        {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz'},
-        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort'},
+        {nvupdate: 'telefon', content: 'Telefon:', type: 'tel', name: 'tel', pattern: '^(\u002B(\d|\d\d)|00(\d|\d\d)|001(\d|\d\d)|0)[\d\s\u002D\u002F]{3,}$'},
+        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[\w\s\u002D]+$'},
+        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr', pattern: '^[1-9]\d*\w?$'},
+        {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz', pattern: '^\d{4,5}$'},
+        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[\w\s\u002D]+$'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
     ];
     for (let i = 0; i < fields.length; i++) {
@@ -214,6 +214,7 @@ function goToCheckout(update) {
         input.setAttribute('nv-model', fields[i].nvupdate);
         input.setAttribute('type', fields[i].type);
         input.setAttribute('name', fields[i].name);
+        fields[i].pattern ? input.setAttribute('pattern', fields[i].pattern) : (function(){})();
         if (fields[i].name !== 'zusatzinfos') {
             input.required = true;
         }
