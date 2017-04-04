@@ -191,17 +191,16 @@ function goToCheckout(update) {
 
     let form = document.createElement('FORM');
     form.setAttribute('onsubmit','doCheckout(); return false;');
-        //'doPost("/cart/checkout", JSON.stringify(dataStore.getCart()), function(){alert("Checkout successful!"); dataStore.clearCart(); buildCartFromLocalStorage(); forward("/"); })');
 
     let fields = [
-        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[\w\s\u002D]+$'},
-        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[\w\s\u002D]+$'},
+        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z\s\u002D]+$'},
+        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[A-Za-z\s\u002D]+$'},
         {nvupdate: 'email', content: 'E-Mail:', type: 'email', name: 'email'},
-        {nvupdate: 'telefon', content: 'Telefon:', type: 'tel', name: 'tel', pattern: '^(\u002B(\d|\d\d)|00(\d|\d\d)|001(\d|\d\d)|0)[\d\s\u002D\u002F]{3,}$'},
-        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[\w\s\u002D]+$'},
-        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr', pattern: '^[1-9]\d*\w?$'},
-        {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz', pattern: '^\d{4,5}$'},
-        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[\w\s\u002D]+$'},
+        {nvupdate: 'telefon', content: 'Telefon:', type: 'tel', name: 'tel', pattern: '^(\u002B([0-9]|[0-9][0-9])|00([0-9]|[0-9][0-9])|001([0-9]|[0-9][0-9])|0)[[0-9]\s\u002D\u002F]{3,}$'},
+        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[A-Za-z\s\u002D]+$'},
+        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr', pattern: '^[1-9][0-9]*[A-Za-z]?$'},
+        {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz', pattern: '^[0-9]{4,5}$'},
+        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\s\u002D]+$'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
     ];
     for (let i = 0; i < fields.length; i++) {
