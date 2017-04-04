@@ -9,7 +9,6 @@ const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
 const dataStore = new LocalDatastore();
 
 function setNewUrl(url, title = 'default') {
-    console.log(go_back_uri);
     go_back_uri.push('/' + window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, ""));
     window.history.pushState({urlPath: url}, title, url);
 }
@@ -190,13 +189,17 @@ function goToCheckout(update) {
     let section_1 = document.createElement('SECTION');
     section_1.setAttribute('id', 'shipping-form');
 
+    let form = document.createElement('FORM');
+    form.setAttribute('onsubmit','doCheckout(); return false;');
+        //'doPost("/cart/checkout", JSON.stringify(dataStore.getCart()), function(){alert("Checkout successful!"); dataStore.clearCart(); buildCartFromLocalStorage(); forward("/"); })');
+
     let fields = [
         {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name'},
         {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname'},
         {nvupdate: 'email', content: 'E-Mail:', type: 'email', name: 'email'},
         {nvupdate: 'telefon', content: 'Telefon:', type: 'tel', name: 'tel'},
         {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse'},
-        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr'},
+        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'number', name: 'hausnr'},
         {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz'},
         {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
@@ -216,25 +219,25 @@ function goToCheckout(update) {
         }
 
         label.appendChild(input);
-        section_1.appendChild(label);
-        section_1.appendChild(breakln);
+        form.appendChild(label);
+        form.appendChild(breakln);
     }
 
     let button = document.createElement('BUTTON');
-    button.innerHTML = 'Kostenpflichtig bestellen';
     button.setAttribute('id', 'shipping');
-    button.setAttribute('onclick',
-        'doPost("/cart/checkout", JSON.stringify(dataStore.getCart()), function(){alert("Checkout successful!"); dataStore.clearCart(); buildCartFromLocalStorage(); })');
-    section_1.appendChild(button);
+    button.innerHTML = 'Kostenpflichtig bestellen';
+    form.appendChild(button);
+
+    section_1.appendChild(form);
 
     let section_2 = document.createElement('SECTION');
     section_2.setAttribute('id', 'ship-cart-total');
 
     fields = [
-        ('Artikel Anzahl: ' + (dataStore.getCart().total_price ? dataStore.getCart().total_price:0))
+        ('Artikel Anzahl: ' + (dataStore.getCart().articles.length ? dataStore.getCart().articles.length : 0))
     ];
 
-    fields.push('Gesamtpreis: ' + priceToString((dataStore.getCart().total_price ? dataStore.getCart().total_price:0)));
+    fields.push('Gesamtpreis: ' + priceToString((dataStore.getCart().total_price ? dataStore.getCart().total_price : 0)));
 
     for (let i = 0; i < fields.length; i++) {
         let label = document.createElement('LABEL');
@@ -308,7 +311,6 @@ function addToCart(id) {
         if (cart.articles[i].article_id == article.article_id){
             if (JSON.stringify(cart.articles[i].extra_ingredients) == JSON.stringify(article.extra_ingredients))
             {
-                console.log(cart.articles[i]);
                 cart.articles[i].amount++;
                 found_in_cart = true;
             }
@@ -447,6 +449,42 @@ function updateCart() {
         notVue.data.template_total_cart_price = total_cart_price.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
         replaceVarsInDOM()
     }
+}
+
+function doCheckout() {
+    let formData = document.getElementsByTagName('input');
+    console.log(formData);
+
+    let submitData = {};
+
+    let customer = {};
+
+    customer.id = 0;
+    customer.type = 'Person';
+    customer.email = formData.email.value;
+    customer.first_name = formData.vorname.value;
+    customer.last_name = formData.name.value;
+    customer.telephone = formData.tel.value;
+
+    customer.address = {};
+    customer.address.addressCountry = '';
+    customer.address.addressLocality = formData.ort.value;
+    customer.address.addressRegion = '';
+    customer.address.postalCode = formData.plz.value;
+    customer.address.streetAddress = formData.strasse.value + ' ' + formData.hausnr.value;
+
+    submitData.customer = customer;
+    submitData.articles = dataStore.getCart().articles;
+    submitData.total_price = dataStore.getCart().total_price;
+    submitData.payment_method = 0;
+    submitData.order_method_id = 0;
+
+    doPost("/cart/checkout", JSON.stringify(submitData), function() {
+        alert("Checkout successful!");
+        dataStore.clearCart();
+        buildCartFromLocalStorage();
+        forward("/");
+    });
 }
 
 function initMain() {
