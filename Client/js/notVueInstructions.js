@@ -31,7 +31,8 @@ var roundButton = document.querySelector("#shopping-cart-btn");
 roundButton.addEventListener("click", showMenu, false);
 
 var flyoutMenu = document.querySelector("#flyoutMenu");
-flyoutMenu.addEventListener("click", hideMenu, false);
+var transparentMenu = document.querySelector("#transparentMenu");
+transparentMenu.addEventListener("click", hideMenu, false);
 
 function showMenu() {
     flyoutMenu.classList.add("show");
