@@ -18,7 +18,7 @@ class Cookiemanager:
 
 
     # nicht mehr benutzt
-    #q = queue.Queue()               #Die quere in welche die Jobs fuer das Job system kommen
+    #q = queue.Queue()               #Die queue in welche die Jobs fuer das Job system kommen
 
 
 
@@ -141,7 +141,7 @@ class Cookiemanager:
 
 
     # ruft _insertNewCookie über das Job system auf und gibt den returnwert zurück
-    # hierzu wird ein neuer Job ersteullt, anschließend in die Quere eingefügt
+    # hierzu wird ein neuer Job ersteullt, anschließend in die Queue eingefügt
     # dan wird ein mal der befehl gegeben die quere abzuarbeiten.
     # danach ist der Job garantiert abgearbeitet und es wird der returnwert zurückgegeben.
     #
@@ -157,7 +157,7 @@ class Cookiemanager:
 
 
     # ruft _refreshCookie über das Job system auf und gibt den returnwert zurück
-    # hierzu wird ein neuer Job ersteullt, anschließend in die Quere eingefügt
+    # hierzu wird ein neuer Job ersteullt, anschließend in die Queue eingefügt
     # dan wird ein mal der befehl gegeben die quere abzuarbeiten.
     # danach ist der Job garantiert abgearbeitet und es wird der returnwert zurückgegeben.
     #
@@ -173,7 +173,7 @@ class Cookiemanager:
 
 
     # ruft _cookietest über das Job system auf und gibt den returnwert zurück
-    # hierzu wird ein neuer Job ersteullt, anschließend in die Quere eingefügt
+    # hierzu wird ein neuer Job ersteullt, anschließend in die Queue eingefügt
     # dan wird ein mal der befehl gegeben die quere abzuarbeiten.
     # danach ist der Job garantiert abgearbeitet und es wird der returnwert zurückgegeben.
     #
