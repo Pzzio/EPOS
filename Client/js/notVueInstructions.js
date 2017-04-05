@@ -1,6 +1,6 @@
 // Creates a notVue instance and contains all dynamic data
 
-var notVue = new NotVue({
+const notVue = new NotVue({
     el: '#el',
     data: {
         message: 'Herzlich Willkommen bei Rosettis Pizza',
@@ -27,11 +27,11 @@ function onOrderBtn() {
 
 
 // Warenkorb
-var roundButton = document.querySelector("#shopping-cart-btn");
+const roundButton = document.querySelector("#shopping-cart-btn");
 roundButton.addEventListener("click", showMenu, false);
 
-var flyoutMenu = document.querySelector("#flyoutMenu");
-var transparentMenu = document.querySelector("#transparentMenu");
+const flyoutMenu = document.querySelector("#flyoutMenu");
+const transparentMenu = document.querySelector("#transparentMenu");
 transparentMenu.addEventListener("click", hideMenu, false);
 
 function showMenu() {
