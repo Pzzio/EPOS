@@ -13,7 +13,8 @@ class Cookiemanager:
                                     #zu beginn 0 da noch keine aussage getroffen werden kann wird in _inlisteaufreumen gesetzt
                                     #und in _insertNewCookie verwendet
 
-    cookie_livespan = 600           #lebensdauer des cookies in Sekunden (default 10m)
+    cookie_livespan = 600           #lebensdauer des cookies in Sekunden bei einem refresh (default 10m)
+    cookie_livespan_verkuertz = 30  # die verkürzte lebensdauer die ein cookie beim erstmaligen erstellen bekommt in sekunden (Default 30s)
     cookie_anzahl_limit = 50        # maximale anzahl an Kookies gleichzeitig(default 50)
 
 
@@ -37,7 +38,7 @@ class Cookiemanager:
     # komplet neuer cookie erzeugt (nicht in liste eingefügt) exp_timer = aktuelle zeit + cookielivespan
     def createnewCookie(self):
         Cookie = self.createCookiewithValue(self._newID())
-        Cookie["exp_date"] = (time.time() + self.cookie_livespan) * 1000
+        Cookie["exp_date"] = (time.time() + self.cookie_livespan_verkuertz) * 1000
         return Cookie
 
 
@@ -70,13 +71,14 @@ class Cookiemanager:
     # Hierzu speichert der Cookiemanager einen Timestamp ab wann der nächste Cookie frühestens ablaufen wir.
     # Erst wenn dieser Timestamp erreicht ist wird erneut _inlisteaufreumen aufgerufen (_inlisteaufreumen setzt
     # dann einen neuen Timestamp).
+    # Neu erstellte Cookies haben eine kürzere Lebensdauer als Cookies welche Refresht werden (nutzt cookie_livespan_verkuertz)
     def _insertNewCookie(self,neuescookie):
         if len(self.Cookieliste) >= self.cookie_anzahl_limit:
             if self.timestamp < time.time() * 1000:
                 self._inlisteaufreumen()
         if len(self.Cookieliste) >= self.cookie_anzahl_limit:
             return False
-        neuescookie["exp_date"] = (time.time() + self.cookie_livespan) * 1000  # toMillis(now_sec + 120 sec)
+        neuescookie["exp_date"] = (time.time() + self.cookie_livespan_verkuertz) * 1000  # toMillis
         self.Cookieliste.append(neuescookie)
 
         #print "neus Cookie eingefuegt"
@@ -180,7 +182,6 @@ class Cookiemanager:
     # Default rückgabewert = False, wird zurückgegeben sollte es doch zu unerwartetem verhalten kommen.
     def testCookie(self,cookie):
         returnwert = False
-
         job = self.jobsystem.Job("COOKIE_VALIDATE", cookie,returnwert,self)
 
         self.jobsystem.q.put(job)
