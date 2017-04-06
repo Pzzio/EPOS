@@ -61,11 +61,13 @@ class Datastore:
     result.articles_info = articles_info
     return result
 
-  def get_article(self, id):
+  def get_article_by_id(self, id):
     article = next((article for article in self.primary.articles if article['id'] == int(id)), None)
-    st = JsonDto()
-    st.from_dict(article)
-    return st
+    if article:
+      st = JsonDto()
+      st.from_dict(article)
+      return st
+    return None
 
   def get_ingredients_info(self):
     ingredients_info = self.primary.ingredients_info
@@ -78,6 +80,14 @@ class Datastore:
     result = JsonDto()
     result.ingredients = ingredients
     return result
+
+  def get_ingredient_by_id(self, id):
+    ingredient = next((ingredient for ingredient in self.primary.ingredients if ingredient['id'] == int(id)), None)
+    if ingredient:
+      st = JsonDto()
+      st.from_dict(ingredient)
+      return st
+    return None
 
   def get_all_articles(self):
     articles = self.primary.articles

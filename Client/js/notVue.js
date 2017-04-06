@@ -3,9 +3,9 @@
 // ...might behave similar to vue.js but is definitely not vue.js
 
 // NotVue's globals
-var vueInstance = {};           // global reference to vue object
-var dynamicElements = [];       // holds all elements which contain {{variable}} innerHTML
-var internalData = {};          // holds all data, accessed only via the data-getter
+let vueInstance = {};           // global reference to vue object
+const dynamicElements = [];       // holds all elements which contain {{variable}} innerHTML
+let internalData = {};          // holds all data, accessed only via the data-getter
 
 // NotVue's constructor
 // Expects an object with all its settings, mainly el and data
@@ -25,7 +25,7 @@ function NotVue(params) {
 
     Object.defineProperty(this, 'data', { 
         get: function() { 
-            return this.internalData; 
+            return this.internalData;
         },
         set: function(newVal) { 
             this.internalData = newVal; 
@@ -41,24 +41,24 @@ function NotVue(params) {
 // Save references to the elements of DOM which change
 // during runtime (e.g. the ones containing {{variables}})
 function registerAllDynamicElements() {
-    var allElements = document.getElementsByTagName("*");	
+    const allElements = document.getElementsByTagName("*");
 
-    for (var i = 0; i<allElements.length; i++) {
-        var element = allElements[i];
+    for (let i = 0; i<allElements.length; i++) {
+        const element = allElements[i];
 
         // make sure only text is in innerHTML
         if (element.children.length == 0) {
             if (element.innerHTML.length > 0) {
                 if (element.innerHTML.match(/.*\{.*\}.*/)) {
-                    var dynamicElement = {}; 
+                    const dynamicElement = {};
 
                     dynamicElement.element = element;
                     dynamicElement.initialContent = element.innerHTML;
 
-                    var matches = element.innerHTML.match(/\{\{(.*?)\}\}/);
+                    const matches = element.innerHTML.match(/\{\{(.*?)\}\}/);
 
                     if (matches) {
-                        var str = dynamicElement.variableName;
+                        let str = dynamicElement.variableName;
                         str = matches[0];
                         
                         // TODO oh god, please regex this
@@ -82,15 +82,15 @@ function setupInputElements() {
     // TODO only start searching from the vue el element
 
     // Get all elements with a nv-model attribute
-    var allElements = document.querySelectorAll("input[nv-model]") 
+    const allElements = document.querySelectorAll("input[nv-model]");
 
-    for (var i = 0; i < allElements.length; i++)
+    for (let i = 0; i < allElements.length; i++)
     {
-        var inputElement = allElements[i];
+        const inputElement = allElements[i];
 
         inputElement.oninput = function(inputEvent){ 
-            var inputElement = inputEvent.currentTarget;
-            var varToBind = inputElement.getAttribute("nv-model");
+            const inputElement = inputEvent.currentTarget;
+            const varToBind = inputElement.getAttribute("nv-model");
 
             // TODO get the "closest" vue instance, meaning the one
             // with the closest el value in the DOM
@@ -102,7 +102,7 @@ function setupInputElements() {
         // If the input element contains something, assign it right away
         if (inputElement.value)
         {
-            var varToBind = inputElement.getAttribute("nv-model");
+            const varToBind = inputElement.getAttribute("nv-model");
             vueInstance.data[varToBind] = inputElement.value; 
         }
     }
@@ -112,13 +112,13 @@ function setupInputElements() {
 // Replace {{variableName}} with content
 function replaceVarsInDOM() {
     // iterate over dynamicElements list
-    for (var i=0; i < dynamicElements.length; i++) {
-        var element = dynamicElements[i].element;
-        var initialInnerHTML = dynamicElements[i].initialContent;
-        var variableName = dynamicElements[i].variableName;
+    for (let i=0; i < dynamicElements.length; i++) {
+        const element = dynamicElements[i].element;
+        const initialInnerHTML = dynamicElements[i].initialContent;
+        const variableName = dynamicElements[i].variableName;
 
         // TODO dynamically get vue object reference
-        var variableContent = vueInstance.data[variableName];  
+        let variableContent = vueInstance.data[variableName];
 
         // prevent content to be set to undefined
         if (!variableContent) {
@@ -126,8 +126,7 @@ function replaceVarsInDOM() {
         }
 
         if (initialInnerHTML.includes(variableName)){
-            var changedInner = replaceAll(initialInnerHTML, "{{"+variableName+"}}", variableContent);
-            element.innerHTML = changedInner;	
+            element.innerHTML = replaceAll(initialInnerHTML, "{{" + variableName + "}}", variableContent);
         }
     }
 }

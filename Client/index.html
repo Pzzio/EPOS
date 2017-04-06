@@ -10,8 +10,8 @@
 <div class="bg">
     <header>
         <label><h1 onclick="goToIndex()">Rosettis Pizza</h1></label>
-        <button id="shopping-cart-btn" onclick="showMenu();"></button>
-        <button id="back-btn"></button>
+        <button id="shopping-cart-btn" onclick="showMenu()"></button>
+        <button id="back-btn" onclick="(function(){if (go_back_uri.length > 0) forward(go_back_uri.pop()); go_back_uri.pop();})()"></button>
     </header>
 
     <div id="instruction">
@@ -43,6 +43,9 @@
     <div id="warenkorb">
         <h1>Warenkorb</h1>
         <button onclick="goToCheckout()">Zur Kasse</button>
+        <br>
+        <br>
+
         <table id="shp-cart-content">
             <tr class="shp-cart-row">
                 <td>
@@ -60,6 +63,7 @@
                 <td>
                     Preis
                 </td>
+                <td><button onclick="(function(){dataStore.clearCart(); buildCartFromLocalStorage();})()">alles<br>entfernen</button></td>
             </tr>
         </table>
     </div>

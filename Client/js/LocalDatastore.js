@@ -1,7 +1,3 @@
-/**
- * Created by Admin on 18.03.2017.
- */
-
 class LocalDatastore {
 
     constructor() {

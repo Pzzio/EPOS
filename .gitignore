@@ -1,4 +1,7 @@
+.idea
+node_modules
 *.swp
 *.tmp
 *.db
+.git
 Server/application_server/__*

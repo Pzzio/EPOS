@@ -1,4 +1,6 @@
 let isInitialized = false;
+let go_back_uri = [];
+const CURRENCY_SYMBOL = ' €';
 
 const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
 /**
@@ -7,11 +9,28 @@ const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
  */
 const dataStore = new LocalDatastore();
 
+/*
+ * This method pushes the given URI onto the history, both locally for the back button and globally in the browser.
+ * The first push is for the local storage of the recent page history used by the back button implemented in the application.
+ * The second push appends the given URI on the list of page history used by the browser itself, so that the browser provided
+ * back button has the effect a user would expect.
+ *
+ * Everything done here is only for vanity reasons and not necessary for the application to function.
+ */
 function setNewUrl(url, title = 'default') {
+    go_back_uri.push('/' + window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, ""));
     window.history.pushState({urlPath: url}, title, url);
 }
 
-
+/*
+ * This function performs a HTTP request.
+ *
+ * url              specifies the requested URI
+ * method           specifies the used method (GET, POST, DELETE, PUT)
+ * headers          are the used HTTP headers
+ * data             is the request body
+ * callbackAction   specifies what to do once the request is complete, regardless of the returned status code
+ * */
 function performXhr(url, method, headers, data, callbackAction) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -39,6 +58,10 @@ function performXhr(url, method, headers, data, callbackAction) {
     xhttp.send((!data || data == '') ? null : data);
 }
 
+/*
+ * This method performs an HTTP GET request on the given url by generation the request headers and calling the
+ * performXhr method.
+ */
 function doGet(url, callbackAction, etag = null) {
     let headers = [{identifier: "Content-Type", value: APPLICATION_MIME}];
     if (etag)
@@ -47,13 +70,17 @@ function doGet(url, callbackAction, etag = null) {
 
 }
 
-function doPost(url, cartPayload) {
+/*
+ * This method performs an HTTP POST request on the given url by generation the request headers and calling the
+ * performXhr method.
+ */
+function doPost(url, cartPayload, callbackAction) {
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (this.readyState === 4) {
             switch (this.status) {
                 case 200:
-                    //
+                    callbackAction();
                     break;
                 case 400:
                     // Malformed Input was sent
@@ -62,7 +89,6 @@ function doPost(url, cartPayload) {
                     // Checkout price conflict, reload business data
                     break;
                 case 404:
-
                     break;
                 default:
                     console.log("Unknown response in POS: " + url);
@@ -75,6 +101,14 @@ function doPost(url, cartPayload) {
     xhr.send(cartPayload);
 }
 
+/*
+ * Here the script empties the "article" HTML element and fills it with the new content.
+ * The new content here is the selected pizza's details and order options, namely extra ingredients.
+ *
+ * The id argument is mandatory, as it determines which article page to build, the update argument is optional.
+ * Update is provided (as true) when the page is called directly or via a back button (regardless which one), as the
+ * current URI will be set externally. Thus the corresponding action is omitted.
+ */
 function goToArticleView(id, update) {
     let json = dataStore.getArticleById(id);
 
@@ -100,11 +134,11 @@ function goToArticleView(id, update) {
     section.setAttribute('id', 'ingredients-form');
 
     let list = document.createElement('UL');
+    list.setAttribute('id', 'ingredients-form');
 
     let ingr = json.extra_ingredients;
     for (let i = 0; i < ingr.length; i++) {
         let list_element = document.createElement('LI');
-        list_element.setAttribute('id', 'ingredients-form');
 
         let label = document.createElement('LABEL');
         let extra_ingredient = (dataStore.getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
@@ -141,9 +175,17 @@ function goToArticleView(id, update) {
     setNewUrl('/article/' + id, '' + id);
 }
 
+/*
+ * Here the script empties the "article" HTML element and fills it with the new content.
+ * The new content here is the article overview showing all available pizzas.
+ *
+ * The update argument is optional and is provided (as true) when the page is called directly or
+ * via a back button (regardless which one), as the current URI will be set externally.
+ * Thus the corresponding action is omitted.
+ */
 function goToArticles(update) {
     let json = dataStore.getAllArticlesBrief();
-  
+
     document.getElementsByTagName('h2')[0].innerHTML = 'Bitte waehlen Sie Ihre Bestellung';
 
     let container = document.getElementsByTagName('article')[0];
@@ -177,6 +219,15 @@ function goToArticles(update) {
     setNewUrl('/articles', 'articles');
 }
 
+/*
+ * Here the script empties the "article" HTML element and fills it with the new content.
+ * The new content here is the checkout page with the HTML form for the user to provide his personal
+ * information in order to complete the ordering process.
+ *
+ * The update argument is optional and is provided (as true) when the page is called directly or
+ * via a back button (regardless which one), as the current URI will be set externally.
+ * Thus the corresponding action is omitted.
+ */
 function goToCheckout(update) {
     document.getElementsByTagName('h2')[0].innerHTML = 'Bitte tragen Sie ihre persoenlichen Daten ein';
 
@@ -189,15 +240,24 @@ function goToCheckout(update) {
     let section_1 = document.createElement('SECTION');
     section_1.setAttribute('id', 'shipping-form');
 
+    let form = document.createElement('FORM');
+    form.setAttribute('onsubmit', 'doCheckout(); return false;');
+
     let fields = [
-        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name'},
-        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname'},
+        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z\s\u002D]+$'},
+        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[A-Za-z\s\u002D]+$'},
         {nvupdate: 'email', content: 'E-Mail:', type: 'email', name: 'email'},
-        {nvupdate: 'telefon', content: 'Telefon:', type: 'tel', name: 'tel'},
-        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse'},
-        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr'},
-        {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz'},
-        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort'},
+        {
+            nvupdate: 'telefon',
+            content: 'Telefon:',
+            type: 'tel',
+            name: 'tel',
+            pattern: '^(\u002B([0-9]|[0-9][0-9])|00([0-9]|[0-9][0-9])|001([0-9]|[0-9][0-9])|0)[[0-9]\s\u002D\u002F]{3,}$'
+        },
+        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[A-Za-z\s\u002D]+$'},
+        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr', pattern: '^[1-9][0-9]*[A-Za-z]?$'},
+        {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz', pattern: '^[0-9]{4,5}$'},
+        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\s\u002D]+$'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
     ];
     for (let i = 0; i < fields.length; i++) {
@@ -210,29 +270,32 @@ function goToCheckout(update) {
         input.setAttribute('nv-model', fields[i].nvupdate);
         input.setAttribute('type', fields[i].type);
         input.setAttribute('name', fields[i].name);
+        fields[i].pattern ? input.setAttribute('pattern', fields[i].pattern) : (function () {
+            })();
         if (fields[i].name !== 'zusatzinfos') {
             input.required = true;
         }
 
         label.appendChild(input);
-        section_1.appendChild(label);
-        section_1.appendChild(breakln);
+        form.appendChild(label);
+        form.appendChild(breakln);
     }
 
     let button = document.createElement('BUTTON');
-    button.innerHTML = 'Kostenpflichtig bestellen';
     button.setAttribute('id', 'shipping');
-    button.setAttribute('onclick', 'doPost("/cart/checkout", JSON.stringify(dataStore.getCart()))');
-    section_1.appendChild(button);
+    button.innerHTML = 'Kostenpflichtig bestellen';
+    form.appendChild(button);
+
+    section_1.appendChild(form);
 
     let section_2 = document.createElement('SECTION');
     section_2.setAttribute('id', 'ship-cart-total');
 
     fields = [
-        ('Artikel Anzahl: ' + dataStore.getCart().articles.length)
+        ('Artikel Anzahl: ' + (dataStore.getCart().articles ? dataStore.getCart().articles.length : 0))
     ];
 
-    fields.push('Gesamtpreis: ' + priceToString(dataStore.getCart().total_price));
+    fields.push('Gesamtpreis: ' + priceToString((dataStore.getCart().total_price ? dataStore.getCart().total_price : 0)));
 
     for (let i = 0; i < fields.length; i++) {
         let label = document.createElement('LABEL');
@@ -254,6 +317,14 @@ function goToCheckout(update) {
     setNewUrl('/cart', 'checkout');
 }
 
+/*
+ * Here the script empties the "article" HTML element and fills it with the new content.
+ * The new content here is the home page (the index page), which marks the starting point of the website.
+ *
+ * The update argument is optional and is provided (as true) when the page is called directly or
+ * via a back button (regardless which one), as the current URI will be set externally.
+ * Thus the corresponding action is omitted.
+ */
 function goToIndex(update) {
     document.getElementsByTagName('h2')[0].innerHTML = '{{message}}';
     replaceVarsInDOM();
@@ -281,16 +352,18 @@ function goToIndex(update) {
     setNewUrl('/', 'index');
 }
 
+/*
+ * This method is used to add a pizza specified by its id to the cart.
+ * It checks whether there is already a pizza with the same constellation of extra ingredients in the cart
+ * and simply increments its amount in this given case. Otherwise it will add this pizza alongside with the selected
+ * extra ingredients to the cart.
+ *
+ * In both cases the overall total cart price is updated.
+ *
+ * Finally the user is notified that the pizza was successfully added and the sliding HTML cart window is updated.
+ */
 function addToCart(id) {
-    let cart;
-    if (!dataStore.getCart()) {
-        cart = {};
-        cart.articles = [];
-        cart.total_price = 0;
-    }
-    else {
-        cart = dataStore.getCart();
-    }
+    let cart = dataStore.getCart() ? dataStore.getCart() : {articles: [], total_price: 0.0};
     let article = {};
 
     article.id = cart.articles.length;
@@ -307,28 +380,85 @@ function addToCart(id) {
     }
 
     article.extra_ingredients = extra_ingredients;
-    article.amount = 1;
-    cart.articles.push(article);
+
+    let found_in_cart = false;
+
+    for (let i = 0; (i < cart.articles.length) && !found_in_cart; i++) {
+        if (cart.articles[i].article_id == article.article_id) {
+            if (JSON.stringify(cart.articles[i].extra_ingredients) == JSON.stringify(article.extra_ingredients)) {
+                cart.articles[i].amount++;
+                found_in_cart = true;
+            }
+        }
+    }
+
+    if (!found_in_cart) {
+        article.amount = 1;
+        cart.articles.push(article);
+    }
 
     cart.total_price += dataStore.getArticleById(id).base_price;
 
 
     dataStore.saveCart(cart);
     //updateCart();
-    alert(dataStore.getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!');
-
-    let cart_table = document.getElementsByTagName('tbody')[0];
-
-    while (cart_table.firstChild != cart_table.lastChild) {
-        cart_table.removeChild(cart_table.lastChild);
-    }
+    console.log(dataStore.getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!'); //alert
 
     buildCartFromLocalStorage();
 }
 
-function buildCartFromLocalStorage() {
+function removeFromCart(id, extras) {
     let cart = dataStore.getCart();
+
+    for (let i = 0; i < cart.articles.length; i++){
+        let article = cart.articles[i];
+        if (article.article_id == id){
+            if (getExtraIngredientsAsString(article.extra_ingredients) == extras){
+                if (article.amount > 1){
+                    article.amount--;
+                }
+                else{
+                    cart.articles.splice(i, 1);
+                }
+                cart.total_price -= dataStore.getArticleById(id).base_price;
+                dataStore.saveCart(cart);
+                buildCartFromLocalStorage();
+                return;
+            }
+        }
+    }
+}
+
+function getExtraIngredientsAsString(extras) {
+    let output = "";
+    for (let i = 0; i < extras.length; i++) {
+        output += (dataStore.getIngredientById(extras[i].id).name);
+        output += ",\n";
+    }
+    return output.substring(0, output.length - 2);
+}
+
+/*
+ * This function builds or updates the sliding HTML cart window using the data retrieved from the local storage.
+ *
+ * For that all the rows of the cart's table are removed except the header row.
+ * After that the content rows are generated from the local storage showing the pizza's name, its extra ingredients,
+ * the amount of the specific constellation, the base price and also the resulting sub total of the current row.
+ * Additionally each row contains a button to remove itself.
+ *
+ * Because of that there is absolutely no functional difference between an initial build up and an update.
+ */
+function buildCartFromLocalStorage() {
+    let cart = dataStore.getCart() ? dataStore.getCart() : {articles: [], total_price: 0.0};
     let cart_table = document.getElementsByTagName('tbody')[0];
+
+    if (!cart_table) {
+        return;
+    }
+
+    while (cart_table.firstChild != cart_table.lastChild) {
+        cart_table.removeChild(cart_table.lastChild);
+    }
 
     let row;
     let col;
@@ -336,13 +466,11 @@ function buildCartFromLocalStorage() {
     for (let i = 0; i < cart.articles.length; i++) {
         row = document.createElement('TR');
         row.setAttribute('class', 'shp-cart-art-row');
-        row.setAttribute('id', 'row ' + i);
 
         let article = cart.articles[i];
-        console.log(article);
 
         col = document.createElement('TD');
-        col.innerHTML = 1;
+        col.innerHTML = article.amount;
         row.appendChild(col);
 
         col = document.createElement('TD');
@@ -350,15 +478,7 @@ function buildCartFromLocalStorage() {
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = (function () {
-            let extras = article.extra_ingredients;
-            let output = "";
-            for (let i = 0; i < extras.length; i++) {
-                output += (dataStore.getIngredientById(extras[i].id).name);
-                output += ",\n";
-            }
-            return output.substring(0, output.length - 2);
-        })();
+        col.innerHTML = getExtraIngredientsAsString(article.extra_ingredients);
         row.appendChild(col);
 
         col = document.createElement('TD');
@@ -366,13 +486,14 @@ function buildCartFromLocalStorage() {
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = priceToString(dataStore.getArticleById(article.article_id).base_price);
+        col.innerHTML = priceToString(article.amount * dataStore.getArticleById(article.article_id).base_price);
         row.appendChild(col);
 
         col = document.createElement('BUTTON');
         col.innerHTML = 'entfernen';
         col.setAttribute('onclick',
-            'function() {document.getElementsByTagName("tbody")[0].removeChild(document.getElementById("row ' + i + '")); buildCartFromLocalStorage();}');
+            'removeFromCart(' + article.article_id  + ',"' +
+            getExtraIngredientsAsString(article.extra_ingredients) + '")');
         row.appendChild(col);
 
         cart_table.appendChild(row);
@@ -387,18 +508,28 @@ function buildCartFromLocalStorage() {
     row.appendChild(col);
 
     col = document.createElement('TD');
-    col.innerHTML = priceToString(dataStore.getCart().total_price);
+    col.innerHTML = priceToString(cart.total_price);
     row.appendChild(col);
 
     cart_table.appendChild(row);
 }
 
+/*
+ * This function parses number (floating point and integer alike) to a nice string.
+ * */
 function priceToString(price) {
+    if (price < 0.001){
+        return '0,00'+ CURRENCY_SYMBOL;
+    }
+
     price = price + '';
     let price_parts = price.split(".");
     price = price_parts[0] + ',';
 
-    if (price_parts[1].length > 2) {
+    if (price_parts.length == 1) {
+        price += '00';
+    }
+    else if (price_parts[1].length > 2) {
         price += price_parts[1].substring(0, 2);
     }
     else if (price_parts[1].length == 1) {
@@ -412,9 +543,13 @@ function priceToString(price) {
         price += price_parts[1];
     }
 
-    return price + ' €';
+    return price + CURRENCY_SYMBOL;
 }
 
+/*
+ * This function "forwards" the browser to the screen associated with the given URI.
+ * If the URI is unknown, the index page is called.
+ * */
 function forward(url, update) {
     if (url === '/articles') {
         goToArticles(update);
@@ -425,11 +560,27 @@ function forward(url, update) {
     else if (url === '/') {
         goToIndex(update);
     }
+    else if (url === 'SpecRunner.html') {
+        doGet(url, function () {
+        });
+        setNewUrl(url);
+    }
+    else if (url === 'SpecRunner') {
+        doGet(url, function () {
+        });
+        setNewUrl(url);
+    }
     else {
-        goToArticleView(url.split('/').slice(-1)[0], update);
+        try {
+            goToArticleView(url.split('/').slice(-1)[0], update);
+        }
+        catch (error) {
+            goToIndex(update);
+        }
     }
 }
 
+/**/
 function updateCart() {
     let total_cart_price = dataStore.getCart().total_price;
     if (total_cart_price) {
@@ -438,6 +589,75 @@ function updateCart() {
     }
 }
 
+/*
+ * Here the checkout JSON object is built for the order terminating POST request.
+ *
+ * Firstly the object containing the user data is built from the checkout form. After that the articles
+ * stored in the cart object in the local storage are dumped into the outgoing object analogically to the total cart
+ * price. Finally the payment method and the ordering method are stored.
+ *
+ * Once the object is ready, the doPost function is called with a callback, which, provided the server returns a 200 code,
+ * clears notifies the user about the successful checkout, clears the locally stored cart, updates the (now empty cart window)
+ * and forwards the user to the starting page.
+ *
+ * Note that this function does not execute any validation of the data sent to the server. This is because firstly a frontend
+ * executed validation is extremely unsafe and secondly a validation would use up additional time.
+ * Therefor the validation is performed only by the backend for the sake of security and performance.
+ * */
+function doCheckout() {
+    let formData = document.getElementsByTagName('input');
+    console.log(formData);
+
+    let submitData = {};
+
+    let customer = {};
+
+    customer.id = 0;
+    customer.type = 'Person';
+    customer.email = formData.email.value;
+    customer.first_name = formData.vorname.value;
+    customer.last_name = formData.name.value;
+    customer.telephone = formData.tel.value;
+
+    customer.address = {};
+    customer.address.addressCountry = '';
+    customer.address.addressLocality = formData.ort.value;
+    customer.address.addressRegion = '';
+    customer.address.postalCode = formData.plz.value;
+    customer.address.streetAddress = formData.strasse.value + ' ' + formData.hausnr.value;
+
+    submitData.customer = customer;
+    submitData.articles = dataStore.getCart().articles;
+    submitData.total_price = dataStore.getCart().total_price;
+    submitData.payment_method = 0;
+    submitData.order_method_id = 0;
+
+    doPost("/cart/checkout", JSON.stringify(submitData), function () {
+        console.log("Checkout successful!"); //alert
+        dataStore.clearCart();
+        buildCartFromLocalStorage();
+        forward("/");
+    });
+}
+
+/*
+ * This is the starting point of the application.
+ *
+ * All data stored in the local storage is checked, with three possible outcomes:
+ *
+ * 1. The data is not in the local storage
+ * In this case GET requests are performed to fetch the necessary data. The responses are stored in the local storage.
+ *
+ * 2. The data is in the local storage but out of date
+ * Here the application fetches the data with GET requests and stores them in the local storage. Each set of data has its own
+ * revision, which changes once the data changes in the backend. Therefor only out of date data is fetched to reduce unnecessary
+ * traffic.
+ *
+ * 3. The data is in the local storage and up to date
+ * In this case nothing is done.
+ *
+ * Lastly the cart is updated for the possible case of an old, not finished ordering process.
+ * */
 function initMain() {
     if (!dataStore.getRevisions()) {
         rev_setup = {articles: null, ingredients: null, shippingmethods: null, paymentmethods: null, taxes: null};
@@ -544,7 +764,7 @@ function initMain() {
     buildCartFromLocalStorage();
 
     isInitialized = true;
-    updateCart()
+    updateCart();
 
 }
 
@@ -552,12 +772,15 @@ let url = window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, "");
 url = '/' + url;
 window.history.replaceState({urlPath: url}, '', url);
 window.addEventListener('popstate', function (event) {
+    go_back_uri.push('/' + window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, ""));
     forward(window.history.state.urlPath, true);
-
 });
 
+//The application is initiated as soon as it is loaded by the browser
 initMain();
 
+//check whether the request is for a direct URI (anything but the index.html) and forward the browser if need be
 if (url !== '/') {
+    console.log('Forwarding to ' + url);
     forward(window.history.state.urlPath, true);
 }
