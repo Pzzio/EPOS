@@ -407,6 +407,37 @@ function addToCart(id) {
     buildCartFromLocalStorage();
 }
 
+function removeFromCart(id, extras) {
+    let cart = dataStore.getCart();
+
+    for (let i = 0; i < cart.articles.length; i++){
+        let article = cart.articles[i];
+        if (article.article_id == id){
+            if (getExtraIngredientsAsString(article.extra_ingredients) == extras){
+                if (article.amount > 1){
+                    article.amount--;
+                }
+                else{
+                    cart.articles.splice(i, 1);
+                }
+                cart.total_price -= dataStore.getArticleById(id).base_price;
+                dataStore.saveCart(cart);
+                buildCartFromLocalStorage();
+                return;
+            }
+        }
+    }
+}
+
+function getExtraIngredientsAsString(extras) {
+    let output = "";
+    for (let i = 0; i < extras.length; i++) {
+        output += (dataStore.getIngredientById(extras[i].id).name);
+        output += ",\n";
+    }
+    return output.substring(0, output.length - 2);
+}
+
 /*
  * This function builds or updates the sliding HTML cart window using the data retrieved from the local storage.
  *
@@ -435,7 +466,6 @@ function buildCartFromLocalStorage() {
     for (let i = 0; i < cart.articles.length; i++) {
         row = document.createElement('TR');
         row.setAttribute('class', 'shp-cart-art-row');
-        row.setAttribute('id', 'row ' + i);
 
         let article = cart.articles[i];
 
@@ -448,15 +478,7 @@ function buildCartFromLocalStorage() {
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = (function () {
-            let extras = article.extra_ingredients;
-            let output = "";
-            for (let i = 0; i < extras.length; i++) {
-                output += (dataStore.getIngredientById(extras[i].id).name);
-                output += ",\n";
-            }
-            return output.substring(0, output.length - 2);
-        })();
+        col.innerHTML = getExtraIngredientsAsString(article.extra_ingredients);
         row.appendChild(col);
 
         col = document.createElement('TD');
@@ -470,7 +492,8 @@ function buildCartFromLocalStorage() {
         col = document.createElement('BUTTON');
         col.innerHTML = 'entfernen';
         col.setAttribute('onclick',
-            'function() {document.getElementsByTagName("tbody")[0].removeChild(document.getElementById("row ' + i + '")); buildCartFromLocalStorage();}');
+            'removeFromCart(' + article.article_id  + ',"' +
+            getExtraIngredientsAsString(article.extra_ingredients) + '")');
         row.appendChild(col);
 
         cart_table.appendChild(row);
@@ -495,6 +518,10 @@ function buildCartFromLocalStorage() {
  * This function parses number (floating point and integer alike) to a nice string.
  * */
 function priceToString(price) {
+    if (price < 0.001){
+        return '0,00'+ CURRENCY_SYMBOL;
+    }
+
     price = price + '';
     let price_parts = price.split(".");
     price = price_parts[0] + ',';

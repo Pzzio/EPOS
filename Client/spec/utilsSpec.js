@@ -4,9 +4,12 @@ const NUMBER_OF_ORDERS = 1000;
 
 
 describe("Basic building functions", function () {
+    beforeEach(function () {
+
+    });
+
     it("The initialization of the site", function () {
         initMain();
-
 
         expect(isInitialized).toBe(true);
     });

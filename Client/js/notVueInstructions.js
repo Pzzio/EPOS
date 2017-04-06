@@ -27,11 +27,11 @@ function onOrderBtn() {
 
 
 // Warenkorb
-const roundButton = document.querySelector("#shopping-cart-btn");
+let roundButton = document.querySelector("#shopping-cart-btn");
 roundButton.addEventListener("click", showMenu, false);
 
-const flyoutMenu = document.querySelector("#flyoutMenu");
-const transparentMenu = document.querySelector("#transparentMenu");
+let flyoutMenu = document.querySelector("#flyoutMenu");
+let transparentMenu = document.querySelector("#transparentMenu");
 transparentMenu.addEventListener("click", hideMenu, false);
 
 function showMenu() {
