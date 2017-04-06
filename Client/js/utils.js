@@ -1,6 +1,7 @@
 let isInitialized = false;
 let go_back_uri = [];
 const CURRENCY_SYMBOL = ' €';
+const MAX_NUMBER_OF_PIZZAS_TO_ADD = 5;
 
 const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
 /**
@@ -117,9 +118,17 @@ function goToArticleView(id, update) {
     img.setAttribute('src', json.thumb_img_url);
     img_container.appendChild(img);
 
+    let select = document.createElement('SELECT');
+    for (let i= 1 ; i <= MAX_NUMBER_OF_PIZZAS_TO_ADD; i++){
+        let option = document.createElement('OPTION');
+        option.setAttribute('value', i + '');
+        option.innerHTML = '' + i;
+        select.appendChild(option);
+    }
+
     let button = document.createElement('BUTTON');
     button.setAttribute('id', 'addToCart');
-    button.setAttribute('onclick', 'addToCart(' + id + ')');
+    button.setAttribute('onclick', 'addToCart(' + id + ', document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value)');
     button.innerHTML = 'In den Warenkorb';
 
     document.getElementsByTagName('h2')[0].innerHTML = json.name;
@@ -163,6 +172,7 @@ function goToArticleView(id, update) {
     let list_section = document.createElement('SECTION');
     list_section.setAttribute('id', 'ingredients-form');
     list_section.appendChild(list);
+    list_section.appendChild(select);
     list_section.appendChild(button);
 
     container.appendChild(img_container);
@@ -244,20 +254,20 @@ function goToCheckout(update) {
     form.setAttribute('onsubmit', 'doCheckout(); return false;');
 
     let fields = [
-        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z\s\u002D]+$'},
-        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[A-Za-z\s\u002D]+$'},
+        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z\u0020\u002D]+$'},
+        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'email', content: 'E-Mail:', type: 'email', name: 'email'},
         {
             nvupdate: 'telefon',
             content: 'Telefon:',
             type: 'tel',
             name: 'tel',
-            pattern: '^(\u002B([0-9]|[0-9][0-9])|00([0-9]|[0-9][0-9])|001([0-9]|[0-9][0-9])|0)[[0-9]\s\u002D\u002F]{3,}$'
+            pattern: '^([\u002B]([0-9]|[0-9][0-9])|00([0-9]|[0-9][0-9])|001([0-9]|[0-9][0-9])|0)[0-9\u0020\u002D\u002F]{3,}$'
         },
-        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[A-Za-z\s\u002D]+$'},
+        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr', pattern: '^[1-9][0-9]*[A-Za-z]?$'},
         {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz', pattern: '^[0-9]{4,5}$'},
-        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\s\u002D]+$'},
+        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
     ];
     for (let i = 0; i < fields.length; i++) {
@@ -337,7 +347,7 @@ function goToIndex(update) {
     let button = document.createElement('BUTTON');
     button.setAttribute('id', 'start-btn');
     button.setAttribute('onclick', 'goToArticles()');
-    button.innerHTML = 'Jetzt bestellen';
+    button.innerHTML = '<h3>Jetzt bestellen</h3>';
 
     let section = document.createElement('SECTION');
     section.setAttribute('id', 'start');
@@ -362,9 +372,10 @@ function goToIndex(update) {
  *
  * Finally the user is notified that the pizza was successfully added and the sliding HTML cart window is updated.
  */
-function addToCart(id) {
+function addToCart(id, amount) {
     let cart = dataStore.getCart() ? dataStore.getCart() : {articles: [], total_price: 0.0};
     let article = {};
+    amount = parseInt(amount);
 
     article.id = cart.articles.length;
     article.article_id = id;
@@ -386,18 +397,18 @@ function addToCart(id) {
     for (let i = 0; (i < cart.articles.length) && !found_in_cart; i++) {
         if (cart.articles[i].article_id == article.article_id) {
             if (JSON.stringify(cart.articles[i].extra_ingredients) == JSON.stringify(article.extra_ingredients)) {
-                cart.articles[i].amount++;
+                cart.articles[i].amount += amount;
                 found_in_cart = true;
             }
         }
     }
 
     if (!found_in_cart) {
-        article.amount = 1;
+        article.amount = amount;
         cart.articles.push(article);
     }
 
-    cart.total_price += dataStore.getArticleById(id).base_price;
+    cart.total_price += dataStore.getArticleById(id).base_price * amount;
 
 
     dataStore.saveCart(cart);
@@ -407,6 +418,7 @@ function addToCart(id) {
     buildCartFromLocalStorage();
 }
 
+/**/
 function removeFromCart(id, extras) {
     let cart = dataStore.getCart();
 
@@ -429,6 +441,7 @@ function removeFromCart(id, extras) {
     }
 }
 
+/**/
 function getExtraIngredientsAsString(extras) {
     let output = "";
     for (let i = 0; i < extras.length; i++) {

@@ -16,13 +16,13 @@
 
     <div id="instruction">
         <label>
-            <h2>Herzlich Willkommen bei Rosettis Pizza {{message}}</h2>
+            <h2>{{message}}</h2>
         </label>
     </div>
 
     <article>
         <section id="start">
-            <button id="start-btn" onclick="goToArticles()">
+            <button id="start-btn" onclick="goToArticles(false)">
                 <h3>Jetzt bestellen</h3>
             </button>
         </section>
@@ -68,10 +68,10 @@
         </table>
     </div>
 </div>
-</body>
 
 <script src="/js/notVue.js"></script>
 <script src="/js/notVueInstructions.js"></script>
 <script src="/js/LocalDatastore.js"></script>
 <script src="/js/utils.js"></script>
+</body>
 </html>
