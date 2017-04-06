@@ -8,30 +8,40 @@ class CookieManager:
 
     cookie_list = []
 
-    timestamp = 0                   # in dieser variable wird abgespeichert wann frühestens der nächste cookie abläuft
-                                    # zu beginn 0 da noch keine aussage getroffen werden kann wird in _inlisteaufreumen
-                                    # gesetzt und in _insert_new_cookie verwendet
+    # in dieser variable wird abgespeichert wann frühestens der nächste cookie abläuft zu beginn 0 da noch keine
+    # aussage getroffen werden kann wird in _inlisteaufreumen gesetzt und in _insert_new_cookie verwendet
+    timestamp = 0
 
-    cookie_lifespan = 600           # lebensdauer des cookies in Sekunden bei einem refresh (default 10m)
-    cookie_lifespan_short = 30      # die verkürzte lebensdauer die ein cookie beim erstmaligen erstellen bekommt in
-                                    # sekunden (Default 30s)
-    cookie_count_limit = 50        # maximale anzahl an Kookies gleichzeitig(default 50)
+    # lebensdauer des cookies in Sekunden bei einem refresh (default 10m)
+    cookie_lifespan = 600
 
-    def _newID(self):               #erzeugt einen neuen wert für die cookieID TODO derzeit nur das Datum/Zeit
-        return str(time.time()) #TODO  derzeit ist der neue name einfach die zeit
+    # die verkürzte lebensdauer die ein cookie beim erstmaligen erstellen bekommt in sekunden (Default 30s)
+    cookie_lifespan_short = 30
+
+    # maximale anzahl an Kookies gleichzeitig(default 50)
+    cookie_count_limit = 50
+
+    # erzeugt einen neuen wert für die cookieID TODO derzeit nur das Datum/Zeit
+    @staticmethod
+    def _new_id():
+        # TODO derzeit ist der neue name einfach die zeit
+        return str(time.time())
 
     # es wird ein cookie in unserem Format erzeugt welches den übergeenen Value hat aber den exp_date = 0
-    def create_cookie_with_value(self,cookie_value):
+    @staticmethod
+    def create_cookie_with_value(cookie_value):
         cookie = {"cookie_value": cookie_value, "exp_date": 0}
         return cookie
 
     # komplet neuer cookie erzeugt (nicht in liste eingefügt) exp_timer = aktuelle zeit + cookielivespan
-    def create_new_cookie(self):
-        cookie = self.create_cookie_with_value(self._newID())
-        cookie["exp_date"] = (time.time() + self.cookie_lifespan_short) * 1000
+    @staticmethod
+    def create_new_cookie():
+        cookie = CookieManager.create_cookie_with_value(CookieManager._new_id())
+        cookie["exp_date"] = (time.time() + CookieManager.cookie_lifespan_short) * 1000
         return cookie
 
-    def get_cookie_value(self, cookie):
+    @staticmethod
+    def get_cookie_value(cookie):
         return cookie["cookie_value"]
 
     # der cookie in der cookie_list mit dem selben „cookie_value“ wie der übergebene cookie wird hinsichtlich des
