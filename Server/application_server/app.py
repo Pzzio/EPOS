@@ -14,7 +14,7 @@ from cookies import *
 from datastore import *
 from validation import RequestValidator
 
-# from cookies import Cookiemanager
+# from cookies import CookieManager
 # from datastore import JsonDto, Datastore  # will work even if PyCharm cries
 
 #from Server.application_server.datastore import Datastore
@@ -111,7 +111,7 @@ def make_request_handler_class():
     business_data = BusinessData(datastore)
 
     #TODO schaun ob das die richtige stelle ist
-    c = Cookiemanager()
+    c = CookieManager()
 
 
     class MyRequestHandler(http.server.BaseHTTPRequestHandler):
@@ -136,13 +136,13 @@ def make_request_handler_class():
 
                 cookie.load(self.headers["cookie"])
 
-                cookie_internal = c.createCookiewithValue(cookie['SSID'].value)
+                cookie_internal = c.create_cookie_with_value(cookie['SSID'].value)
 
-                if not c.testCookie(cookie_internal):
+                if not c.test_cookie(cookie_internal):
 
-                    neuescookie = c.createnewCookie()
+                    neuescookie = c.create_new_cookie()
 
-                    if (c.insertNewCookie(neuescookie)):
+                    if (c.insert_new_cookie(neuescookie)):
 
                         cookie['SSID'] = neuescookie['cookie_value']
 
@@ -158,10 +158,10 @@ def make_request_handler_class():
 
                     # pass to resource
             else:
-                neuescookie = c.createnewCookie()
-                if (c.insertNewCookie(neuescookie)):
+                neuescookie = c.create_new_cookie()
+                if (c.insert_new_cookie(neuescookie)):
                     self.intermediate_headers.append(
-                        ("Set-Cookie", "SSID=" + c.getCookieValue(neuescookie) + "; Path=/"))
+                        ("Set-Cookie", "SSID=" + c.get_cookie_value(neuescookie) + "; Path=/"))
                     return True
                 else:
                     self.finalize_header(503, "")
