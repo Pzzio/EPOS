@@ -351,8 +351,8 @@ footer p {
     border-radius: 25px;
     padding: 0 15px 0 15px;
     background: linear-gradient(to bottom,
-    rgba(0, 140, 186, 0) 0%,
-    rgba(0, 140, 186, 0) 50%,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 1) 50%,
     rgba(0, 140, 186, 1) 50%,
     rgba(0, 140, 186, 1) 100%) no-repeat;
     background-size: 100% 200%;
@@ -363,8 +363,13 @@ footer p {
 
 }
 .shp-cart-art-row button {
+    margin-top: 3px;
+    margin-bottom: 3px;
+
+    font-size: 0.95em;
+
     border-radius: 10px;
-    sbackground: linear-gradient(to bottom,
+    background: linear-gradient(to bottom,
  rgba(255, 255, 255, 1) 0%,
  rgba(255, 255, 255, 1) 50%,
  rgba(0, 140, 186, 1) 50%,
