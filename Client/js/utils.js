@@ -118,11 +118,29 @@ function goToArticleView(id, update) {
     img.setAttribute('src', json.thumb_img_url);
     img_container.appendChild(img);
 
+    var description_container = document.createElement('DIV');
+    description_container.setAttribute('class', 'shp-desc-container');
+
+    var description_price = document.createElement('p');
+    description_price.setAttribute('id', 'price-tag');
+    description_price.innerHTML = 'Preis:  ' + json.base_price + ' €';
+    description_container.appendChild(description_price);
+
+    var description_text = document.createElement('p');
+    description_text.innerHTML = 'Beschreibung: <br>' + json.desc;
+    description_container.appendChild(description_text);
+
+
+    img_container.appendChild(description_container);
+
+    var buttonContainer = document.createElement('DIV');
+    buttonContainer.setAttribute('class', "shp-cart-btn-box");
+
     var select = document.createElement('SELECT');
     for (var i = 1; i <= MAX_NUMBER_OF_PIZZAS_TO_ADD; i++) {
         var option = document.createElement('OPTION');
         option.setAttribute('value', i + '');
-        option.innerHTML = '' + i;
+        option.innerHTML = '' + i + ' mal';
         select.appendChild(option);
     }
 
@@ -143,26 +161,32 @@ function goToArticleView(id, update) {
     var section = document.createElement('SECTION');
     section.setAttribute('id', 'ingredients-form');
 
-    var list = document.createElement('UL');
-    list.setAttribute('id', 'ingredients-form');
-
+    var table = document.createElement('TABLE');
+    var tableBody = document.createElement('TBODY');
     var ingr = json.extra_ingredients;
     for (var i = 0; i < ingr.length; i++) {
-        var list_element = document.createElement('LI');
+        var row = document.createElement('TR');
+        var col = document.createElement('TD');
 
-        var label = document.createElement('DIV');
         var extra_ingredient = (getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
-        label.setAttribute('class', 'art-span');
-        ;
-        ;
+      
+      label.setAttribute('class', 'art-span');
 
         var ingredient_img = document.createElement('IMG');
         ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
 
-        label.appendChild(ingredient_img);
+        col.appendChild(ingredient_img);
+        row.appendChild(col);
 
+        var col = document.createElement('TD');
+        var ingredient_name = document.createElement('h3');
+        ingredient_name.innerHTML = 'Extra ' + extra_ingredient.name;
+        col.appendChild(ingredient_name);
+        row.appendChild(col);
+
+        var col = document.createElement('TD');
         var input = document.createElement('INPUT');
         input.setAttribute('type', 'checkbox');
         input.setAttribute('name', 'zutat');
@@ -171,16 +195,18 @@ function goToArticleView(id, update) {
         ;
         input.setAttribute('content', ingr[i].id);
 
-        label.appendChild(input);
-        list_element.appendChild(label);
-        list.appendChild(list_element);
+        col.appendChild(input);
+        row.appendChild(col);
+        tableBody.appendChild(row);
     }
+    table.appendChild(tableBody);
 
     var list_section = document.createElement('SECTION');
     list_section.setAttribute('id', 'ingredients-form');
-    list_section.appendChild(list);
-    list_section.appendChild(select);
-    list_section.appendChild(button);
+    list_section.appendChild(table);
+    buttonContainer.appendChild(select);
+    buttonContainer.appendChild(button);
+    list_section.appendChild(buttonContainer);
 
     container.appendChild(img_container);
     container.appendChild(list_section);
@@ -287,13 +313,22 @@ function goToCheckout(update) {
         {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
     ];
+    var table = document.createElement('TABLE');
+    var tr;
+    var td;
     for (var i = 0; i < fields.length; i++) {
+        tr = document.createElement('TR');
+        td = document.createElement('TD');
+
         var label = document.createElement('LABEL');
         var input = document.createElement('INPUT');
-        var breakln = document.createElement('BR');
 
         label.innerHTML = fields[i].content;
 
+        td.appendChild(label);
+        tr.appendChild(td);
+
+        td = document.createElement('TD');
         input.setAttribute('nv-model', fields[i].nvupdate);
         input.setAttribute('type', fields[i].type);
         input.setAttribute('name', fields[i].name);
@@ -303,10 +338,16 @@ function goToCheckout(update) {
             input.required = true;
         }
 
-        label.appendChild(input);
-        form.appendChild(label);
-        form.appendChild(breakln);
+        td.appendChild(input);
+        tr.appendChild(td);
+        table.appendChild(tr);
     }
+    form.appendChild(table);
+
+    var button = document.createElement('BUTTON');
+    button.setAttribute('id', 'shipping-order');
+    button.innerHTML = '<h3>Kostenpflichtig bestellen</h3>';
+    form.appendChild(button);
 
     var paymentOptions = ['PayPal', 'Sofort\u00FCberweisung', 'CCBill', '100% FREE NO VIRUS GRATIS GRATUITO 100% LEGIT DOWNLOAD NOW!'];
 
@@ -332,8 +373,8 @@ function goToCheckout(update) {
     form.appendChild(select);
 
     var button = document.createElement('BUTTON');
-    button.setAttribute('id', 'shipping');
-    button.innerHTML = 'Kostenpflichtig bestellen';
+    button.setAttribute('id', 'shipping-abort');
+    button.innerHTML = '<h3>Bestellung abbrechen</h3>';
     form.appendChild(button);
 
     button = document.createElement('BUTTON');
@@ -353,11 +394,9 @@ function goToCheckout(update) {
         articleCount += cartArticles[i].amount;
     }
 
-    fields = [
-        ('Artikel Anzahl: ' + articleCount)
-    ];
+    fields = [('<p>Artikel Anzahl: ' + articleCount + '</p>')];
 
-    fields.push('Gesamtpreis: ' + priceToString((getCart().total_price ? getCart().total_price : 0)));
+    fields.push('<p>Gesamtpreis: ' + priceToString((getCart().total_price ? getCart().total_price : 0)) + '</p>');
 
     for (var i = 0; i < fields.length; i++) {
         var label = document.createElement('LABEL');
@@ -437,7 +476,6 @@ function addToCart(id, amount) {
     var checkboxes = document.getElementsByTagName('input');
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
-            extra_ingredients.push({id: checkboxes[i].getAttribute('content')});
             checkboxes[i].checked = false;
         }
     }
@@ -516,10 +554,10 @@ function removeFromCart(id) {
 function getExtraIngredientsAsString(extras) {
     var output = "";
     for (var i = 0; i < extras.length; i++) {
-        output += (getIngredientById(extras[i].id).name);
-        output += ",<br>";
+        output += "<br> + " + (getIngredientById(extras[i].id).name);
     }
-    return output.substring(0, output.length - 5);
+    /* we dont need formatting here, making sort of a list here */
+    return output.substring(0, output.length - 0);
 }
 
 /*
@@ -554,15 +592,12 @@ function buildCartFromLocalStorage() {
         var cartArticle = cart.articles[i];
 
         col = document.createElement('TD');
-        col.innerHTML = cartArticle.amount;
+        col.innerHTML = cartArticle.amount + 'x';
         row.appendChild(col);
 
         col = document.createElement('TD');
         col.innerHTML = getArticleById(cartArticle.article_id).name;
-        row.appendChild(col);
-
-        col = document.createElement('TD');
-        col.innerHTML = getExtraIngredientsAsString(cartArticle.extra_ingredients);
+        col.innerHTML += getExtraIngredientsAsString(cartArticle.extra_ingredients);
         row.appendChild(col);
 
         var cartArticleSinglePrice = calculateSinglePriceFromCartArticle(cartArticle);
@@ -575,7 +610,7 @@ function buildCartFromLocalStorage() {
         row.appendChild(col);
 
         col = document.createElement('TD');
-
+      
         var tmp = document.createElement('BUTTON');
         tmp.innerHTML = 'Entfernen';
         tmp.setAttribute('onclick', 'removeFromCart(' + cartArticle.id + ')');
@@ -591,12 +626,16 @@ function buildCartFromLocalStorage() {
     row.setAttribute('class', 'shp-cart-endrow');
 
     col = document.createElement('TD');
-    col.setAttribute('colspan', '4');
-    col.innerHTML = 'Gesamtpreis';
+    col.setAttribute('colspan', '2');
     row.appendChild(col);
 
     col = document.createElement('TD');
-    col.innerHTML = priceToString(cart.total_price);
+    col.setAttribute('colspan', '2');
+    col.innerHTML = '<h3>Gesamtpreis</h3>';
+    row.appendChild(col);
+
+    col = document.createElement('TD');
+    col.innerHTML = '<h3>' + priceToString(cart.total_price) + '</h3>';
     row.appendChild(col);
 
     cart_table.appendChild(row);
