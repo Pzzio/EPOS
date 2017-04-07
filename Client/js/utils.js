@@ -1,13 +1,9 @@
-let isInitialized = false;
-let go_back_uri = [];
+var isInitialized = false;
+var go_back_uri = [];
 const CURRENCY_SYMBOL = ' €';
+const MAX_NUMBER_OF_PIZZAS_TO_ADD = 5;
 
 const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
-/**
- * @requires "LocalDatastore.js"
- * @type {LocalDatastore}
- */
-const dataStore = new LocalDatastore();
 
 /*
  * This method pushes the given URI onto the history, both locally for the back button and globally in the browser.
@@ -17,7 +13,9 @@ const dataStore = new LocalDatastore();
  *
  * Everything done here is only for vanity reasons and not necessary for the application to function.
  */
-function setNewUrl(url, title = 'default') {
+function setNewUrl(url, title) {
+    if (!title)
+        title = 'default';
     go_back_uri.push('/' + window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, ""));
     window.history.pushState({urlPath: url}, title, url);
 }
@@ -29,7 +27,7 @@ function setNewUrl(url, title = 'default') {
  * method           specifies the used method (GET, POST, DELETE, PUT)
  * headers          are the used HTTP headers
  * data             is the request body
- * callbackAction   specifies what to do once the request is complete, regardless of the returned status code
+ * callbackAction   specifies what to do once the request is compvare, regardless of the returned status code
  * */
 function performXhr(url, method, headers, data, callbackAction) {
     const xhttp = new XMLHttpRequest();
@@ -62,8 +60,10 @@ function performXhr(url, method, headers, data, callbackAction) {
  * This method performs an HTTP GET request on the given url by generation the request headers and calling the
  * performXhr method.
  */
-function doGet(url, callbackAction, etag = null) {
-    let headers = [{identifier: "Content-Type", value: APPLICATION_MIME}];
+function doGet(url, callbackAction, etag) {
+    if (!etag)
+        etag = null;
+    var headers = [{identifier: "Content-Type", value: APPLICATION_MIME}];
     if (etag)
         headers.push({identifier: "If-None-Match", value: etag});
     performXhr(url, "GET", headers, null, callbackAction)
@@ -75,7 +75,7 @@ function doGet(url, callbackAction, etag = null) {
  * performXhr method.
  */
 function doPost(url, cartPayload, callbackAction) {
-    let xhr = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (this.readyState === 4) {
             switch (this.status) {
@@ -110,55 +110,64 @@ function doPost(url, cartPayload, callbackAction) {
  * current URI will be set externally. Thus the corresponding action is omitted.
  */
 function goToArticleView(id, update) {
-    let json = dataStore.getArticleById(id);
+    var json = getArticleById(id);
 
-    let img_container = document.createElement('SECTION');
-    let img = document.createElement('IMG');
+    var img_container = document.createElement('SECTION');
+    var img = document.createElement('IMG');
     img.setAttribute('src', json.thumb_img_url);
     img_container.appendChild(img);
 
-    let button = document.createElement('BUTTON');
+    var select = document.createElement('SELECT');
+    for (var i = 1; i <= MAX_NUMBER_OF_PIZZAS_TO_ADD; i++) {
+        var option = document.createElement('OPTION');
+        option.setAttribute('value', i + '');
+        option.innerHTML = '' + i;
+        select.appendChild(option);
+    }
+
+    var button = document.createElement('BUTTON');
     button.setAttribute('id', 'addToCart');
-    button.setAttribute('onclick', 'addToCart(' + id + ')');
+
+    button.setAttribute('onclick', 'addToCart(' + id + ', document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value)');
     button.innerHTML = '<h3>In den Warenkorb</h3>';
 
     document.getElementsByTagName('h2')[0].innerHTML = json.name;
 
-    let container = document.getElementsByTagName('article')[0];
+    var container = document.getElementsByTagName('article')[0];
 
     while (container.firstChild) {
         container.removeChild(container.firstChild);
     }
 
-    let section = document.createElement('SECTION');
+    var section = document.createElement('SECTION');
     section.setAttribute('id', 'ingredients-form');
 
-    let list = document.createElement('UL');
+    var list = document.createElement('UL');
     list.setAttribute('id', 'ingredients-form');
 
-    let ingr = json.extra_ingredients;
-    for (let i = 0; i < ingr.length; i++) {
-        let list_element = document.createElement('LI');
+    var ingr = json.extra_ingredients;
+    for (var i = 0; i < ingr.length; i++) {
+        var list_element = document.createElement('LI');
 
         let label = document.createElement('DIV');
-        let extra_ingredient = (dataStore.getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
+        var extra_ingredient = (getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
 
         label.setAttribute('class', 'art-span')
 
-        let ingredient_img = document.createElement('IMG');
+        var ingredient_img = document.createElement('IMG');
         ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
 
         label.appendChild(ingredient_img);
 
 
-        let name = document.createElement('LABEL');
+        var name = document.createElement('LABEL');
         name.setAttribute('class', 'ingredient-label')
         name.innerHTML ='Extra ' + extra_ingredient.name;
         label.appendChild(name);
 
-        let input = document.createElement('INPUT');
+        var input = document.createElement('INPUT');
         input.setAttribute('type', 'checkbox');
         input.setAttribute('name', 'zutat');
         input.setAttribute('class', 'checkbox-custom')
@@ -169,9 +178,10 @@ function goToArticleView(id, update) {
         list.appendChild(list_element);
     }
 
-    let list_section = document.createElement('SECTION');
+    var list_section = document.createElement('SECTION');
     list_section.setAttribute('id', 'ingredients-form');
     list_section.appendChild(list);
+    list_section.appendChild(select);
     list_section.appendChild(button);
 
     container.appendChild(img_container);
@@ -193,26 +203,26 @@ function goToArticleView(id, update) {
  * Thus the corresponding action is omitted.
  */
 function goToArticles(update) {
-    let json = dataStore.getAllArticlesBrief();
+    var json = getAllArticlesBrief();
 
     document.getElementsByTagName('h2')[0].innerHTML = 'Bitte w&auml;hlen Sie Ihre Bestellung';
 
-    let container = document.getElementsByTagName('article')[0];
+    var container = document.getElementsByTagName('article')[0];
 
     while (container.firstChild) {
         container.removeChild(container.firstChild);
     }
 
-    for (let i = 0; i < json.articles.length; i++) {
-        let img = document.createElement('IMG');
+    for (var i = 0; i < json.articles.length; i++) {
+        var img = document.createElement('IMG');
         img.setAttribute('src', json.articles[i].thumb_img_url);
         img.setAttribute('onclick', 'goToArticleView(' + json.articles[i].id + ')');
 
-        let section = document.createElement('SECTION');
+        var section = document.createElement('SECTION');
         section.setAttribute('id', json.articles[i].id);
         section.setAttribute('class', 'tooltip');
 
-        let tooltip = document.createElement('SPAN');
+        var tooltip = document.createElement('SPAN');
         tooltip.setAttribute('class', 'tooltiptext');
         tooltip.innerHTML = json.articles[i].name;
         section.appendChild(tooltip);
@@ -231,7 +241,7 @@ function goToArticles(update) {
 /*
  * Here the script empties the "article" HTML element and fills it with the new content.
  * The new content here is the checkout page with the HTML form for the user to provide his personal
- * information in order to complete the ordering process.
+ * information in order to compvare the ordering process.
  *
  * The update argument is optional and is provided (as true) when the page is called directly or
  * via a back button (regardless which one), as the current URI will be set externally.
@@ -240,34 +250,27 @@ function goToArticles(update) {
 function goToCheckout(update) {
     document.getElementsByTagName('h2')[0].innerHTML = 'Bitte tragen Sie Ihre pers&ouml;nlichen Daten ein';
 
-    let container = document.getElementsByTagName('article')[0];
+    var container = document.getElementsByTagName('article')[0];
 
     while (container.firstChild) {
         container.removeChild(container.firstChild);
     }
 
-    let section_1 = document.createElement('SECTION');
+    var section_1 = document.createElement('SECTION');
     section_1.setAttribute('id', 'shipping-form');
 
-    let form = document.createElement('FORM');
+    var form = document.createElement('FORM');
     form.setAttribute('onsubmit', 'doCheckout(); return false;');
 
-
-    let fields = [
-        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z\s\u002D]+$'},
-        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[A-Za-z\s\u002D]+$'},
+    var fields = [
+        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z\u0020\u002D]+$'},
+        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'email', content: 'E-Mail:', type: 'email', name: 'email'},
-        {
-            nvupdate: 'telefon',
-            content: 'Telefon:',
-            type: 'tel',
-            name: 'tel',
-            pattern: '^(\u002B([0-9]|[0-9][0-9])|00([0-9]|[0-9][0-9])|001([0-9]|[0-9][0-9])|0)[[0-9]\s\u002D\u002F]{3,}$'
-        },
-        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[A-Za-z\s\u002D]+$'},
-        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr', pattern: '^[1-9][0-9]*[A-Za-z]?$'},
+        {nvupdate: 'telefon', content: 'Telefon:',  type: 'tel', name: 'tel', pattern: '^([\u002B]([0-9]|[0-9][0-9])|00([0-9]|[0-9][0-9])|001([0-9]|[0-9][0-9])|0)[0-9\u0020\u002D\u002F]{3,}$'},
+        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[A-Za-z\u0020\u002D]+$'},
+        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr', pattern: '^([1-9][0-9]*(\u002F[1-9][0-9]?|[A-Za-z])?)$'},
         {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz', pattern: '^[0-9]{4,5}$'},
-        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\s\u002D]+$'},
+        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
     ];
 
@@ -301,25 +304,25 @@ function goToCheckout(update) {
     }
     form.appendChild(table);
 
-    let button = document.createElement('BUTTON');
+    var button = document.createElement('BUTTON');
     button.setAttribute('id', 'shipping');
     button.innerHTML = '<h3>Kostenpflichtig bestellen</h3>';
     form.appendChild(button);
 
     section_1.appendChild(form);
 
-    let section_2 = document.createElement('SECTION');
+    var section_2 = document.createElement('SECTION');
     section_2.setAttribute('id', 'ship-cart-total');
 
     fields = [
-        ('Artikel Anzahl: ' + (dataStore.getCart().articles ? dataStore.getCart().articles.length : 0))
+        ('Artikel Anzahl: ' + (getCart().articles ? getCart().articles.length : 0))
     ];
 
-    fields.push('Gesamtpreis: ' + priceToString((dataStore.getCart().total_price ? dataStore.getCart().total_price : 0)));
+    fields.push('Gesamtpreis: ' + priceToString((getCart().total_price ? getCart().total_price : 0)));
 
-    for (let i = 0; i < fields.length; i++) {
-        let label = document.createElement('LABEL');
-        let breakln = document.createElement('BR');
+    for (var i = 0; i < fields.length; i++) {
+        var label = document.createElement('LABEL');
+        var breakln = document.createElement('BR');
 
         label.innerHTML = fields[i];
 
@@ -348,18 +351,18 @@ function goToCheckout(update) {
 function goToIndex(update) {
     document.getElementsByTagName('h2')[0].innerHTML = '{{message}}';
     replaceVarsInDOM();
-    let container = document.getElementsByTagName('article')[0];
+    var container = document.getElementsByTagName('article')[0];
 
     while (container.firstChild) {
         container.removeChild(container.firstChild);
     }
 
-    let button = document.createElement('BUTTON');
+    var button = document.createElement('BUTTON');
     button.setAttribute('id', 'start-btn');
     button.setAttribute('onclick', 'goToArticles()');
-    button.innerHTML = 'Jetzt bestellen';
+    button.innerHTML = '<h3>Jetzt bestellen</h3>';
 
-    let section = document.createElement('SECTION');
+    var section = document.createElement('SECTION');
     section.setAttribute('id', 'start');
     section.appendChild(button);
 
@@ -382,17 +385,18 @@ function goToIndex(update) {
  *
  * Finally the user is notified that the pizza was successfully added and the sliding HTML cart window is updated.
  */
-function addToCart(id) {
-    let cart = dataStore.getCart() ? dataStore.getCart() : {articles: [], total_price: 0.0};
-    let article = {};
+function addToCart(id, amount) {
+    var cart = getCart() ? getCart() : {articles: [], total_price: 0.0};
+    var article = {};
+    amount = parseInt(amount);
 
     article.id = cart.articles.length;
     article.article_id = id;
 
-    let extra_ingredients = [];
+    var extra_ingredients = [];
 
-    let checkboxes = document.getElementsByTagName('input');
-    for (let i = 0; i < checkboxes.length; i++) {
+    var checkboxes = document.getElementsByTagName('input');
+    for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
             extra_ingredients.push({id: checkboxes[i].getAttribute('content')});
             checkboxes[i].checked = false;
@@ -401,37 +405,48 @@ function addToCart(id) {
 
     article.extra_ingredients = extra_ingredients;
 
-    let found_in_cart = false;
+    var found_in_cart = false;
 
-    for (let i = 0; (i < cart.articles.length) && !found_in_cart; i++) {
+    for (var i = 0; (i < cart.articles.length) && !found_in_cart; i++) {
         if (cart.articles[i].article_id == article.article_id) {
             if (JSON.stringify(cart.articles[i].extra_ingredients) == JSON.stringify(article.extra_ingredients)) {
-                cart.articles[i].amount++;
+                cart.articles[i].amount += amount;
                 found_in_cart = true;
             }
         }
     }
 
     if (!found_in_cart) {
-        article.amount = 1;
+        article.amount = amount;
         cart.articles.push(article);
     }
 
-    cart.total_price += dataStore.getArticleById(id).base_price;
+    cart.total_price += calculateSinglePriceFromCartArticle(article) * article.amount;
 
-
-    dataStore.saveCart(cart);
+    saveCart(cart);
     //updateCart();
-    console.log(dataStore.getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!'); //alert
+    alert(amount + 'x ' + getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!'); //
 
     buildCartFromLocalStorage();
 }
 
-function removeFromCart(id, extras) {
-    let cart = dataStore.getCart();
+function calculateSinglePriceFromCartArticle(cartArticle) {
+    price = 0;
+    price += getArticleById(cartArticle.article_id).base_price;    //TODO; obtain tax and process VAT
 
-    for (let i = 0; i < cart.articles.length; i++){
-        let article = cart.articles[i];
+    for (var j = 0; j < cartArticle.extra_ingredients.length; ++j) {
+        price += getIngredientById(cartArticle.extra_ingredients[j].id).price
+    }
+
+    return price;
+}
+
+/**/
+function removeFromCart(id, extras) {
+    var cart = getCart();
+
+    for (var i = 0; i < cart.articles.length; i++) {
+        var article = cart.articles[i];
         if (article.article_id == id){
             if (getExtraIngredientsAsString(article.extra_ingredients) == extras){
                 if (article.amount > 1){
@@ -440,8 +455,11 @@ function removeFromCart(id, extras) {
                 else{
                     cart.articles.splice(i, 1);
                 }
-                cart.total_price -= dataStore.getArticleById(id).base_price;
-                dataStore.saveCart(cart);
+            for (var j = 0; j < article.extra_ingredients.length; ++j) {
+                cart.total_price -= getIngredientById(article.extra_ingredients[j].id).price
+            }
+                cart.total_price -= getArticleById(id).base_price;
+                saveCart(cart);
                 buildCartFromLocalStorage();
                 return;
             }
@@ -449,14 +467,15 @@ function removeFromCart(id, extras) {
     }
 }
 
+/**/
 function getExtraIngredientsAsString(extras) {
-    let output = "";
-    for (let i = 0; i < extras.length; i++) {
+    var output = "";
+    for (var i = 0; i < extras.length; i++) {
         output += "+ ";
         output += (dataStore.getIngredientById(extras[i].id).name);
         output += "<br>\n";
     }
-    return output.substring(0, output.length - 2);
+    return output.substring(0, output.length - 5);
 }
 
 /*
@@ -470,8 +489,8 @@ function getExtraIngredientsAsString(extras) {
  * Because of that there is absolutely no functional difference between an initial build up and an update.
  */
 function buildCartFromLocalStorage() {
-    let cart = dataStore.getCart() ? dataStore.getCart() : {articles: [], total_price: 0.0};
-    let cart_table = document.getElementsByTagName('tbody')[0];
+    var cart = getCart() ? getCart() : {articles: [], total_price: 0.0};
+    var cart_table = document.getElementsByTagName('tbody')[0];
 
     if (!cart_table) {
         return;
@@ -481,29 +500,34 @@ function buildCartFromLocalStorage() {
         cart_table.removeChild(cart_table.lastChild);
     }
 
-    let row;
-    let col;
+    var row;
+    var col;
 
-    for (let i = 0; i < cart.articles.length; i++) {
+    for (var i = 0; i < cart.articles.length; i++) {
         row = document.createElement('TR');
         row.setAttribute('class', 'shp-cart-art-row');
 
-        let article = cart.articles[i];
+        var cartArticle = cart.articles[i];
 
         col = document.createElement('TD');
-        col.innerHTML = article.amount;
+        col.innerHTML = cartArticle.amount;
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = dataStore.getArticleById(article.article_id).name + "<br>" + getExtraIngredientsAsString(article.extra_ingredients);;
+        col.innerHTML = getArticleById(cartArticle.article_id).name;
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = priceToString(dataStore.getArticleById(article.article_id).base_price);
+        col.innerHTML = getExtraIngredientsAsString(cartArticle.extra_ingredients);
+        row.appendChild(col);
+
+        var cartArticleSinglePrice = calculateSinglePriceFromCartArticle(cartArticle);
+        col = document.createElement('TD');
+        col.innerHTML = priceToString(cartArticleSinglePrice);
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = priceToString(article.amount * dataStore.getArticleById(article.article_id).base_price);
+        col.innerHTML = priceToString(cartArticle.amount * cartArticleSinglePrice);
         row.appendChild(col);
 
         col = document.createElement('TD');
@@ -556,7 +580,7 @@ function priceToString(price) {
     }
 
     price = price + '';
-    let price_parts = price.split(".");
+    var price_parts = price.split(".");
     price = price_parts[0] + ',';
 
     if (price_parts.length == 1) {
@@ -615,7 +639,7 @@ function forward(url, update) {
 
 /**/
 function updateCart() {
-    let total_cart_price = dataStore.getCart().total_price;
+    var total_cart_price = getCart().total_price;
     if (total_cart_price) {
         notVue.data.template_total_cart_price = total_cart_price.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
         replaceVarsInDOM()
@@ -638,12 +662,12 @@ function updateCart() {
  * Therefor the validation is performed only by the backend for the sake of security and performance.
  * */
 function doCheckout() {
-    let formData = document.getElementsByTagName('input');
+    var formData = document.getElementsByTagName('input');
     console.log(formData);
 
-    let submitData = {};
+    var submitData = {};
 
-    let customer = {};
+    var customer = {};
 
     customer.id = 0;
     customer.type = 'Person';
@@ -660,14 +684,14 @@ function doCheckout() {
     customer.address.streetAddress = formData.strasse.value + ' ' + formData.hausnr.value;
 
     submitData.customer = customer;
-    submitData.articles = dataStore.getCart().articles;
-    submitData.total_price = dataStore.getCart().total_price;
+    submitData.articles = getCart().articles;
+    submitData.total_price = getCart().total_price;
     submitData.payment_method = 0;
     submitData.order_method_id = 0;
 
     doPost("/cart/checkout", JSON.stringify(submitData), function () {
-        console.log("Checkout successful!"); //alert
-        dataStore.clearCart();
+        alert("Checkout erfolgreich! Ihre Bestellung wird bearbeitet"); //alert
+        clearCart();
         buildCartFromLocalStorage();
         forward("/");
     });
@@ -692,104 +716,104 @@ function doCheckout() {
  * Lastly the cart is updated for the possible case of an old, not finished ordering process.
  * */
 function initMain() {
-    if (!dataStore.getRevisions()) {
+    if (!getRevisions()) {
         rev_setup = {articles: null, ingredients: null, shippingmethods: null, paymentmethods: null, taxes: null};
-        dataStore.saveRevisions(rev_setup)
+        saveRevisions(rev_setup)
     }
 
 
-    if (!dataStore.getAllArticles()) {
+    if (!getAllArticles()) {
         doGet('/articles', function (data, status, newETag) {
-            dataStore.saveAllArticles(data)
+            saveAllArticles(data)
         })
     } else {
-        let etag = dataStore.getRevisions().articles;
+        var etag = getRevisions().articles;
         doGet('/articles', function (data, status, newEtag) {
             switch (status) {
                 case 304:
                     //all fine
                     break;
                 case 200:
-                    dataStore.saveAllArticles(data);
-                    let newrevs = dataStore.getRevisions();
+                    saveAllArticles(data);
+                    var newrevs = getRevisions();
                     newrevs.articles = newEtag;
-                    dataStore.saveRevisions(newrevs)
+                    saveRevisions(newrevs)
             }
         }, etag)
     }
-    if (!dataStore.getAllIngredients()) {
+    if (!getAllIngredients()) {
         doGet('/ingredients', function (data, status, newETag) {
-            dataStore.saveAllIngredients(data)
+            saveAllIngredients(data)
         })
     } else {
-        let etag = dataStore.getRevisions().ingredients;
+        var etag = getRevisions().ingredients;
         doGet('/ingredients', function (data, status, newEtag) {
             switch (status) {
                 case 304:
                     //all fine
                     break;
                 case 200:
-                    dataStore.saveAllIngredients(data);
-                    let newrevs = dataStore.getRevisions();
+                    saveAllIngredients(data);
+                    var newrevs = getRevisions();
                     newrevs.ingredients = newEtag;
-                    dataStore.saveRevisions(newrevs)
+                    saveRevisions(newrevs)
             }
         }, etag)
     }
-    if (!dataStore.getshippingMethods()) {
+    if (!getshippingMethods()) {
         doGet('/shippingmethods', function (data, status, newETag) {
-            dataStore.saveshippingMethods(data)
+            saveshippingMethods(data)
         })
     } else {
-        let etag = dataStore.getRevisions().shippingmethods;
+        var etag = getRevisions().shippingmethods;
         doGet('/shippingmethods', function (data, status, newEtag) {
             switch (status) {
                 case 304:
                     //all fine
                     break;
                 case 200:
-                    dataStore.saveshippingMethods(data);
-                    let newrevs = dataStore.getRevisions();
+                    saveshippingMethods(data);
+                    var newrevs = getRevisions();
                     newrevs.shippingmethods = newEtag;
-                    dataStore.saveRevisions(newrevs)
+                    saveRevisions(newrevs)
             }
         }, etag)
     }
-    if (!dataStore.getPaymentMethods()) {
+    if (!getPaymentMethods()) {
         doGet('/paymentmethods', function (data, status, newETag) {
-            dataStore.savePaymentMethods(data)
+            savePaymentMethods(data)
         })
     } else {
-        let etag = dataStore.getRevisions().paymentmethods;
+        var etag = getRevisions().paymentmethods;
         doGet('/paymentmethods', function (data, status, newEtag) {
             switch (status) {
                 case 304:
                     //all fine
                     break;
                 case 200:
-                    dataStore.savePaymentMethods(data);
-                    let newrevs = dataStore.getRevisions();
+                    savePaymentMethods(data);
+                    var newrevs = getRevisions();
                     newrevs.paymentmethods = newEtag;
-                    dataStore.saveRevisions(newrevs)
+                    saveRevisions(newrevs)
             }
         }, etag)
     }
-    if (!dataStore.getTaxes()) {
+    if (!getTaxes()) {
         doGet('/taxes', function (data, status, newETag) {
-            dataStore.saveTaxes(data)
+            saveTaxes(data)
         })
     } else {
-        let etag = dataStore.getRevisions().taxes;
+        var etag = getRevisions().taxes;
         doGet('/taxes', function (data, status, newEtag) {
             switch (status) {
                 case 304:
                     //all fine
                     break;
                 case 200:
-                    dataStore.saveTaxes(data);
-                    let newrevs = dataStore.getRevisions();
+                    saveTaxes(data);
+                    var newrevs = getRevisions();
                     newrevs.taxes = newEtag;
-                    dataStore.saveRevisions(newrevs)
+                    saveRevisions(newrevs)
             }
         }, etag)
     }
@@ -801,7 +825,7 @@ function initMain() {
 
 }
 
-let url = window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, "");
+var url = window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, "");
 url = '/' + url;
 window.history.replaceState({urlPath: url}, '', url);
 window.addEventListener('popstate', function (event) {
