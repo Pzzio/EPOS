@@ -1,6 +1,6 @@
 var isInitialized = false;
 var go_back_uri = [];
-const CURRENCY_SYMBOL = ' €';
+const CURRENCY_SYMBOL = ' \u20AC';
 const MAX_NUMBER_OF_PIZZAS_TO_ADD = 5;
 
 const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
@@ -127,7 +127,7 @@ function goToArticleView(id, update) {
 
     var button = document.createElement('BUTTON');
     button.setAttribute('id', 'addToCart');
-  
+
     button.setAttribute('onclick', 'addToCart(' + id + ', document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value)');
     button.innerHTML = '<h3>In den Warenkorb</h3>';
 
@@ -149,7 +149,7 @@ function goToArticleView(id, update) {
     for (var i = 0; i < ingr.length; i++) {
         var list_element = document.createElement('LI');
 
-        let label = document.createElement('DIV');
+        var label = document.createElement('DIV');
         var extra_ingredient = (getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
@@ -517,8 +517,8 @@ function buildCartFromLocalStorage() {
         tmp = document.createElement('BUTTON');
         tmp.innerHTML = 'Entfernen';
         tmp.setAttribute('onclick',
-            'removeFromCart(' + article.article_id  + ',"' +
-            getExtraIngredientsAsString(article.extra_ingredients) + '")');
+            'removeFromCart(' + cartArticle.article_id  + ',"' +
+            getExtraIngredientsAsString(cartArticle.extra_ingredients) + '")');
 
         col.appendChild(tmp);
         row.appendChild(col);

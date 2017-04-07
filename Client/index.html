@@ -57,15 +57,11 @@
                 <th class="shp-cart-row shp-cart-row-price">
                     Preis
                 </th>
-                <th>
-                    <button onclick="(function(){clearCart(); buildCartFromLocalStorage();})()">alles<br>entfernen
-                    </button>
-                </th>
             </tr>
         </table>
         <div class="shp-cart-btn">
             <button onclick="goToCheckout()"><h3>Zur Kasse</h3></button>
-            <button onclick="(function(){dataStore.clearCart(); buildCartFromLocalStorage();})()"><h3>Warenkorb leeren</h3></button>
+            <button onclick="(function(){clearCart(); buildCartFromLocalStorage();})()"><h3>Warenkorb leeren</h3></button>
         </div>
     </div>
 </div>
