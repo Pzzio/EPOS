@@ -127,8 +127,9 @@ function goToArticleView(id, update) {
 
     var button = document.createElement('BUTTON');
     button.setAttribute('id', 'addToCart');
+  
     button.setAttribute('onclick', 'addToCart(' + id + ', document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value)');
-    button.innerHTML = 'In den Warenkorb';
+    button.innerHTML = '<h3>In den Warenkorb</h3>';
 
     document.getElementsByTagName('h2')[0].innerHTML = json.name;
 
@@ -148,10 +149,12 @@ function goToArticleView(id, update) {
     for (var i = 0; i < ingr.length; i++) {
         var list_element = document.createElement('LI');
 
-        var label = document.createElement('LABEL');
+        let label = document.createElement('DIV');
         var extra_ingredient = (getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
+;
+        label.setAttribute('class', 'art-span')
 
         var ingredient_img = document.createElement('IMG');
         ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
@@ -161,6 +164,7 @@ function goToArticleView(id, update) {
         var input = document.createElement('INPUT');
         input.setAttribute('type', 'checkbox');
         input.setAttribute('name', 'zutat');
+        input.setAttribute('class', 'checkbox-custom')
         input.setAttribute('content', ingr[i].id);
 
         label.appendChild(input);
@@ -452,9 +456,9 @@ function getExtraIngredientsAsString(extras) {
     var output = "";
     for (var i = 0; i < extras.length; i++) {
         output += (getIngredientById(extras[i].id).name);
-        output += ",\n";
+        output += ",<br>";
     }
-    return output.substring(0, output.length - 2);
+    return output.substring(0, output.length - 5);
 }
 
 /*
@@ -509,12 +513,16 @@ function buildCartFromLocalStorage() {
         col.innerHTML = priceToString(cartArticle.amount * cartArticleSinglePrice);
         row.appendChild(col);
 
-        col = document.createElement('BUTTON');
-        col.innerHTML = 'entfernen';
-        col.setAttribute('onclick',
+        col = document.createElement('TD');
+        tmp = document.createElement('BUTTON');
+        tmp.innerHTML = 'Entfernen';
+        tmp.setAttribute('onclick',
             'removeFromCart(' + article.article_id  + ',"' +
             getExtraIngredientsAsString(article.extra_ingredients) + '")');
+
+        col.appendChild(tmp);
         row.appendChild(col);
+
 
         cart_table.appendChild(row);
     }
