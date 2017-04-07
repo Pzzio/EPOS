@@ -260,15 +260,9 @@ function goToCheckout(update) {
         {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'email', content: 'E-Mail:', type: 'email', name: 'email'},
-        {
-            nvupdate: 'telefon',
-            content: 'Telefon:',
-            type: 'tel',
-            name: 'tel',
-            pattern: '^([\u002B]([0-9]|[0-9][0-9])|00([0-9]|[0-9][0-9])|001([0-9]|[0-9][0-9])|0)[0-9\u0020\u002D\u002F]{3,}$'
-        },
+        {nvupdate: 'telefon', content: 'Telefon:',  type: 'tel', name: 'tel', pattern: '^([\u002B]([0-9]|[0-9][0-9])|00([0-9]|[0-9][0-9])|001([0-9]|[0-9][0-9])|0)[0-9\u0020\u002D\u002F]{3,}$'},
         {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[A-Za-z\u0020\u002D]+$'},
-        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr', pattern: '^[1-9][0-9]*[A-Za-z]?$'},
+        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr', pattern: '^([1-9][0-9]*(\u002F[1-9][0-9]?|[A-Za-z])?)$'},
         {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz', pattern: '^[0-9]{4,5}$'},
         {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
@@ -416,7 +410,7 @@ function addToCart(id, amount) {
 
     saveCart(cart);
     //updateCart();
-    console.log(getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!'); //alert
+    alert(amount + 'x ' + getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!'); //
 
     buildCartFromLocalStorage();
 }
@@ -508,8 +502,8 @@ function buildCartFromLocalStorage() {
         col = document.createElement('BUTTON');
         col.innerHTML = 'entfernen';
         col.setAttribute('onclick',
-            'removeFromCart(' + article.article_id  + ',"' +
-            getExtraIngredientsAsString(article.extra_ingredients) + '")');
+            'removeFromCart(' + article.article_id  + ',\'' +
+            getExtraIngredientsAsString(article.extra_ingredients) + '\')');
         row.appendChild(col);
 
         cart_table.appendChild(row);
@@ -649,7 +643,7 @@ function doCheckout() {
     submitData.order_method_id = 0;
 
     doPost("/cart/checkout", JSON.stringify(submitData), function () {
-        console.log("Checkout successful!"); //alert
+        alert("Checkout erfolgreich! Ihre Bestellung wird bearbeitet"); //alert
         clearCart();
         buildCartFromLocalStorage();
         forward("/");
