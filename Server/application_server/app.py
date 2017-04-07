@@ -14,19 +14,12 @@ from cookies import *
 from datastore import *
 from validation import RequestValidator
 
-# from cookies import CookieManager
-# from datastore import JsonDto, Datastore  # will work even if PyCharm cries
-
-#from Server.application_server.datastore import Datastore
-
-#from Server.application_server import cookies
-
 virtual_routes = ["articles", "article", "cart"]
 
 VERSION = 1.1
 
 CLIENT_DIRECTORY = "../../Client"
-
+CACHE_TIME_S = str(60 * 60 * 24 * 30);
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     pass
@@ -457,10 +450,7 @@ def make_request_handler_class():
                     if req_etag and req_etag == str(hash(payload)):
                         response_status = http.HTTPStatus.NOT_MODIFIED
                         self.intermediate_headers.append(('ETag', hash(payload)))
-                        self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
-                        self.intermediate_headers.append(('Expires',
-                                                          str(time.strftime("%a, %d %b %Y %T GMT",
-                                                                            time.gmtime(time.time() + 60)))))
+                        self.intermediate_headers.append(('Cache-control', "public, max-age=" + CACHE_TIME_S))
                         self.intermediate_headers.append(('Last-Modified', 0))
                         self.finalize_header(response_status, "")
                         return
@@ -468,11 +458,7 @@ def make_request_handler_class():
 
                     if cache_it:
                         self.intermediate_headers.append(('ETag', hash(payload)))
-                        self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
-                        self.intermediate_headers.append(('Expires',
-                                                          str(time.strftime("%a, %d %b %Y %T GMT",
-                                                                            time.gmtime(time.time() + 60)))))
-                        self.intermediate_headers.append(('Last-Modified', 0))
+                        self.intermediate_headers.append(('Cache-control', "public, max-age=" + CACHE_TIME_S))
 
                     self.finalize_header(200, "")
 

@@ -61,11 +61,13 @@
             </tr>
         </table>
         <div class="shp-cart-btn">
-            <button onclick="goToCheckout()"><h3>Zur Kasse</h3></button>
+            <button onclick="(function(){goToCheckout(); hideMenu({stopPropagation: function() {}});})()"><h3>Zur Kasse</h3></button>
             <button onclick="(function(){clearCart(); buildCartFromLocalStorage();})()"><h3>Warenkorb leeren</h3></button>
         </div>
     </div>
 </div>
+
+<div id="toaster">Some text some message..</div>
 
 <script src="/js/notVue.js"></script>
 <script src="/js/notVueInstructions.js"></script>
