@@ -507,7 +507,7 @@ function buildCartFromLocalStorage() {
         row.appendChild(col);
 
         col = document.createElement('TD');
-        tmp = document.createElement('BUTTON');
+        let tmp = document.createElement('BUTTON');
         tmp.innerHTML = 'Entfernen';
         tmp.setAttribute('onclick',
             'removeFromCart(' + article.article_id  + ',"' +
