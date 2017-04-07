@@ -153,8 +153,7 @@ function goToArticleView(id, update) {
         var extra_ingredient = (getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
-;
-        label.setAttribute('class', 'art-span')
+        label.setAttribute('class', 'art-span');;;
 
         var ingredient_img = document.createElement('IMG');
         ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
@@ -164,7 +163,7 @@ function goToArticleView(id, update) {
         var input = document.createElement('INPUT');
         input.setAttribute('type', 'checkbox');
         input.setAttribute('name', 'zutat');
-        input.setAttribute('class', 'checkbox-custom')
+        input.setAttribute('class', 'checkbox-custom');;;
         input.setAttribute('content', ingr[i].id);
 
         label.appendChild(input);
@@ -242,6 +241,11 @@ function goToArticles(update) {
  * Thus the corresponding action is omitted.
  */
 function goToCheckout(update) {
+    if (!getCart().articles.length > 0) {
+        alert('Es muss sich mindestens ein Artikel im Warenkorb befinden, um zur Kasse gehen zu können.');
+        goToIndex();
+        return;
+    }
     document.getElementsByTagName('h2')[0].innerHTML = 'Bitte tragen Sie ihre persoenlichen Daten ein';
 
     var container = document.getElementsByTagName('article')[0];
@@ -298,8 +302,14 @@ function goToCheckout(update) {
     var section_2 = document.createElement('SECTION');
     section_2.setAttribute('id', 'ship-cart-total');
 
+    articleCount = 0;
+    cartArticles = getCart().articles;
+    for (var i = 0; i < cartArticles.length; ++i) {
+        articleCount += cartArticles[i].amount;
+    }
+
     fields = [
-        ('Artikel Anzahl: ' + (getCart().articles ? getCart().articles.length : 0))
+        ('Artikel Anzahl: ' + articleCount)
     ];
 
     fields.push('Gesamtpreis: ' + priceToString((getCart().total_price ? getCart().total_price : 0)));
@@ -788,6 +798,8 @@ function initMain() {
             }
         }, etag)
     }
+
+    saveCart(getCart() ? getCart() : {articles: [], total_price: 0.0});
 
     buildCartFromLocalStorage();
 
