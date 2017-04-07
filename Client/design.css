@@ -353,6 +353,9 @@ footer p {
 
 }
 
+#shipping-form  {
+    margin-top: 5px;
+}
 #shipping-form table h3 {
     display: block;
     font-size: 1.05em;
@@ -367,7 +370,7 @@ footer p {
 }
 
 #shipping-form td {
-    padding-top: 5px;
+    padding-top: 3px;
     font-size: medium;
 }
 #shipping-form button {
@@ -388,6 +391,53 @@ footer p {
 #shipping-abort  {
     width: 30%;
 }
+
+.payment-container  {
+    margin-top: 25px;
+    width: 100%;
+}
+.payment-container  {
+    margin-top: 25px;
+    width: 100%;
+}
+.payment-container label {
+    border-radius: 25px;
+    padding: 10px 10px 10px 10px;
+    background: linear-gradient(to bottom,
+ rgba(255, 255, 255, 1) 0%,
+ rgba(255, 255, 255, 1) 50%,
+ rgba(0, 140, 186, 1) 50%,
+ rgba(0, 140, 186, 1) 100%) no-repeat;
+    background-size: 100% 200%;
+    border: solid medium #008CBA;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    transition: all .2s ease-out;
+    cursor: pointer;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.payment-container label:hover {
+    background-position: 0 100%;
+    color: white;
+}
+
+.payment-container input:checked {
+    background-color: #008CBA;
+}
+
+.payment-container input {
+    height: 20px;
+    width: 20px;
+    background-color: white;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid grey;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
 #shipping-order  {
     width: 60%;
     margin-right:5%;

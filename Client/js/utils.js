@@ -148,6 +148,7 @@ function goToArticleView(id, update) {
     button.setAttribute('id', 'addToCart');
 
     button.setAttribute('onclick', 'addToCart(' + id + ', document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value)');
+    console.log('onclick', 'addToCart(' + id + ', document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value)');
     button.innerHTML = '<h3>In den Warenkorb</h3>';
 
     document.getElementsByTagName('h2')[0].innerHTML = json.name;
@@ -343,6 +344,45 @@ function goToCheckout(update) {
         table.appendChild(tr);
     }
     form.appendChild(table);
+
+    var paymentContainer = document.createElement('DIV');
+    paymentContainer.setAttribute('class', 'payment-container');
+
+    var label  = document.createElement('LABEL');
+    label.innerHTML = 'Bar';
+    label.setAttribute('for', 'bar')
+    var option = document.createElement('INPUT');
+    option.setAttribute('value', 'bar');
+    option.setAttribute('id', 'bar');
+    option.setAttribute('type', 'radio');
+    option.setAttribute('name', 'payment');
+    label.appendChild(option);
+    paymentContainer.appendChild(label);
+
+    var label  = document.createElement('LABEL');
+    label.innerHTML = 'Paypal';
+    label.setAttribute('for', 'paypal')
+    var option = document.createElement('INPUT');
+    option.setAttribute('value', 'paypal');
+    option.setAttribute('name', 'payment');
+    option.setAttribute('id', 'paypal');
+
+    option.setAttribute('type', 'radio');
+    label.appendChild(option);
+    paymentContainer.appendChild(label);
+
+    var label  = document.createElement('LABEL');
+    label.innerHTML = 'Kreditkarte';
+    label.setAttribute('for', 'creditcard')
+    var option = document.createElement('INPUT');
+    option.setAttribute('value', 'creditcard');
+    option.setAttribute('id', 'creditcard');
+    option.setAttribute('name', 'payment');
+    option.setAttribute('type', 'radio');
+    label.appendChild(option);
+    paymentContainer.appendChild(label);
+
+    form.appendChild(paymentContainer);
 
     var button = document.createElement('BUTTON');
     button.setAttribute('id', 'shipping-order');
