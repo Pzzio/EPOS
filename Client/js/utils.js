@@ -117,11 +117,14 @@ function goToArticleView(id, update) {
     img.setAttribute('src', json.thumb_img_url);
     img_container.appendChild(img);
 
+    var buttonContainer = document.createElement('DIV');
+    buttonContainer.setAttribute('class', "shp-cart-btn-box");
+
     var select = document.createElement('SELECT');
     for (var i = 1; i <= MAX_NUMBER_OF_PIZZAS_TO_ADD; i++) {
         var option = document.createElement('OPTION');
         option.setAttribute('value', i + '');
-        option.innerHTML = '' + i;
+        option.innerHTML = '' + i + ' mal';
         select.appendChild(option);
     }
 
@@ -159,7 +162,11 @@ function goToArticleView(id, update) {
         var ingredient_img = document.createElement('IMG');
         ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
 
+        var ingredient_name = document.createElement('h3');
+        ingredient_name.innerHTML = 'Extra ' + extra_ingredient.name;
+
         label.appendChild(ingredient_img);
+        label.appendChild(ingredient_name);
 
         var input = document.createElement('INPUT');
         input.setAttribute('type', 'checkbox');
@@ -175,8 +182,9 @@ function goToArticleView(id, update) {
     var list_section = document.createElement('SECTION');
     list_section.setAttribute('id', 'ingredients-form');
     list_section.appendChild(list);
-    list_section.appendChild(select);
-    list_section.appendChild(button);
+    buttonContainer.appendChild(select);
+    buttonContainer.appendChild(button);
+    list_section.appendChild(buttonContainer);
 
     container.appendChild(img_container);
     container.appendChild(list_section);
@@ -267,13 +275,22 @@ function goToCheckout(update) {
         {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
     ];
+    var table = document.createElement('TABLE');
+    var tr;
+    var td;
     for (var i = 0; i < fields.length; i++) {
+        tr = document.createElement('TR');
+        td = document.createElement('TD');
+
         var label = document.createElement('LABEL');
         var input = document.createElement('INPUT');
-        var breakln = document.createElement('BR');
 
         label.innerHTML = fields[i].content;
 
+        td.appendChild(label);
+        tr.appendChild(td);
+
+        td = document.createElement('TD');
         input.setAttribute('nv-model', fields[i].nvupdate);
         input.setAttribute('type', fields[i].type);
         input.setAttribute('name', fields[i].name);
@@ -283,14 +300,14 @@ function goToCheckout(update) {
             input.required = true;
         }
 
-        label.appendChild(input);
-        form.appendChild(label);
-        form.appendChild(breakln);
+        td.appendChild(input);
+        tr.appendChild(td);
+        table.appendChild(tr);
     }
-
+    form.appendChild(table);
     var button = document.createElement('BUTTON');
     button.setAttribute('id', 'shipping');
-    button.innerHTML = 'Kostenpflichtig bestellen';
+    button.innerHTML = '<h3>Kostenpflichtig bestellen</h3>';
     form.appendChild(button);
 
     section_1.appendChild(form);
@@ -455,10 +472,10 @@ function removeFromCart(id, extras) {
 function getExtraIngredientsAsString(extras) {
     var output = "";
     for (var i = 0; i < extras.length; i++) {
-        output += (getIngredientById(extras[i].id).name);
-        output += ",<br>";
+        output += "<br> + " + (getIngredientById(extras[i].id).name);
     }
-    return output.substring(0, output.length - 5);
+    /* we dont need formatting here, making sort of a list here */
+    return output.substring(0, output.length - 0);
 }
 
 /*
@@ -493,15 +510,12 @@ function buildCartFromLocalStorage() {
         var cartArticle = cart.articles[i];
 
         col = document.createElement('TD');
-        col.innerHTML = cartArticle.amount;
+        col.innerHTML = cartArticle.amount + 'x';
         row.appendChild(col);
 
         col = document.createElement('TD');
         col.innerHTML = getArticleById(cartArticle.article_id).name;
-        row.appendChild(col);
-
-        col = document.createElement('TD');
-        col.innerHTML = getExtraIngredientsAsString(cartArticle.extra_ingredients);
+        col.innerHTML += getExtraIngredientsAsString(cartArticle.extra_ingredients);
         row.appendChild(col);
 
         var cartArticleSinglePrice = calculateSinglePriceFromCartArticle(cartArticle);

@@ -259,6 +259,7 @@ footer p {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    vertical-align: sub;
 }
 
 .shp-cart-row {
@@ -457,10 +458,28 @@ footer p {
     height: 100px;
     display: flex;
 }
-#addToCart {
+
+.art-span h3{
+    margin-top: 35px;
+    margin-bottom: 35px;
+    margin-right: 20px;
+}
+
+.shp-cart-btn-box {
     position: relative;
+    vertical-align: top;
     width:80%;
     left: -20vh;
+}
+.shp-cart-btn-box select {
+    padding: 15px 10px 15px 10px;
+    margin-right: 20px;
+    font-size: 1.0em;
+    font-weight: bold;
+}
+
+.shp-cart-btn-box button, select {
+    position: relative;
     border-radius: 25px;
     padding: 0 15px 0 15px;
     background: linear-gradient(to bottom,
