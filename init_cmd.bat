@@ -1,3 +1,3 @@
-cd /d %~dp0Server
-py application_server\app.py
+cd /d %~dp0Server\application_server
+py app.py
 pause

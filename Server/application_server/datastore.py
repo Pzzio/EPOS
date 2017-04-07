@@ -3,7 +3,7 @@ import queue
 
 VERSION = 1.0
 
-LOCATION = "./datastore/"
+LOCATION = "../datastore/"
 FILE_PRIMARY = "primary.json"
 FILE_SECONDARY = "secondary.json"
 
@@ -23,7 +23,7 @@ class JsonDto:
 
 class Datastore:
   def __init__(self):
-    with open(LOCATION + FILE_PRIMARY) as data_file:
+    with open(LOCATION + FILE_PRIMARY, encoding='UTF-8') as data_file:
       if data_file:
         self.primary = JsonDto(data_file.read())
     with open(LOCATION + FILE_SECONDARY) as data_file:
@@ -32,12 +32,12 @@ class Datastore:
     self.operation_queue = queue.Queue()
 
   def save(self):
-    with open(LOCATION + FILE_PRIMARY, 'r+') as f:
+    with open(LOCATION + FILE_PRIMARY, 'r+', encoding='UTF-8') as f:
       text = self.primary.serialize()
       f.seek(0)
       f.write(text)
       f.truncate()
-    with open(LOCATION + FILE_SECONDARY, 'r+') as f:
+    with open(LOCATION + FILE_SECONDARY, 'r+', encoding='UTF-8') as f:
       text = self.secondary.serialize()
       f.seek(0)
       f.write(text)
