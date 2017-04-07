@@ -319,6 +319,11 @@ footer p {
     transition: all .2s ease-out;
     cursor: pointer;
 }
+.shp-cart-btn button:hover {
+    background-position: 0 100%;
+    color: white;
+}
+
 #ship-cart-total {
     display: block;
     font-size: 1.05em;
@@ -362,6 +367,12 @@ footer p {
     cursor: pointer;
 
 }
+
+#shipping-form button:hover {
+    background-position: 0 100%;
+    color: white;
+}
+
 .shp-cart-art-row button {
     margin-top: 3px;
     margin-bottom: 3px;
@@ -380,6 +391,10 @@ footer p {
     transition: all .2s ease-out;
     cursor: pointer;
 
+}
+.shp-cart-art-row button:hover {
+    background-position: 0 100%;
+    color: white;
 }
 
 .warenkorb h1 {
@@ -424,9 +439,12 @@ footer p {
     cursor: pointer;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
+.checkbox-custom:hover {
+     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.6), 0 6px 20px 0 rgba(0,0,0,0.69);
+}
 
 .checkbox-custom:checked {
-    background-color: #008b12;
+    background-color: #008CBA;
 }
 .ingredient-label {
     margin-top: 35px;
@@ -455,4 +473,9 @@ footer p {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     transition: all .2s ease-out;
     cursor: pointer;
+}
+
+#addToCart:hover {
+    background-position: 0 100%;
+    color: white;
 }
