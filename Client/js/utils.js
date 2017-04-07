@@ -148,7 +148,6 @@ function goToArticleView(id, update) {
     button.setAttribute('id', 'addToCart');
 
     button.setAttribute('onclick', 'addToCart(' + id + ', document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value)');
-    console.log('onclick', 'addToCart(' + id + ', document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value)');
     button.innerHTML = '<h3>In den Warenkorb</h3>';
 
     document.getElementsByTagName('h2')[0].innerHTML = json.name;
@@ -172,8 +171,6 @@ function goToArticleView(id, update) {
         var extra_ingredient = (getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
-      
-      label.setAttribute('class', 'art-span');
 
         var ingredient_img = document.createElement('IMG');
         ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
