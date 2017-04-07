@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="ISO-8859-1">
     <link rel="stylesheet" href="/design.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -40,32 +40,30 @@
         <!-- empty so user cannot click website in the background -->
     </div>
 
-    <div id="warenkorb">
+    <div class="warenkorb">
         <h1>Warenkorb</h1>
-        <button onclick="goToCheckout()">Zur Kasse</button>
-        <br>
-        <br>
 
-        <table id="shp-cart-content">
+        <table class="shp-cart-content">
             <tr class="shp-cart-row">
-                <td>
-                    Anzahl
-                </td>
-                <td>
-                    Artikelname
-                </td>
-                <td>
-                    Extrazutaten
-                </td>
-                <td>
+                <th class="shp-cart-row shp-cart-row-count">
+                    #
+                </th>
+                <th class="shp-cart-row shp-cart-row-name">
+                    Name / Extras
+                </th>
+                <th class="shp-cart-row shp-cart-row-singleprice">
                     Einzelpreis
-                </td>
-                <td>
+                </th>
+                <th class="shp-cart-row shp-cart-row-price">
                     Preis
-                </td>
-                <td><button onclick="(function(){dataStore.clearCart(); buildCartFromLocalStorage();})()">alles<br>entfernen</button></td>
+                </th>
+                <th class="shp-cart-row shp-cart-row-delete"></th>
             </tr>
         </table>
+        <div class="shp-cart-btn">
+            <button onclick="goToCheckout()"><h3>Zur Kasse</h3></button>
+            <button onclick="(function(){dataStore.clearCart(); buildCartFromLocalStorage();})()"><h3>Warenkorb leeren</h3></button>
+        </div>
     </div>
 </div>
 </body>

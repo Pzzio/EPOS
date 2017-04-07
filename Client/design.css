@@ -215,29 +215,29 @@ footer p {
     float: left;
 }
 
-#warenkorb {
+.warenkorb {
     border-bottom-left-radius: 1vw;
     border-top-left-radius: 1vw;
     width: 40vw;
     background-color: #868686;
-    height: 100vh;
+    margin-top: 1vh;
+    height: 98vh;
     float: right;
     word-break: break-all;
 }
 
-#warenkorb button {
-    float: right;
-}
-
-#shp-cart-content {
-    border-collapse: collapse;
+.shp-cart-content {
     table-layout: fixed;
+    white-space: nowrap;
+    border-collapse: collapse;
     width: 90%;
     margin: auto;
+    text-align: left;
 }
-
-#shp-cart-content td {
-    padding: 5px 0;
+.shp-cart-content td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .shp-cart-row {
@@ -247,15 +247,68 @@ footer p {
 .shp-cart-row td {
     padding: 0;
     margin: 0;
+    white-space: nowrap;
 }
 
+.shp-cart-row-count {
+    width: 10%;
+}
+.shp-cart-row-name {
+    width: 32%;
+}
+.shp-cart-row-singleprice {
+    width: 20%;
+}
+.shp-cart-row-price {
+    width: 18%;
+}
+.shp-cart-row-delete {
+    width: 20%;
+}
 .shp-cart-endrow td {
     margin: 0;
     padding: 0;
     border-top: solid thin black;
 }
+.shp-cart-btn {
+    text-align: center;
+    margin: 5px;
+    float: none;
+    position: absolute;
+    bottom: 2em;
+    right: 10px;
+}
+.shp-cart-btn button {
+    border-radius: 25px;
+    padding: 0 15px 0 15px;
+    background: linear-gradient(to bottom,
+ rgba(255, 255, 255, 1) 0%,
+ rgba(255, 255, 255, 1) 50%,
+ rgba(0, 140, 186, 1) 50%,
+ rgba(0, 140, 186, 1) 100%) no-repeat;
+    background-size: 100% 200%;
+    border: solid medium #008CBA;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    transition: all .2s ease-out;
+    cursor: pointer;
+}
 
-#warenkorb h1 {
+.shp-cart-art-row button {
+    border-radius: 10px;
+    sbackground: linear-gradient(to bottom,
+ rgba(255, 255, 255, 1) 0%,
+ rgba(255, 255, 255, 1) 50%,
+ rgba(0, 140, 186, 1) 50%,
+ rgba(0, 140, 186, 1) 100%) no-repeat;
+    background-size: 100% 200%;
+    border: solid medium #008CBA;
+   <!-- box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); -->
+    transition: all .2s ease-out;
+    cursor: pointer;
+
+}
+
+.warenkorb h1 {
     text-align: center;
 }
 
@@ -281,4 +334,40 @@ footer p {
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
     visibility: visible;
+}
+.checkbox-custom {
+    margin-top: 35px;
+    margin-bottom: 35px;
+    margin-left: 5px;
+    height: 30px;
+    width: 30px;
+    background-color: white;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.checkbox-custom:checked {
+    background-color: lightgreen;
+}
+.art-span {
+height: 100px;
+    display: flex;
+}
+#addToCart {
+    border-radius: 25px;
+    padding: 0 15px 0 15px;
+    background: linear-gradient(to bottom,
+    rgba(0, 140, 186, 0) 0%,
+    rgba(0, 140, 186, 0) 50%,
+    rgba(0, 140, 186, 1) 50%,
+    rgba(0, 140, 186, 1) 100%) no-repeat;
+    background-size: 100% 200%;
+    border: solid medium #008CBA;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    transition: all .2s ease-out;
+    cursor: pointer;
 }
