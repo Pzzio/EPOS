@@ -18,10 +18,10 @@
 // update all changes in the DOM
 
 // NotVue's globals
-let vueInstance = {};               // global reference to vue object
+var vueInstance = {};               // global reference to vue object
 const dynamicElements = [];         // holds all elements which contain
                                     // {{variable}} innerHTML
-let internalData = {};              // holds all data, accessed only via the data-getter
+var internalData = {};              // holds all data, accessed only via the data-getter
 
 // NotVue's constructor
 // Expects an object with all its settings, mainly el and data
@@ -65,7 +65,7 @@ function NotVue(params) {
 function registerAllDynamicElements() {
     const allElements = document.getElementsByTagName("*");
 
-    for (let i = 0; i<allElements.length; i++) {
+    for (var i = 0; i < allElements.length; i++) {
         const element = allElements[i];
 
         // make sure only text is in innerHTML
@@ -80,7 +80,7 @@ function registerAllDynamicElements() {
                     const matches = element.innerHTML.match(/\{\{(.*?)\}\}/);
 
                     if (matches) {
-                        let str = dynamicElement.variableName;
+                        var str = dynamicElement.variableName;
                         str = matches[0];
 
                         str = str.replace('{','');
@@ -105,7 +105,7 @@ function setupInputElements() {
     // Get all elements with a nv-model attribute
     const allElements = document.querySelectorAll("input[nv-model]");
 
-    for (let i = 0; i < allElements.length; i++)
+    for (var i = 0; i < allElements.length; i++)
     {
         const inputElement = allElements[i];
 
@@ -131,12 +131,12 @@ function setupInputElements() {
 // Replace all registered {{variableName}} with content
 function replaceVarsInDOM() {
     // iterate over dynamicElements list
-    for (let i=0; i < dynamicElements.length; i++) {
+    for (var i = 0; i < dynamicElements.length; i++) {
         const element = dynamicElements[i].element;
         const initialInnerHTML = dynamicElements[i].initialContent;
         const variableName = dynamicElements[i].variableName;
 
-        let variableContent = vueInstance.data[variableName];
+        var variableContent = vueInstance.data[variableName];
 
         // prevent content to be set to undefined
         if (!variableContent) {

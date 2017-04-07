@@ -4,10 +4,6 @@ const CURRENCY_SYMBOL = ' €';
 const MAX_NUMBER_OF_PIZZAS_TO_ADD = 5;
 
 const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
-/**
- * @requires "LocalDatastore.js"
- * @type {LocalDatastore}
- */
 
 /*
  * This method pushes the given URI onto the history, both locally for the back button and globally in the browser.
@@ -405,14 +401,24 @@ function addToCart(id, amount) {
         cart.articles.push(article);
     }
 
-    cart.total_price += getArticleById(id).base_price * amount;
-
+    cart.total_price += calculateSinglePriceFromCartArticle(article) * article.amount;
 
     saveCart(cart);
     //updateCart();
     alert(amount + 'x ' + getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!'); //
 
     buildCartFromLocalStorage();
+}
+
+function calculateSinglePriceFromCartArticle(cartArticle) {
+    price = 0;
+    price += getArticleById(cartArticle.article_id).base_price;    //TODO; obtain tax and process VAT
+
+    for (var j = 0; j < cartArticle.extra_ingredients.length; ++j) {
+        price += getIngredientById(cartArticle.extra_ingredients[j].id).price
+    }
+
+    return price;
 }
 
 /**/
@@ -429,6 +435,9 @@ function removeFromCart(id, extras) {
                 else{
                     cart.articles.splice(i, 1);
                 }
+            for (var j = 0; j < article.extra_ingredients.length; ++j) {
+                cart.total_price -= getIngredientById(article.extra_ingredients[j].id).price
+            }
                 cart.total_price -= getArticleById(id).base_price;
                 saveCart(cart);
                 buildCartFromLocalStorage();
@@ -477,33 +486,34 @@ function buildCartFromLocalStorage() {
         row = document.createElement('TR');
         row.setAttribute('class', 'shp-cart-art-row');
 
-        var article = cart.articles[i];
+        var cartArticle = cart.articles[i];
 
         col = document.createElement('TD');
-        col.innerHTML = article.amount;
+        col.innerHTML = cartArticle.amount;
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = getArticleById(article.article_id).name;
+        col.innerHTML = getArticleById(cartArticle.article_id).name;
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = getExtraIngredientsAsString(article.extra_ingredients);
+        col.innerHTML = getExtraIngredientsAsString(cartArticle.extra_ingredients);
+        row.appendChild(col);
+
+        var cartArticleSinglePrice = calculateSinglePriceFromCartArticle(cartArticle);
+        col = document.createElement('TD');
+        col.innerHTML = priceToString(cartArticleSinglePrice);
         row.appendChild(col);
 
         col = document.createElement('TD');
-        col.innerHTML = priceToString(getArticleById(article.article_id).base_price);
-        row.appendChild(col);
-
-        col = document.createElement('TD');
-        col.innerHTML = priceToString(article.amount * getArticleById(article.article_id).base_price);
+        col.innerHTML = priceToString(cartArticle.amount * cartArticleSinglePrice);
         row.appendChild(col);
 
         col = document.createElement('BUTTON');
         col.innerHTML = 'entfernen';
         col.setAttribute('onclick',
-            'removeFromCart(' + article.article_id  + ',\'' +
-            getExtraIngredientsAsString(article.extra_ingredients) + '\')');
+            'removeFromCart(' + article.article_id  + ',"' +
+            getExtraIngredientsAsString(article.extra_ingredients) + '")');
         row.appendChild(col);
 
         cart_table.appendChild(row);

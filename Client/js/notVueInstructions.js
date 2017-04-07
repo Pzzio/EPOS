@@ -26,11 +26,11 @@ function onOrderBtn() {
 
 
 // Opening and closing of the shopping cart
-let roundButton = document.querySelector("#shopping-cart-btn");
+var roundButton = document.querySelector("#shopping-cart-btn");
 roundButton.addEventListener("click", showMenu, false);
 
-let flyoutMenu = document.querySelector("#flyoutMenu");
-let transparentMenu = document.querySelector("#transparentMenu");
+var flyoutMenu = document.querySelector("#flyoutMenu");
+var transparentMenu = document.querySelector("#transparentMenu");
 transparentMenu.addEventListener("click", hideMenu, false);
 
 // show shopping cart
