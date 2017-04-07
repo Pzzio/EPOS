@@ -83,15 +83,16 @@ function doPost(url, cartPayload, callbackAction) {
                     callbackAction();
                     break;
                 case 400:
-                    // Malformed Input was sent
+                    showToasterNotification("Die angegebenen Daten scheinen inkorrekt zu sein!", 3000);
                     break;
                 case 409:
-                    // Checkout price conflict, reload business data
+                    showToasterNotification("Es ist ein Fehler mit den Artikeldaten aufgetreten!", 3000);
                     break;
                 case 404:
+                    showToasterNotification("Ein oder mehrere angefragte Artikel wurden nicht gefunden!", 3000);
                     break;
                 default:
-                    console.log("Unknown response in POS: " + url);
+                    showToasterNotification("Unknown response in POS: " + url);
                     break
             }
         }
@@ -153,7 +154,9 @@ function goToArticleView(id, update) {
         var extra_ingredient = (getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
-        label.setAttribute('class', 'art-span');;;
+        label.setAttribute('class', 'art-span');
+        ;
+        ;
 
         var ingredient_img = document.createElement('IMG');
         ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
@@ -163,7 +166,9 @@ function goToArticleView(id, update) {
         var input = document.createElement('INPUT');
         input.setAttribute('type', 'checkbox');
         input.setAttribute('name', 'zutat');
-        input.setAttribute('class', 'checkbox-custom');;;
+        input.setAttribute('class', 'checkbox-custom');
+        ;
+        ;
         input.setAttribute('content', ingr[i].id);
 
         label.appendChild(input);
@@ -243,10 +248,9 @@ function goToArticles(update) {
 function goToCheckout(update) {
     if (!getCart().articles.length > 0) {
         showToasterNotification('Es muss sich mindestens ein Artikel im Warenkorb befinden, um zur Kasse gehen zu können.', 3000);
-        //goToIndex();
         return;
     }
-    document.getElementsByTagName('h2')[0].innerHTML = 'Bitte tragen Sie ihre persoenlichen Daten ein';
+    document.getElementsByTagName('h2')[0].innerHTML = 'Bitte tragen Sie ihre pers\u00F6nlichen Daten ein';
 
     var container = document.getElementsByTagName('article')[0];
 
@@ -264,9 +268,21 @@ function goToCheckout(update) {
         {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'email', content: 'E-Mail:', type: 'email', name: 'email'},
-        {nvupdate: 'telefon', content: 'Telefon:',  type: 'tel', name: 'tel', pattern: '^([\u002B]([0-9]|[0-9][0-9])|00([0-9]|[0-9][0-9])|001([0-9]|[0-9][0-9])|0)[0-9\u0020\u002D\u002F]{3,}$'},
+        {
+            nvupdate: 'telefon',
+            content: 'Telefon:',
+            type: 'tel',
+            name: 'tel',
+            pattern: '^([\u002B]([0-9]|[0-9][0-9])|00([0-9]|[0-9][0-9])|001([0-9]|[0-9][0-9])|0)[0-9\u0020\u002D\u002F]{3,}$'
+        },
         {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[A-Za-z\u0020\u002D]+$'},
-        {nvupdate: 'hausNr', content: 'Hausnummer:', type: 'text', name: 'hausnr', pattern: '^([1-9][0-9]*(\u002F[1-9][0-9]?|[A-Za-z])?)$'},
+        {
+            nvupdate: 'hausNr',
+            content: 'Hausnummer:',
+            type: 'text',
+            name: 'hausnr',
+            pattern: '^([1-9][0-9]*(\u002F[1-9][0-9]?|[A-Za-z])?)$'
+        },
         {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz', pattern: '^[0-9]{4,5}$'},
         {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\u0020\u002D]+$'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
@@ -291,6 +307,29 @@ function goToCheckout(update) {
         form.appendChild(label);
         form.appendChild(breakln);
     }
+
+    var paymentOptions = ['PayPal', 'Sofort\u00FCberweisung', 'CCBill', '100% FREE NO VIRUS GRATIS GRATUITO 100% LEGIT DOWNLOAD NOW!'];
+
+    var select = document.createElement('SELECT');
+    for (var i = 0; i < paymentOptions.length; i++) {
+        var option = document.createElement('OPTION');
+        option.setAttribute('value', i + '');
+        option.innerHTML = paymentOptions[i];
+        select.appendChild(option);
+    }
+    form.appendChild(select);
+
+
+    var shippingMethods = ['Selbstabholer', 'Lieferung'];
+
+    select = document.createElement('SELECT');
+    for (var i = 0; i < shippingMethods.length; i++) {
+        var option = document.createElement('OPTION');
+        option.setAttribute('value', i + '');
+        option.innerHTML = shippingMethods[i];
+        select.appendChild(option);
+    }
+    form.appendChild(select);
 
     var button = document.createElement('BUTTON');
     button.setAttribute('id', 'shipping');
@@ -433,13 +472,15 @@ function addToCart(id, amount) {
 function showToasterNotification(message, duration) {
     var toaster = document.getElementById("toaster");
 
-    if (toaster.className == 'show'){
+    if (toaster.className == 'show') {
         return;
     }
     toaster.className = "show";
     toaster.innerHTML = message;
 
-    setTimeout(function(){ toaster.className = toaster.className.replace("show", ""); }, duration);
+    setTimeout(function () {
+        toaster.className = toaster.className.replace("show", "");
+    }, duration);
 }
 
 function calculateSinglePriceFromCartArticle(cartArticle) {
@@ -457,10 +498,10 @@ function calculateSinglePriceFromCartArticle(cartArticle) {
 function removeFromCart(id) {
     var cart = getCart();
     var article = cart.articles[id];
-    if (article.amount > 1){
+    if (article.amount > 1) {
         article.amount--;
     }
-    else{
+    else {
         cart.articles.splice(id, 1);
     }
     for (var j = 0; j < article.extra_ingredients.length; ++j) {
@@ -537,7 +578,7 @@ function buildCartFromLocalStorage() {
 
         var tmp = document.createElement('BUTTON');
         tmp.innerHTML = 'Entfernen';
-        tmp.setAttribute('onclick','removeFromCart(' + cartArticle.id  + ')');
+        tmp.setAttribute('onclick', 'removeFromCart(' + cartArticle.id + ')');
 
         col.appendChild(tmp);
         row.appendChild(col);
@@ -565,8 +606,8 @@ function buildCartFromLocalStorage() {
  * This function parses number (floating point and integer alike) to a nice string.
  * */
 function priceToString(price) {
-    if (price < 0.001){
-        return '0,00'+ CURRENCY_SYMBOL;
+    if (price < 0.001) {
+        return '0,00' + CURRENCY_SYMBOL;
     }
 
     price = price + '';
@@ -676,8 +717,8 @@ function doCheckout() {
     submitData.customer = customer;
     submitData.articles = getCart().articles;
     submitData.total_price = getCart().total_price;
-    submitData.payment_method = 0;
-    submitData.order_method_id = 0;
+    submitData.payment_method = document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value;
+    submitData.order_method_id = document.getElementsByTagName("select")[1].options[document.getElementsByTagName("select")[1].selectedIndex].value;
 
     doPost("/cart/checkout", JSON.stringify(submitData), function () {
         showToasterNotification("Checkout erfolgreich! Ihre Bestellung wird bearbeitet", 3000);
