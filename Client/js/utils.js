@@ -117,6 +117,21 @@ function goToArticleView(id, update) {
     img.setAttribute('src', json.thumb_img_url);
     img_container.appendChild(img);
 
+    var description_container = document.createElement('DIV');
+    description_container.setAttribute('class', 'shp-desc-container');
+
+    var description_price = document.createElement('p');
+    description_price.setAttribute('id', 'price-tag');
+    description_price.innerHTML = 'Preis:  ' + json.base_price + ' €';
+    description_container.appendChild(description_price);
+
+    var description_text = document.createElement('p');
+    description_text.innerHTML = 'Beschreibung: <br>' + json.desc;
+    description_container.appendChild(description_text);
+
+
+    img_container.appendChild(description_container);
+
     var buttonContainer = document.createElement('DIV');
     buttonContainer.setAttribute('class', "shp-cart-btn-box");
 
@@ -145,43 +160,45 @@ function goToArticleView(id, update) {
     var section = document.createElement('SECTION');
     section.setAttribute('id', 'ingredients-form');
 
-    var list = document.createElement('UL');
-    list.setAttribute('id', 'ingredients-form');
-
+    var table = document.createElement('TABLE');
+    var tableBody = document.createElement('TBODY');
     var ingr = json.extra_ingredients;
     for (var i = 0; i < ingr.length; i++) {
-        var list_element = document.createElement('LI');
+        var row = document.createElement('TR');
+        var col = document.createElement('TD');
 
-        var label = document.createElement('DIV');
         var extra_ingredient = (getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
-;
-        label.setAttribute('class', 'art-span')
 
         var ingredient_img = document.createElement('IMG');
         ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
 
+        col.appendChild(ingredient_img);
+        row.appendChild(col);
+
+        var col = document.createElement('TD');
         var ingredient_name = document.createElement('h3');
         ingredient_name.innerHTML = 'Extra ' + extra_ingredient.name;
+        col.appendChild(ingredient_name);
+        row.appendChild(col);
 
-        label.appendChild(ingredient_img);
-        label.appendChild(ingredient_name);
-
+        var col = document.createElement('TD');
         var input = document.createElement('INPUT');
         input.setAttribute('type', 'checkbox');
         input.setAttribute('name', 'zutat');
         input.setAttribute('class', 'checkbox-custom')
         input.setAttribute('content', ingr[i].id);
 
-        label.appendChild(input);
-        list_element.appendChild(label);
-        list.appendChild(list_element);
+        col.appendChild(input);
+        row.appendChild(col);
+        tableBody.appendChild(row);
     }
+    table.appendChild(tableBody);
 
     var list_section = document.createElement('SECTION');
     list_section.setAttribute('id', 'ingredients-form');
-    list_section.appendChild(list);
+    list_section.appendChild(table);
     buttonContainer.appendChild(select);
     buttonContainer.appendChild(button);
     list_section.appendChild(buttonContainer);
@@ -305,9 +322,15 @@ function goToCheckout(update) {
         table.appendChild(tr);
     }
     form.appendChild(table);
+
     var button = document.createElement('BUTTON');
-    button.setAttribute('id', 'shipping');
+    button.setAttribute('id', 'shipping-order');
     button.innerHTML = '<h3>Kostenpflichtig bestellen</h3>';
+    form.appendChild(button);
+
+    var button = document.createElement('BUTTON');
+    button.setAttribute('id', 'shipping-abort');
+    button.innerHTML = '<h3>Bestellung abbrechen</h3>';
     form.appendChild(button);
 
     section_1.appendChild(form);
@@ -316,10 +339,10 @@ function goToCheckout(update) {
     section_2.setAttribute('id', 'ship-cart-total');
 
     fields = [
-        ('Artikel Anzahl: ' + (getCart().articles ? getCart().articles.length : 0))
+        ('<p>Artikel Anzahl: ' + (getCart().articles ? getCart().articles.length : 0) + '</p>')
     ];
 
-    fields.push('Gesamtpreis: ' + priceToString((getCart().total_price ? getCart().total_price : 0)));
+    fields.push('<p>Gesamtpreis: ' + priceToString((getCart().total_price ? getCart().total_price : 0)) + '</p>');
 
     for (var i = 0; i < fields.length; i++) {
         var label = document.createElement('LABEL');
@@ -399,7 +422,6 @@ function addToCart(id, amount) {
     var checkboxes = document.getElementsByTagName('input');
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
-            extra_ingredients.push({id: checkboxes[i].getAttribute('content')});
             checkboxes[i].checked = false;
         }
     }
@@ -528,7 +550,7 @@ function buildCartFromLocalStorage() {
         row.appendChild(col);
 
         col = document.createElement('TD');
-        let tmp = document.createElement('BUTTON');
+        var tmp = document.createElement('BUTTON');
         tmp.innerHTML = 'Entfernen';
         tmp.setAttribute('onclick',
             'removeFromCart(' + cartArticle.article_id  + ',"' +
@@ -545,12 +567,16 @@ function buildCartFromLocalStorage() {
     row.setAttribute('class', 'shp-cart-endrow');
 
     col = document.createElement('TD');
-    col.setAttribute('colspan', '4');
-    col.innerHTML = 'Gesamtpreis';
+    col.setAttribute('colspan', '2');
     row.appendChild(col);
 
     col = document.createElement('TD');
-    col.innerHTML = priceToString(cart.total_price);
+    col.setAttribute('colspan', '2');
+    col.innerHTML = '<h3>Gesamtpreis</h3>';
+    row.appendChild(col);
+
+    col = document.createElement('TD');
+    col.innerHTML = '<h3>' + priceToString(cart.total_price) + '</h3>';
     row.appendChild(col);
 
     cart_table.appendChild(row);
