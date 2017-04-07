@@ -443,7 +443,7 @@ function showToasterNotification(message, duration) {
 }
 
 function calculateSinglePriceFromCartArticle(cartArticle) {
-    price = 0;
+    var price = 0;
     price += getArticleById(cartArticle.article_id).base_price;    //TODO; obtain tax and process VAT
 
     for (var j = 0; j < cartArticle.extra_ingredients.length; ++j) {
@@ -454,29 +454,21 @@ function calculateSinglePriceFromCartArticle(cartArticle) {
 }
 
 /**/
-function removeFromCart(id, extras) {
+function removeFromCart(id) {
     var cart = getCart();
-
-    for (var i = 0; i < cart.articles.length; i++) {
-        var article = cart.articles[i];
-        if (article.article_id == id){
-            if (getExtraIngredientsAsString(article.extra_ingredients) == extras){
-                if (article.amount > 1){
-                    article.amount--;
-                }
-                else{
-                    cart.articles.splice(i, 1);
-                }
-            for (var j = 0; j < article.extra_ingredients.length; ++j) {
-                cart.total_price -= getIngredientById(article.extra_ingredients[j].id).price
-            }
-                cart.total_price -= getArticleById(id).base_price;
-                saveCart(cart);
-                buildCartFromLocalStorage();
-                return;
-            }
-        }
+    var article = cart.articles[id];
+    if (article.amount > 1){
+        article.amount--;
     }
+    else{
+        cart.articles.splice(id, 1);
+    }
+    for (var j = 0; j < article.extra_ingredients.length; ++j) {
+        cart.total_price -= getIngredientById(article.extra_ingredients[j].id).price
+    }
+    cart.total_price -= getArticleById(article.article_id).base_price;
+    saveCart(cart);
+    buildCartFromLocalStorage();
 }
 
 /**/
@@ -542,11 +534,10 @@ function buildCartFromLocalStorage() {
         row.appendChild(col);
 
         col = document.createElement('TD');
-        tmp = document.createElement('BUTTON');
+
+        var tmp = document.createElement('BUTTON');
         tmp.innerHTML = 'Entfernen';
-        tmp.setAttribute('onclick',
-            'removeFromCart(' + cartArticle.article_id  + ',"' +
-            getExtraIngredientsAsString(cartArticle.extra_ingredients) + '")');
+        tmp.setAttribute('onclick','removeFromCart(' + cartArticle.id  + ')');
 
         col.appendChild(tmp);
         row.appendChild(col);
