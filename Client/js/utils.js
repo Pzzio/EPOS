@@ -144,7 +144,7 @@ function goToArticleView(id, update) {
         let extra_ingredient = (dataStore.getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
-;
+
         label.setAttribute('class', 'art-span')
 
         let ingredient_img = document.createElement('IMG');
@@ -153,6 +153,10 @@ function goToArticleView(id, update) {
         label.appendChild(ingredient_img);
 
 
+        let name = document.createElement('LABEL');
+        name.setAttribute('class', 'ingredient-label')
+        name.innerHTML ='Extra ' + extra_ingredient.name;
+        label.appendChild(name);
 
         let input = document.createElement('INPUT');
         input.setAttribute('type', 'checkbox');
@@ -191,7 +195,7 @@ function goToArticleView(id, update) {
 function goToArticles(update) {
     let json = dataStore.getAllArticlesBrief();
 
-    document.getElementsByTagName('h2')[0].innerHTML = 'Bitte waehlen Sie Ihre Bestellung';
+    document.getElementsByTagName('h2')[0].innerHTML = 'Bitte w&auml;hlen Sie Ihre Bestellung';
 
     let container = document.getElementsByTagName('article')[0];
 
@@ -234,7 +238,7 @@ function goToArticles(update) {
  * Thus the corresponding action is omitted.
  */
 function goToCheckout(update) {
-    document.getElementsByTagName('h2')[0].innerHTML = 'Bitte tragen Sie ihre persoenlichen Daten ein';
+    document.getElementsByTagName('h2')[0].innerHTML = 'Bitte tragen Sie Ihre pers&ouml;nlichen Daten ein';
 
     let container = document.getElementsByTagName('article')[0];
 
@@ -247,6 +251,7 @@ function goToCheckout(update) {
 
     let form = document.createElement('FORM');
     form.setAttribute('onsubmit', 'doCheckout(); return false;');
+
 
     let fields = [
         {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z\s\u002D]+$'},
@@ -265,13 +270,22 @@ function goToCheckout(update) {
         {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\s\u002D]+$'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
     ];
+
+    let table = document.createElement('TABLE');
+    let tr;
+    let td;
     for (let i = 0; i < fields.length; i++) {
+        tr = document.createElement('TR');
+        td = document.createElement('TD');
+
         let label = document.createElement('LABEL');
+        label.innerHTML = '<h3>' + fields[i].content + '</h3>';
+
+        td.appendChild(label);
+        tr.appendChild(td);
+
+        td = document.createElement('TD');
         let input = document.createElement('INPUT');
-        let breakln = document.createElement('BR');
-
-        label.innerHTML = fields[i].content;
-
         input.setAttribute('nv-model', fields[i].nvupdate);
         input.setAttribute('type', fields[i].type);
         input.setAttribute('name', fields[i].name);
@@ -280,15 +294,16 @@ function goToCheckout(update) {
         if (fields[i].name !== 'zusatzinfos') {
             input.required = true;
         }
+        td.appendChild(input);
+        tr.appendChild(td);
+        table.appendChild(tr);
 
-        label.appendChild(input);
-        form.appendChild(label);
-        form.appendChild(breakln);
     }
+    form.appendChild(table);
 
     let button = document.createElement('BUTTON');
     button.setAttribute('id', 'shipping');
-    button.innerHTML = 'Kostenpflichtig bestellen';
+    button.innerHTML = '<h3>Kostenpflichtig bestellen</h3>';
     form.appendChild(button);
 
     section_1.appendChild(form);
@@ -507,9 +522,21 @@ function buildCartFromLocalStorage() {
 
     row = document.createElement("TR");
     row.setAttribute('class', 'shp-cart-endrow');
+    col = document.createElement('TD');
+    col.innerHTML ='&nbsp;';
+    col.setAttribute('colspan', '5');
+    row.appendChild(col);
+
+    cart_table.appendChild(row);
+
+    row = document.createElement("TR");
+    row.setAttribute('class', 'shp-cart-wholeprice');
+    col = document.createElement('TD');
+    col.setAttribute('colspan', '2');
+    row.appendChild(col);
 
     col = document.createElement('TD');
-    col.setAttribute('colspan', '4');
+    col.setAttribute('colspan', '2');
     col.innerHTML = 'Gesamtpreis';
     row.appendChild(col);
 
