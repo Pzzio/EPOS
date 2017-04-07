@@ -344,6 +344,33 @@ function goToCheckout(update) {
         table.appendChild(tr);
     }
     form.appendChild(table);
+    var deliveryContainer = document.createElement('DIV');
+    deliveryContainer.setAttribute('class', 'delivery-container');
+
+    var label  = document.createElement('LABEL');
+    label.innerHTML = 'Abholung';
+    label.setAttribute('for', 'get')
+    var option = document.createElement('INPUT');
+    option.setAttribute('value', '1');
+    option.setAttribute('id', 'get');
+    option.setAttribute('type', 'radio');
+    option.setAttribute('name', 'delivery');
+    label.appendChild(option);
+    deliveryContainer.appendChild(label);
+
+    var label  = document.createElement('LABEL');
+    label.innerHTML = 'Lieferung';
+    label.setAttribute('for', 'delivery')
+    var option = document.createElement('INPUT');
+    option.setAttribute('value', '2');
+    option.setAttribute('name', 'delivery');
+    option.setAttribute('id', 'delivery');
+
+    option.setAttribute('type', 'radio');
+    label.appendChild(option);
+    deliveryContainer.appendChild(label);
+
+    form.appendChild(deliveryContainer);
 
     var paymentContainer = document.createElement('DIV');
     paymentContainer.setAttribute('class', 'payment-container');
@@ -386,41 +413,14 @@ function goToCheckout(update) {
 
     var button = document.createElement('BUTTON');
     button.setAttribute('id', 'shipping-order');
-    button.innerHTML = '<h3>Kostenpflichtig bestellen</h3>';
+    button.innerHTML = '<h3>Bestellen</h3>';
     form.appendChild(button);
 
-    var paymentOptions = ['PayPal', 'Sofort\u00FCberweisung', 'CCBill', '100% FREE NO VIRUS GRATIS GRATUITO 100% LEGIT DOWNLOAD NOW!'];
 
-    var select = document.createElement('SELECT');
-    for (var i = 0; i < paymentOptions.length; i++) {
-        var option = document.createElement('OPTION');
-        option.setAttribute('value', i + '');
-        option.innerHTML = paymentOptions[i];
-        select.appendChild(option);
-    }
-    form.appendChild(select);
-
-
-    var shippingMethods = ['Selbstabholer', 'Lieferung'];
-
-    select = document.createElement('SELECT');
-    for (var i = 0; i < shippingMethods.length; i++) {
-        var option = document.createElement('OPTION');
-        option.setAttribute('value', i + '');
-        option.innerHTML = shippingMethods[i];
-        select.appendChild(option);
-    }
-    form.appendChild(select);
 
     var button = document.createElement('BUTTON');
     button.setAttribute('id', 'shipping-abort');
-    button.innerHTML = '<h3>Bestellung abbrechen</h3>';
-    form.appendChild(button);
-
-    button = document.createElement('BUTTON');
-    button.setAttribute('id', 'abort');
-    button.setAttribute('onclick', '(function(){clearCart(); buildCartFromLocalStorage(); goToIndex(); showToasterNotification("Checkout abgebrochen!", 3000)})()');
-    button.innerHTML = 'Checkout abbrechen';
+    button.innerHTML = '<h3>Stornieren</h3>';
     form.appendChild(button);
 
     section_1.appendChild(form);
