@@ -568,7 +568,7 @@ footer p {
 #addToCart:hover {
     background-position: 0 100%;
     color: white;
-  
+}
 #toaster {
     visibility: hidden;
     min-width: 250px;
