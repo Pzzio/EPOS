@@ -242,8 +242,8 @@ function goToArticles(update) {
  */
 function goToCheckout(update) {
     if (!getCart().articles.length > 0) {
-        alert('Es muss sich mindestens ein Artikel im Warenkorb befinden, um zur Kasse gehen zu können.');
-        goToIndex();
+        showToasterNotification('Es muss sich mindestens ein Artikel im Warenkorb befinden, um zur Kasse gehen zu können.', 3000);
+        //goToIndex();
         return;
     }
     document.getElementsByTagName('h2')[0].innerHTML = 'Bitte tragen Sie ihre persoenlichen Daten ein';
@@ -295,6 +295,12 @@ function goToCheckout(update) {
     var button = document.createElement('BUTTON');
     button.setAttribute('id', 'shipping');
     button.innerHTML = 'Kostenpflichtig bestellen';
+    form.appendChild(button);
+
+    button = document.createElement('BUTTON');
+    button.setAttribute('id', 'abort');
+    button.setAttribute('onclick', '(function(){clearCart(); buildCartFromLocalStorage(); goToIndex(); showToasterNotification("Checkout abgebrochen!", 3000)})()');
+    button.innerHTML = 'Checkout abbrechen';
     form.appendChild(button);
 
     section_1.appendChild(form);
@@ -419,9 +425,21 @@ function addToCart(id, amount) {
 
     saveCart(cart);
     //updateCart();
-    alert(amount + 'x ' + getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!'); //
+    showToasterNotification((amount + 'x ' + getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!'), 3000);
 
     buildCartFromLocalStorage();
+}
+
+function showToasterNotification(message, duration) {
+    var toaster = document.getElementById("toaster");
+
+    if (toaster.className == 'show'){
+        return;
+    }
+    toaster.className = "show";
+    toaster.innerHTML = message;
+
+    setTimeout(function(){ toaster.className = toaster.className.replace("show", ""); }, duration);
 }
 
 function calculateSinglePriceFromCartArticle(cartArticle) {
@@ -671,7 +689,7 @@ function doCheckout() {
     submitData.order_method_id = 0;
 
     doPost("/cart/checkout", JSON.stringify(submitData), function () {
-        alert("Checkout erfolgreich! Ihre Bestellung wird bearbeitet"); //alert
+        showToasterNotification("Checkout erfolgreich! Ihre Bestellung wird bearbeitet", 3000);
         clearCart();
         buildCartFromLocalStorage();
         forward("/");
