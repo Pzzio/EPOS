@@ -4,9 +4,12 @@ const NUMBER_OF_ORDERS = 1000;
 
 
 describe("Basic building functions", function () {
+    beforeEach(function () {
+
+    });
+
     it("The initialization of the site", function () {
         initMain();
-
 
         expect(isInitialized).toBe(true);
     });
@@ -47,13 +50,13 @@ describe("Basic ordering", function () {
     it("Insert first pizza into cart", function () {
         addToCart(0);
 
-        expect(dataStore.getCart().articles).toBeDefined();
+        expect(getCart().articles).toBeDefined();
 
-        expect(dataStore.getCart().articles[0].article_id).toBe(0);
+        expect(getCart().articles[0].article_id).toBe(0);
     });
 
     it("Empty cart", function () {
-        expect(dataStore.clearCart()).toBe(true);
+        expect(clearCart()).toBe(true);
     });
 
     it("Insert all pizzas into cart", function () {
@@ -63,10 +66,10 @@ describe("Basic ordering", function () {
             }
         }).not.toThrow();
 
-        expect(dataStore.getCart().articles).toBeDefined();
+        expect(getCart().articles).toBeDefined();
 
         for (let i = 0; i < NUMBER_OF_PIZZAS; i++) {
-            expect(dataStore.getCart().articles[i].article_id).toBe(i);
+            expect(getCart().articles[i].article_id).toBe(i);
         }
     });
     it("Insert 1000 pizzas into cart", function () {
@@ -76,11 +79,11 @@ describe("Basic ordering", function () {
             }
         }).not.toThrow();
 
-        expect(dataStore.getCart().articles).toBeDefined();
-        expect(dataStore.getCart().articles.length).toBe(NUMBER_OF_PIZZAS);
+        expect(getCart().articles).toBeDefined();
+        expect(getCart().articles.length).toBe(NUMBER_OF_PIZZAS);
     });
 
     it("Empty cart", function () {
-        expect(dataStore.clearCart()).toBe(true);
+        expect(clearCart()).toBe(true);
     });
 });

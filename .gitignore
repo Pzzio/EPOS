@@ -1,4 +1,5 @@
 .idea
+node_modules
 *.swp
 *.tmp
 *.db

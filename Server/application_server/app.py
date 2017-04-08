@@ -14,17 +14,12 @@ from cookies import *
 from datastore import *
 from validation import RequestValidator
 
-# from cookies import CookieManager
-# from datastore import JsonDto, Datastore  # will work even if PyCharm cries
-
-#from Server.application_server.datastore import Datastore
-
-#from Server.application_server import cookies
-
 virtual_routes = ["articles", "article", "cart"]
 
 VERSION = 1.1
 
+CLIENT_DIRECTORY = "../../Client"
+CACHE_TIME_S = str(60 * 60 * 24 * 30);
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     pass
@@ -145,8 +140,13 @@ def make_request_handler_class():
                     if (c.insert_new_cookie(neuescookie)):
 
                         cookie['SSID'] = neuescookie['cookie_value']
-
-                        self.intermediate_headers.append(("Set-Cookie", "SSID=" + cookie['SSID'].value + "; Path=/"))
+                        expiration = str(time.strftime("%a, %d %b %Y %T GMT",
+                                                       time.gmtime(time.time() + 119)))
+                        self.intermediate_headers.append(("Set-Cookie", "SSID="
+                                                          + cookie['SSID'].value
+                                                          + "; expires="
+                                                          + expiration
+                                                          + " ; Path=/"))
 
                         return True
                     else:
@@ -159,9 +159,14 @@ def make_request_handler_class():
                     # pass to resource
             else:
                 neuescookie = c.create_new_cookie()
+                expiration = str(time.strftime("%a, %d %b %Y %T GMT",
+                                               time.gmtime(time.time() + 119)))
                 if (c.insert_new_cookie(neuescookie)):
-                    self.intermediate_headers.append(
-                        ("Set-Cookie", "SSID=" + c.get_cookie_value(neuescookie) + "; Path=/"))
+                    self.intermediate_headers.append(("Set-Cookie", "SSID="
+                                                      + c.get_cookie_value(neuescookie)
+                                                      + "; expires="
+                                                      + expiration
+                                                      + " ; Path=/"))
                     return True
                 else:
                     self.finalize_header(503, "")
@@ -178,10 +183,9 @@ def make_request_handler_class():
             # logging.debug('Init Time: %s' % str(int(1360287003083988472 % 1000000000)).zfill(9))
             starttime = datetime.now()
             response_status = 200
+            self.intermediate_headers.clear()
 
             # TODO Davids Zeugs
-
-
             if not self.handle_cookie():
                 return
             '''
@@ -320,8 +324,8 @@ def make_request_handler_class():
             response_status = 200  # OK
             self.intermediate_headers.append(('ETag', rev))
             self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
-            self.finalize_header(response_status, "")
             ingredients = business_data.get_all_ingredients()
+            self.finalize_header(response_status, "")
             self.wfile.write(bytes(ingredients, "utf-8"))
 
         def get_all_taxes(self):
@@ -391,7 +395,7 @@ def make_request_handler_class():
                 cache_it = False
                 rpath = "/"
 
-            path = "../Client" + rpath
+            path = CLIENT_DIRECTORY + rpath
 
             logging.debug('FILE %s' % (path))
 
@@ -442,25 +446,19 @@ def make_request_handler_class():
                 with open(path, 'rb') as ifp:
                     payload = ifp.read()
                     req_etag = str(self.headers['If-None-Match'])
+                    self.intermediate_headers.append(('Content-type', content_type))
                     if req_etag and req_etag == str(hash(payload)):
                         response_status = http.HTTPStatus.NOT_MODIFIED
                         self.intermediate_headers.append(('ETag', hash(payload)))
-                        self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
-                        self.intermediate_headers.append(('Expires',
-                                                          str(time.strftime("%a, %d %b %Y %T GMT",
-                                                                            time.gmtime(time.time() + 60)))))
+                        self.intermediate_headers.append(('Cache-control', "public, max-age=" + CACHE_TIME_S))
                         self.intermediate_headers.append(('Last-Modified', 0))
+                        self.finalize_header(response_status, "")
                         return
-                    self.intermediate_headers.append(('Content-type', content_type))
                     # self.intermediate_headers.append(('Content-Encoding', 'gzip')
 
                     if cache_it:
                         self.intermediate_headers.append(('ETag', hash(payload)))
-                        self.intermediate_headers.append(('Cache-control', "public, max-age=60"))
-                        self.intermediate_headers.append(('Expires',
-                                                          str(time.strftime("%a, %d %b %Y %T GMT",
-                                                                            time.gmtime(time.time() + 60)))))
-                        self.intermediate_headers.append(('Last-Modified', 0))
+                        self.intermediate_headers.append(('Cache-control', "public, max-age=" + CACHE_TIME_S))
 
                     self.finalize_header(200, "")
 

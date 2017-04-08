@@ -35,31 +35,27 @@ getJasmineRequireObj().console = function(jRequire, j$) {
 
 getJasmineRequireObj().ConsoleReporter = function() {
 
-  const noopTimer = {
-    start: function () {
-    },
-    elapsed: function () {
-        return 0;
-    }
+  var noopTimer = {
+    start: function(){},
+    elapsed: function(){ return 0; }
   };
 
   function ConsoleReporter(options) {
-    const print = options.print,
-        showColors = options.showColors || false,
-        onComplete = options.onComplete || function () {
-            },
-        timer = options.timer || noopTimer;
-      let specCount,
-          failureCount;
-      const failedSpecs = [];
-      let pendingCount;
-      const ansi = {
+    var print = options.print,
+      showColors = options.showColors || false,
+      onComplete = options.onComplete || function() {},
+      timer = options.timer || noopTimer,
+      specCount,
+      failureCount,
+      failedSpecs = [],
+      pendingCount,
+      ansi = {
         green: '\x1B[32m',
         red: '\x1B[31m',
         yellow: '\x1B[33m',
         none: '\x1B[0m'
-          },
-          failedSuites = [];
+      },
+      failedSuites = [];
 
     print('ConsoleReporter is deprecated and will be removed in a future version.');
 
@@ -74,15 +70,15 @@ getJasmineRequireObj().ConsoleReporter = function() {
 
     this.jasmineDone = function() {
       printNewline();
-      for (let i = 0; i < failedSpecs.length; i++) {
+      for (var i = 0; i < failedSpecs.length; i++) {
         specFailureDetails(failedSpecs[i]);
       }
 
       if(specCount > 0) {
         printNewline();
 
-        let specCounts = specCount + ' ' + plural('spec', specCount) + ', ' +
-            failureCount + ' ' + plural('failure', failureCount);
+        var specCounts = specCount + ' ' + plural('spec', specCount) + ', ' +
+          failureCount + ' ' + plural('failure', failureCount);
 
         if (pendingCount) {
           specCounts += ', ' + pendingCount + ' pending ' + plural('spec', pendingCount);
@@ -94,7 +90,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
       }
 
       printNewline();
-      const seconds = timer.elapsed() / 1000;
+      var seconds = timer.elapsed() / 1000;
       print('Finished in ' + seconds + ' ' + plural('second', seconds));
       printNewline();
 
@@ -148,17 +144,17 @@ getJasmineRequireObj().ConsoleReporter = function() {
     }
 
     function repeat(thing, times) {
-      const arr = [];
-      for (let i = 0; i < times; i++) {
+      var arr = [];
+      for (var i = 0; i < times; i++) {
         arr.push(thing);
       }
       return arr;
     }
 
     function indent(str, spaces) {
-      const lines = (str || '').split('\n');
-      const newArr = [];
-      for (let i = 0; i < lines.length; i++) {
+      var lines = (str || '').split('\n');
+      var newArr = [];
+      for (var i = 0; i < lines.length; i++) {
         newArr.push(repeat(' ', spaces).join('') + lines[i]);
       }
       return newArr.join('\n');
@@ -168,8 +164,8 @@ getJasmineRequireObj().ConsoleReporter = function() {
       printNewline();
       print(result.fullName);
 
-      for (let i = 0; i < result.failedExpectations.length; i++) {
-        const failedExpectation = result.failedExpectations[i];
+      for (var i = 0; i < result.failedExpectations.length; i++) {
+        var failedExpectation = result.failedExpectations[i];
         printNewline();
         print(indent(failedExpectation.message, 2));
         print(indent(failedExpectation.stack, 2));
@@ -179,7 +175,7 @@ getJasmineRequireObj().ConsoleReporter = function() {
     }
 
     function suiteFailureDetails(result) {
-      for (let i = 0; i < result.failedExpectations.length; i++) {
+      for (var i = 0; i < result.failedExpectations.length; i++) {
         printNewline();
         print(colored('red', 'An error was thrown in an afterAll'));
         printNewline();
