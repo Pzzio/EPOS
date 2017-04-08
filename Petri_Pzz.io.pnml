@@ -836,51 +836,7 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
-            <arc id="a15" source="sub4_sub3_p7" target="sub4_sub3_t4_op_2">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
-            <arc id="a8" source="sub4_sub3_p5" target="sub4_sub3_t4_op_1">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
-            <arc id="a17" source="sub4_sub3_t4_op_1" target="sub4_sub3_p8">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
-            <arc id="a17" source="sub4_sub3_t4_op_2" target="sub4_sub3_p8">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
-            <arc id="a10" source="sub4_sub3_t2_op_2" target="sub4_sub3_p2">
+            <arc id="a10" source="sub4_sub3_t2_op_1" target="sub4_sub3_p2">
               <inscription>
                 <text>1</text>
               </inscription>
@@ -902,6 +858,19 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
+            <arc id="a4" source="sub4_sub3_t2_op_2" target="sub4_sub3_p1">
+              <inscription>
+                <text>1</text>
+              </inscription>
+              <graphics>
+                <position x="363" y="181"/>
+              </graphics>
+              <toolspecific tool="WoPeD" version="1.0">
+                <probability>1.0</probability>
+                <displayProbabilityOn>false</displayProbabilityOn>
+                <displayProbabilityPosition x="500.0" y="0.0"/>
+              </toolspecific>
+            </arc>
             <arc id="a2" source="sub4_p1" target="sub4_sub3_t2_op_2">
               <inscription>
                 <text>1</text>
@@ -913,13 +882,44 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
-            <arc id="a4" source="sub4_sub3_t2_op_1" target="sub4_sub3_p1">
+            <arc id="a15" source="sub4_sub3_p7" target="sub4_sub3_t4_op_1">
               <inscription>
                 <text>1</text>
               </inscription>
-              <graphics>
-                <position x="363" y="181"/>
-              </graphics>
+              <graphics/>
+              <toolspecific tool="WoPeD" version="1.0">
+                <probability>1.0</probability>
+                <displayProbabilityOn>false</displayProbabilityOn>
+                <displayProbabilityPosition x="500.0" y="0.0"/>
+              </toolspecific>
+            </arc>
+            <arc id="a8" source="sub4_sub3_p5" target="sub4_sub3_t4_op_2">
+              <inscription>
+                <text>1</text>
+              </inscription>
+              <graphics/>
+              <toolspecific tool="WoPeD" version="1.0">
+                <probability>1.0</probability>
+                <displayProbabilityOn>false</displayProbabilityOn>
+                <displayProbabilityPosition x="500.0" y="0.0"/>
+              </toolspecific>
+            </arc>
+            <arc id="a17" source="sub4_sub3_t4_op_2" target="sub4_sub3_p8">
+              <inscription>
+                <text>1</text>
+              </inscription>
+              <graphics/>
+              <toolspecific tool="WoPeD" version="1.0">
+                <probability>1.0</probability>
+                <displayProbabilityOn>false</displayProbabilityOn>
+                <displayProbabilityPosition x="500.0" y="0.0"/>
+              </toolspecific>
+            </arc>
+            <arc id="a17" source="sub4_sub3_t4_op_1" target="sub4_sub3_p8">
+              <inscription>
+                <text>1</text>
+              </inscription>
+              <graphics/>
               <toolspecific tool="WoPeD" version="1.0">
                 <probability>1.0</probability>
                 <displayProbabilityOn>false</displayProbabilityOn>
@@ -1512,61 +1512,6 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
             <displayProbabilityPosition x="500.0" y="0.0"/>
           </toolspecific>
         </arc>
-        <arc id="a20" source="sub5_p5" target="sub5_t4_op_1">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
-        <arc id="a22" source="sub5_p6" target="sub5_t4_op_1">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
-        <arc id="a24" source="sub5_t4_op_1" target="sub5_p7">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
-        <arc id="a16" source="sub5_p3" target="sub5_t4_op_1">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
-        <arc id="a18" source="sub5_p4" target="sub5_t4_op_1">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
         <arc id="a10" source="sub5_t3_op_1" target="sub5_p4">
           <inscription>
             <text>1</text>
@@ -1612,6 +1557,61 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
           </toolspecific>
         </arc>
         <arc id="a8" source="sub5_t3_op_1" target="sub5_p3">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a18" source="sub5_p4" target="sub5_t4_op_1">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a20" source="sub5_p5" target="sub5_t4_op_1">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a22" source="sub5_p6" target="sub5_t4_op_1">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a24" source="sub5_t4_op_1" target="sub5_p7">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a16" source="sub5_p3" target="sub5_t4_op_1">
           <inscription>
             <text>1</text>
           </inscription>
@@ -1960,72 +1960,6 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
             <displayProbabilityPosition x="500.0" y="0.0"/>
           </toolspecific>
         </arc>
-        <arc id="a10" source="sub2_t3_op_1" target="sub2_p3">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
-        <arc id="a3" source="p1" target="sub2_t3_op_1">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
-        <arc id="a13" source="sub2_t3_op_2" target="sub2_p1">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
-        <arc id="a3" source="p1" target="sub2_t3_op_2">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
-        <arc id="a7" source="sub2_t3_op_3" target="sub2_p2">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
-        <arc id="a3" source="p1" target="sub2_t3_op_3">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
         <arc id="a22" source="sub2_p7" target="sub2_t5_op_1">
           <inscription>
             <text>1</text>
@@ -2092,6 +2026,72 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
             <displayProbabilityPosition x="500.0" y="0.0"/>
           </toolspecific>
         </arc>
+        <arc id="a10" source="sub2_t3_op_1" target="sub2_p3">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a3" source="p1" target="sub2_t3_op_3">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a3" source="p1" target="sub2_t3_op_1">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a13" source="sub2_t3_op_2" target="sub2_p1">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a3" source="p1" target="sub2_t3_op_2">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a7" source="sub2_t3_op_3" target="sub2_p2">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
         <toolspecific tool="WoPeD" version="1.0">
           <bounds>
             <position x="0" y="0"/>
@@ -2104,54 +2104,6 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
         </toolspecific>
         <page id="sub2_sub3">
           <net>
-            <place id="sub2_sub3_p10">
-              <name>
-                <text>Kundendaten vollständig</text>
-                <graphics>
-                  <offset x="820" y="200"/>
-                </graphics>
-              </name>
-              <graphics>
-                <position x="816" y="161"/>
-                <dimension x="40" y="40"/>
-              </graphics>
-            </place>
-            <place id="sub2_sub3_p11">
-              <name>
-                <text>Selbstabholung</text>
-                <graphics>
-                  <offset x="1730" y="80"/>
-                </graphics>
-              </name>
-              <graphics>
-                <position x="1730" y="40"/>
-                <dimension x="40" y="40"/>
-              </graphics>
-            </place>
-            <place id="sub2_sub3_p12">
-              <name>
-                <text>Ja</text>
-                <graphics>
-                  <offset x="2220" y="180"/>
-                </graphics>
-              </name>
-              <graphics>
-                <position x="2220" y="140"/>
-                <dimension x="40" y="40"/>
-              </graphics>
-            </place>
-            <place id="sub2_sub3_p13">
-              <name>
-                <text>Auslieferung</text>
-                <graphics>
-                  <offset x="1740" y="200"/>
-                </graphics>
-              </name>
-              <graphics>
-                <position x="1740" y="160"/>
-                <dimension x="40" y="40"/>
-              </graphics>
-            </place>
             <place id="sub2_p3">
               <name>
                 <text>Online</text>
@@ -2168,11 +2120,11 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
               <name>
                 <text>Daten vollständig</text>
                 <graphics>
-                  <offset x="2500" y="190"/>
+                  <offset x="2260" y="190"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="2480" y="150"/>
+                <position x="2241" y="150"/>
                 <dimension x="40" y="40"/>
               </graphics>
             </place>
@@ -2180,11 +2132,11 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
               <name>
                 <text>Daten vollständig - Lieferung</text>
                 <graphics>
-                  <offset x="1440" y="200"/>
+                  <offset x="1180" y="200"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="1440" y="160"/>
+                <position x="1183" y="160"/>
                 <dimension x="40" y="40"/>
               </graphics>
             </place>
@@ -2192,11 +2144,11 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
               <name>
                 <text>Adresse liegt vor</text>
                 <graphics>
-                  <offset x="2010" y="200"/>
+                  <offset x="1750" y="200"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="2010" y="160"/>
+                <position x="1753" y="160"/>
                 <dimension x="40" y="40"/>
               </graphics>
             </place>
@@ -2204,11 +2156,11 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
               <name>
                 <text>Daten für Selbstabholung vollständig</text>
                 <graphics>
-                  <offset x="1980" y="80"/>
+                  <offset x="1720" y="80"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="1980" y="40"/>
+                <position x="1723" y="40"/>
                 <dimension x="40" y="40"/>
               </graphics>
             </place>
@@ -2216,11 +2168,11 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
               <name>
                 <text>Nein</text>
                 <graphics>
-                  <offset x="2140" y="320"/>
+                  <offset x="1880" y="320"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="2140" y="280"/>
+                <position x="1883" y="280"/>
                 <dimension x="40" y="40"/>
               </graphics>
             </place>
@@ -2236,27 +2188,99 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <dimension x="40" y="40"/>
               </graphics>
             </place>
-            <place id="sub2_sub3_p2">
+            <place id="sub2_sub3_p10">
               <name>
-                <text>Kunde ist auf Website</text>
+                <text>Kundendaten vollständig</text>
                 <graphics>
-                  <offset x="230" y="200"/>
+                  <offset x="820" y="200"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="230" y="160"/>
+                <position x="816" y="161"/>
                 <dimension x="40" y="40"/>
               </graphics>
             </place>
+            <place id="sub2_sub3_p11">
+              <name>
+                <text>Selbstabholung</text>
+                <graphics>
+                  <offset x="1470" y="80"/>
+                </graphics>
+              </name>
+              <graphics>
+                <position x="1473" y="40"/>
+                <dimension x="40" y="40"/>
+              </graphics>
+            </place>
+            <place id="sub2_sub3_p12">
+              <name>
+                <text>Ja</text>
+                <graphics>
+                  <offset x="1960" y="180"/>
+                </graphics>
+              </name>
+              <graphics>
+                <position x="1963" y="140"/>
+                <dimension x="40" y="40"/>
+              </graphics>
+            </place>
+            <place id="sub2_sub3_p13">
+              <name>
+                <text>Auslieferung</text>
+                <graphics>
+                  <offset x="1480" y="200"/>
+                </graphics>
+              </name>
+              <graphics>
+                <position x="1483" y="160"/>
+                <dimension x="40" y="40"/>
+              </graphics>
+            </place>
+            <transition id="sub2_sub3_t8_op_1">
+              <name>
+                <text>Lieferart wählen</text>
+                <graphics>
+                  <offset x="1370" y="200"/>
+                </graphics>
+              </name>
+              <graphics>
+                <position x="1373" y="160"/>
+                <dimension x="40" y="40"/>
+              </graphics>
+              <toolspecific tool="WoPeD" version="1.0">
+                <operator id="sub2_sub3_t8" type="104"/>
+                <time>0</time>
+                <timeUnit>1</timeUnit>
+                <orientation>1</orientation>
+              </toolspecific>
+            </transition>
+            <transition id="sub2_sub3_t8_op_2">
+              <name>
+                <text>Lieferart wählen</text>
+                <graphics>
+                  <offset x="1370" y="200"/>
+                </graphics>
+              </name>
+              <graphics>
+                <position x="1373" y="160"/>
+                <dimension x="40" y="40"/>
+              </graphics>
+              <toolspecific tool="WoPeD" version="1.0">
+                <operator id="sub2_sub3_t8" type="104"/>
+                <time>0</time>
+                <timeUnit>1</timeUnit>
+                <orientation>1</orientation>
+              </toolspecific>
+            </transition>
             <transition id="sub2_sub3_t3">
               <name>
                 <text>Bestellung kennzeichnen</text>
                 <graphics>
-                  <offset x="1830" y="80"/>
+                  <offset x="1570" y="80"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="1830" y="40"/>
+                <position x="1573" y="40"/>
                 <dimension x="40" y="40"/>
               </graphics>
               <toolspecific tool="WoPeD" version="1.0">
@@ -2269,11 +2293,11 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
               <name>
                 <text>Bestellung vollständig</text>
                 <graphics>
-                  <offset x="2330" y="190"/>
+                  <offset x="2070" y="190"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="2330" y="150"/>
+                <position x="2073" y="150"/>
                 <dimension x="40" y="40"/>
               </graphics>
               <toolspecific tool="WoPeD" version="1.0">
@@ -2287,11 +2311,11 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
               <name>
                 <text>Bestellung vollständig</text>
                 <graphics>
-                  <offset x="2330" y="190"/>
+                  <offset x="2070" y="190"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="2330" y="150"/>
+                <position x="2073" y="150"/>
                 <dimension x="40" y="40"/>
               </graphics>
               <toolspecific tool="WoPeD" version="1.0">
@@ -2299,23 +2323,6 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <time>0</time>
                 <timeUnit>1</timeUnit>
                 <orientation>3</orientation>
-              </toolspecific>
-            </transition>
-            <transition id="sub2_sub3_t1">
-              <name>
-                <text>Kunde ruft Website auf</text>
-                <graphics>
-                  <offset x="90" y="200"/>
-                </graphics>
-              </name>
-              <graphics>
-                <position x="90" y="160"/>
-                <dimension x="40" y="40"/>
-              </graphics>
-              <toolspecific tool="WoPeD" version="1.0">
-                <time>0</time>
-                <timeUnit>1</timeUnit>
-                <orientation>1</orientation>
               </toolspecific>
             </transition>
             <transition id="sub2_sub3_t2">
@@ -2356,11 +2363,11 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
               <name>
                 <text>Bestellung ablehnen</text>
                 <graphics>
-                  <offset x="1980" y="320"/>
+                  <offset x="1720" y="320"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="1980" y="280"/>
+                <position x="1723" y="280"/>
                 <dimension x="40" y="40"/>
               </graphics>
               <toolspecific tool="WoPeD" version="1.0">
@@ -2373,11 +2380,11 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
               <name>
                 <text>Adressdaten entgegennehmen</text>
                 <graphics>
-                  <offset x="1820" y="200"/>
+                  <offset x="1560" y="200"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="1820" y="160"/>
+                <position x="1563" y="160"/>
                 <dimension x="40" y="40"/>
               </graphics>
               <toolspecific tool="WoPeD" version="1.0">
@@ -2390,11 +2397,11 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
               <name>
                 <text>Adresse im Liefergebiet ?</text>
                 <graphics>
-                  <offset x="2140" y="200"/>
+                  <offset x="1880" y="200"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="2140" y="160"/>
+                <position x="1883" y="160"/>
                 <dimension x="40" y="40"/>
               </graphics>
               <toolspecific tool="WoPeD" version="1.0">
@@ -2408,11 +2415,11 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
               <name>
                 <text>Adresse im Liefergebiet ?</text>
                 <graphics>
-                  <offset x="2140" y="200"/>
+                  <offset x="1880" y="200"/>
                 </graphics>
               </name>
               <graphics>
-                <position x="2140" y="160"/>
+                <position x="1883" y="160"/>
                 <dimension x="40" y="40"/>
               </graphics>
               <toolspecific tool="WoPeD" version="1.0">
@@ -2439,43 +2446,18 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <orientation>1</orientation>
               </toolspecific>
             </transition>
-            <transition id="sub2_sub3_t8_op_1">
-              <name>
-                <text>Lieferart wählen</text>
-                <graphics>
-                  <offset x="1630" y="200"/>
-                </graphics>
-              </name>
-              <graphics>
-                <position x="1630" y="160"/>
-                <dimension x="40" y="40"/>
-              </graphics>
-              <toolspecific tool="WoPeD" version="1.0">
-                <operator id="sub2_sub3_t8" type="104"/>
-                <time>0</time>
-                <timeUnit>1</timeUnit>
-                <orientation>1</orientation>
-              </toolspecific>
-            </transition>
-            <transition id="sub2_sub3_t8_op_2">
-              <name>
-                <text>Lieferart wählen</text>
-                <graphics>
-                  <offset x="1630" y="200"/>
-                </graphics>
-              </name>
-              <graphics>
-                <position x="1630" y="160"/>
-                <dimension x="40" y="40"/>
-              </graphics>
-              <toolspecific tool="WoPeD" version="1.0">
-                <operator id="sub2_sub3_t8" type="104"/>
-                <time>0</time>
-                <timeUnit>1</timeUnit>
-                <orientation>1</orientation>
-              </toolspecific>
-            </transition>
             <arc id="a11" source="sub2_sub3_t3" target="sub2_sub3_p3">
+              <inscription>
+                <text>1</text>
+              </inscription>
+              <graphics/>
+              <toolspecific tool="WoPeD" version="1.0">
+                <probability>1.0</probability>
+                <displayProbabilityOn>false</displayProbabilityOn>
+                <displayProbabilityPosition x="500.0" y="0.0"/>
+              </toolspecific>
+            </arc>
+            <arc id="a22" source="sub2_sub3_p4" target="sub2_sub3_t10">
               <inscription>
                 <text>1</text>
               </inscription>
@@ -2512,58 +2494,16 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
               <inscription>
                 <text>1</text>
               </inscription>
-              <graphics/>
+              <graphics>
+                <position x="709" y="233"/>
+              </graphics>
               <toolspecific tool="WoPeD" version="1.0">
                 <probability>1.0</probability>
                 <displayProbabilityOn>false</displayProbabilityOn>
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
-            <arc id="a20" source="sub2_sub3_t11" target="sub2_sub3_p5">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
-            <arc id="a22" source="sub2_sub3_p4" target="sub2_sub3_t10">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
-            <arc id="a1" source="sub2_p3" target="sub2_sub3_t1">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
-            <arc id="a2" source="sub2_sub3_p2" target="sub2_sub3_t2">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
-            <arc id="a3" source="sub2_sub3_t1" target="sub2_sub3_p2">
+            <arc id="a1" source="sub2_p3" target="sub2_sub3_t2">
               <inscription>
                 <text>1</text>
               </inscription>
@@ -2629,29 +2569,18 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
+            <arc id="a20" source="sub2_sub3_t11" target="sub2_sub3_p5">
+              <inscription>
+                <text>1</text>
+              </inscription>
+              <graphics/>
+              <toolspecific tool="WoPeD" version="1.0">
+                <probability>1.0</probability>
+                <displayProbabilityOn>false</displayProbabilityOn>
+                <displayProbabilityPosition x="500.0" y="0.0"/>
+              </toolspecific>
+            </arc>
             <arc id="a31" source="sub2_sub3_p13" target="sub2_sub3_t11">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
-            <arc id="a24" source="sub2_sub3_p9" target="sub2_sub3_t8_op_2">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
-            <arc id="a24" source="sub2_sub3_p9" target="sub2_sub3_t8_op_1">
               <inscription>
                 <text>1</text>
               </inscription>
@@ -2673,7 +2602,40 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
+            <arc id="a24" source="sub2_sub3_p9" target="sub2_sub3_t8_op_1">
+              <inscription>
+                <text>1</text>
+              </inscription>
+              <graphics/>
+              <toolspecific tool="WoPeD" version="1.0">
+                <probability>1.0</probability>
+                <displayProbabilityOn>false</displayProbabilityOn>
+                <displayProbabilityPosition x="500.0" y="0.0"/>
+              </toolspecific>
+            </arc>
             <arc id="a16" source="sub2_sub3_t8_op_2" target="sub2_sub3_p13">
+              <inscription>
+                <text>1</text>
+              </inscription>
+              <graphics/>
+              <toolspecific tool="WoPeD" version="1.0">
+                <probability>1.0</probability>
+                <displayProbabilityOn>false</displayProbabilityOn>
+                <displayProbabilityPosition x="500.0" y="0.0"/>
+              </toolspecific>
+            </arc>
+            <arc id="a24" source="sub2_sub3_p9" target="sub2_sub3_t8_op_2">
+              <inscription>
+                <text>1</text>
+              </inscription>
+              <graphics/>
+              <toolspecific tool="WoPeD" version="1.0">
+                <probability>1.0</probability>
+                <displayProbabilityOn>false</displayProbabilityOn>
+                <displayProbabilityPosition x="500.0" y="0.0"/>
+              </toolspecific>
+            </arc>
+            <arc id="a26" source="sub2_sub3_t12_op_1" target="sub2_sub3_p4">
               <inscription>
                 <text>1</text>
               </inscription>
@@ -2695,7 +2657,7 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
-            <arc id="a26" source="sub2_sub3_t12_op_2" target="sub2_sub3_p4">
+            <arc id="a32" source="sub2_sub3_t12_op_2" target="sub2_sub3_p12">
               <inscription>
                 <text>1</text>
               </inscription>
@@ -2717,29 +2679,7 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
-            <arc id="a32" source="sub2_sub3_t12_op_1" target="sub2_sub3_p12">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
-            <arc id="a13" source="sub2_sub3_p3" target="sub2_sub3_t4_op_2">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
-            <arc id="a36" source="sub2_sub3_p12" target="sub2_sub3_t4_op_1">
+            <arc id="a7" source="sub2_sub3_t4_op_2" target="sub2_p6">
               <inscription>
                 <text>1</text>
               </inscription>
@@ -2761,7 +2701,20 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
-            <arc id="a7" source="sub2_sub3_t4_op_2" target="sub2_p6">
+            <arc id="a13" source="sub2_sub3_p3" target="sub2_sub3_t4_op_1">
+              <inscription>
+                <text>1</text>
+              </inscription>
+              <graphics>
+                <position x="1945" y="64"/>
+              </graphics>
+              <toolspecific tool="WoPeD" version="1.0">
+                <probability>1.0</probability>
+                <displayProbabilityOn>false</displayProbabilityOn>
+                <displayProbabilityPosition x="500.0" y="0.0"/>
+              </toolspecific>
+            </arc>
+            <arc id="a36" source="sub2_sub3_p12" target="sub2_sub3_t4_op_2">
               <inscription>
                 <text>1</text>
               </inscription>
@@ -3264,7 +3217,7 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
-            <arc id="a14" source="sub2_sub2_t4_op_2" target="sub2_sub2_p3">
+            <arc id="a7" source="sub2_sub2_p1" target="sub2_sub2_t4_op_1">
               <inscription>
                 <text>1</text>
               </inscription>
@@ -3275,7 +3228,18 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
-            <arc id="a9" source="sub2_sub2_t4_op_1" target="sub2_sub2_p2">
+            <arc id="a14" source="sub2_sub2_t4_op_1" target="sub2_sub2_p3">
+              <inscription>
+                <text>1</text>
+              </inscription>
+              <graphics/>
+              <toolspecific tool="WoPeD" version="1.0">
+                <probability>1.0</probability>
+                <displayProbabilityOn>false</displayProbabilityOn>
+                <displayProbabilityPosition x="500.0" y="0.0"/>
+              </toolspecific>
+            </arc>
+            <arc id="a9" source="sub2_sub2_t4_op_2" target="sub2_sub2_p2">
               <inscription>
                 <text>1</text>
               </inscription>
@@ -3297,17 +3261,6 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
-            <arc id="a7" source="sub2_sub2_p1" target="sub2_sub2_t4_op_1">
-              <inscription>
-                <text>1</text>
-              </inscription>
-              <graphics/>
-              <toolspecific tool="WoPeD" version="1.0">
-                <probability>1.0</probability>
-                <displayProbabilityOn>false</displayProbabilityOn>
-                <displayProbabilityPosition x="500.0" y="0.0"/>
-              </toolspecific>
-            </arc>
             <arc id="a24" source="sub2_sub2_p6" target="sub2_sub2_t10_op_2">
               <inscription>
                 <text>1</text>
@@ -3319,7 +3272,7 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
-            <arc id="a26" source="sub2_sub2_t10_op_2" target="sub2_sub2_p7">
+            <arc id="a31" source="sub2_sub2_t10_op_2" target="sub2_sub2_p8">
               <inscription>
                 <text>1</text>
               </inscription>
@@ -3341,7 +3294,7 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
                 <displayProbabilityPosition x="500.0" y="0.0"/>
               </toolspecific>
             </arc>
-            <arc id="a31" source="sub2_sub2_t10_op_1" target="sub2_sub2_p8">
+            <arc id="a26" source="sub2_sub2_t10_op_1" target="sub2_sub2_p7">
               <inscription>
                 <text>1</text>
               </inscription>
@@ -3961,40 +3914,7 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
             <displayProbabilityPosition x="500.0" y="0.0"/>
           </toolspecific>
         </arc>
-        <arc id="a3" source="sub1_p1" target="sub1_t2_op_1">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
-        <arc id="a5" source="sub1_t2_op_1" target="sub1_p2">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
-        <arc id="a7" source="sub1_t2_op_2" target="sub1_p3">
-          <inscription>
-            <text>1</text>
-          </inscription>
-          <graphics/>
-          <toolspecific tool="WoPeD" version="1.0">
-            <probability>1.0</probability>
-            <displayProbabilityOn>false</displayProbabilityOn>
-            <displayProbabilityPosition x="500.0" y="0.0"/>
-          </toolspecific>
-        </arc>
-        <arc id="a3" source="sub1_p1" target="sub1_t2_op_2">
+        <arc id="a19" source="sub1_t3_op_2" target="p3">
           <inscription>
             <text>1</text>
           </inscription>
@@ -4038,7 +3958,40 @@ Created with Workflow PetriNet Designer Version 3.2.0 (woped.org)-->
             <displayProbabilityPosition x="500.0" y="0.0"/>
           </toolspecific>
         </arc>
-        <arc id="a19" source="sub1_t3_op_2" target="p3">
+        <arc id="a3" source="sub1_p1" target="sub1_t2_op_1">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a5" source="sub1_t2_op_1" target="sub1_p2">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a7" source="sub1_t2_op_2" target="sub1_p3">
+          <inscription>
+            <text>1</text>
+          </inscription>
+          <graphics/>
+          <toolspecific tool="WoPeD" version="1.0">
+            <probability>1.0</probability>
+            <displayProbabilityOn>false</displayProbabilityOn>
+            <displayProbabilityPosition x="500.0" y="0.0"/>
+          </toolspecific>
+        </arc>
+        <arc id="a3" source="sub1_p1" target="sub1_t2_op_2">
           <inscription>
             <text>1</text>
           </inscription>
