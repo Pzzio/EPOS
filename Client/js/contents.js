@@ -291,7 +291,7 @@ function doCheckout() {
     submitData.customer = customer;
     submitData.articles = getCart().articles;
     submitData.total_price = getCart().total_price;
-    submitData.payment_method = document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value;
+    submitData.payment_method_id = document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value;
     submitData.order_method_id = document.getElementsByTagName("select")[1].options[document.getElementsByTagName("select")[1].selectedIndex].value;
 
     doPost("/cart/checkout", JSON.stringify(submitData), function () {

@@ -7,6 +7,7 @@ LOCATION = "../datastore/"
 FILE_PRIMARY = "primary.json"
 FILE_SECONDARY = "secondary.json"
 
+
 class JsonDto:
   def __init__(self, b=None):
     if b:
@@ -20,9 +21,14 @@ class JsonDto:
   def from_dict(self, dct):
     self.__dict__ = dct
 
+  def as_dict(self):
+    return self.__dict__
+
 
 class Datastore:
   def __init__(self):
+    self.write_jobs = queue.Queue()
+    self.write_in_progress = False
     with open(LOCATION + FILE_PRIMARY, encoding='UTF-8') as data_file:
       if data_file:
         self.primary = JsonDto(data_file.read())
@@ -32,16 +38,21 @@ class Datastore:
     self.operation_queue = queue.Queue()
 
   def save(self):
-    with open(LOCATION + FILE_PRIMARY, 'r+', encoding='UTF-8') as f:
-      text = self.primary.serialize()
-      f.seek(0)
-      f.write(text)
-      f.truncate()
-    with open(LOCATION + FILE_SECONDARY, 'r+', encoding='UTF-8') as f:
-      text = self.secondary.serialize()
-      f.seek(0)
-      f.write(text)
-      f.truncate()
+    try:
+      if not self.write_in_progress:
+        self.write_in_progress = True
+        with open(LOCATION + FILE_SECONDARY, 'r+', encoding='UTF-8') as f:
+          while not self.write_jobs.empty():
+            write_job = self.write_jobs.get()
+            self.secondary.orders.append(write_job)
+            text = self.secondary.serialize()
+            f.seek(0)
+            f.write(text)
+            f.truncate()
+    except:
+      self.write_in_progress = False
+      raise Exception('DB Write Error')
+    self.write_in_progress = False
 
   def get_articles(self):
     articles = self.primary.articles
@@ -133,6 +144,11 @@ class Datastore:
 
   def insert_full_checkout(self, full_shipping_request):
     # TODO; call ins costumer, payment, shipping
+    try:
+      self.write_jobs.put(full_shipping_request.as_dict())
+      self.save()
+    except:
+      return False
     return True
 
   def insert_costumer(self, costumer):
