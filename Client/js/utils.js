@@ -66,7 +66,7 @@ function doGet(url, callbackAction, etag) {
     var headers = [{identifier: "Content-Type", value: APPLICATION_MIME}];
     if (etag)
         headers.push({identifier: "If-None-Match", value: etag});
-    performXhr(url, "GET", headers, null, callbackAction)
+    performXhr(url, "GET", headers, null, callbackAction);
 
 }
 
@@ -91,8 +91,14 @@ function doPost(url, cartPayload, callbackAction) {
                 case 404:
                     showToasterNotification("Ein oder mehrere angefragte Artikel wurden nicht gefunden!", 3000);
                     break;
+                case 502:
+                    showToasterNotification("Bitte beachten Sie die Öffnungszeiten!", 3000);
+                    break;
+                case 503:
+                    showToasterNotification("Der Dienst ist vorübergehend nicht verfügbar!", 3000);
+                    break;
                 default:
-                    showToasterNotification("Unknown response in POS: " + url);
+                    showToasterNotification("Unknown response in EPOS: " + url);
                     break
             }
         }
@@ -118,6 +124,24 @@ function goToArticleView(id, update) {
     img.setAttribute('src', json.thumb_img_url);
     img_container.appendChild(img);
 
+    var description_container = document.createElement('DIV');
+    description_container.setAttribute('class', 'shp-desc-container');
+
+    var description_price = document.createElement('p');
+    description_price.setAttribute('id', 'price-tag');
+    description_price.innerHTML = 'Preis:  ' + priceToString(json.base_price);
+    description_container.appendChild(description_price);
+
+    var description_text = document.createElement('p');
+    description_text.innerHTML = 'Beschreibung: <br>' + json.desc;
+    description_container.appendChild(description_text);
+
+
+    img_container.appendChild(description_container);
+
+    var buttonContainer = document.createElement('DIV');
+    buttonContainer.setAttribute('class', "shp-cart-btn-box");
+
     var select = document.createElement('SELECT');
     for (var i = 1; i <= MAX_NUMBER_OF_PIZZAS_TO_ADD; i++) {
         var option = document.createElement('OPTION');
@@ -140,47 +164,53 @@ function goToArticleView(id, update) {
         container.removeChild(container.firstChild);
     }
 
-    var section = document.createElement('SECTION');
-    section.setAttribute('id', 'ingredients-form');
-
-    var list = document.createElement('UL');
-    list.setAttribute('id', 'ingredients-form');
-
+    var table = document.createElement('TABLE');
+    table.setAttribute('id', 'ingredients-form');
+    var tableBody = document.createElement('TBODY');
     var ingr = json.extra_ingredients;
+
     for (var i = 0; i < ingr.length; i++) {
-        var list_element = document.createElement('LI');
+        var row = document.createElement('TR');
+        var col = document.createElement('TD');
 
         var label = document.createElement('DIV');
         var extra_ingredient = (getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
-        label.setAttribute('class', 'art-span');
-        ;
-        ;
 
+        label.setAttribute('class', 'art-span');
         var ingredient_img = document.createElement('IMG');
         ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
 
-        label.appendChild(ingredient_img);
+        col.appendChild(ingredient_img);
+        row.appendChild(col);
 
+        var col = document.createElement('TD');
+        var ingredient_name = document.createElement('h3');
+        ingredient_name.innerHTML = 'Extra ' + extra_ingredient.name;
+        col.appendChild(ingredient_name);
+        row.appendChild(col);
+
+        var col = document.createElement('TD');
         var input = document.createElement('INPUT');
         input.setAttribute('type', 'checkbox');
         input.setAttribute('name', 'zutat');
         input.setAttribute('class', 'checkbox-custom');
-        ;
-        ;
         input.setAttribute('content', ingr[i].id);
 
-        label.appendChild(input);
-        list_element.appendChild(label);
-        list.appendChild(list_element);
+        col.appendChild(input);
+        row.appendChild(col);
+        tableBody.appendChild(row);
     }
+    table.appendChild(tableBody);
+
+    buttonContainer.appendChild(select);
+    buttonContainer.appendChild(button);
+    table.appendChild(buttonContainer);
 
     var list_section = document.createElement('SECTION');
-    list_section.setAttribute('id', 'ingredients-form');
-    list_section.appendChild(list);
-    list_section.appendChild(select);
-    list_section.appendChild(button);
+    //list_section.setAttribute('id', 'ingredients-form');
+    list_section.appendChild(table);
 
     container.appendChild(img_container);
     container.appendChild(list_section);
@@ -265,8 +295,8 @@ function goToCheckout(update) {
     form.setAttribute('onsubmit', 'doCheckout(); return false;');
 
     var fields = [
-        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z\u0020\u002D]+$'},
-        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[A-Za-z\u0020\u002D]+$'},
+        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z][A-Za-z\u0020\u002D]*$'},
+        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[A-Za-z][A-Za-z\u0020\u002D]*$'},
         {nvupdate: 'email', content: 'E-Mail:', type: 'email', name: 'email'},
         {
             nvupdate: 'telefon',
@@ -275,7 +305,7 @@ function goToCheckout(update) {
             name: 'tel',
             pattern: '^([\u002B]([0-9]|[0-9][0-9])|00([0-9]|[0-9][0-9])|001([0-9]|[0-9][0-9])|0)[0-9\u0020\u002D\u002F]{3,}$'
         },
-        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[A-Za-z\u0020\u002D]+$'},
+        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[A-Za-z][A-Za-z\u0020\u002D]*$'},
         {
             nvupdate: 'hausNr',
             content: 'Hausnummer:',
@@ -284,7 +314,7 @@ function goToCheckout(update) {
             pattern: '^([1-9][0-9]*(\u002F[1-9][0-9]?|[A-Za-z])?)$'
         },
         {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz', pattern: '^[0-9]{4,5}$'},
-        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\u0020\u002D]+$'},
+        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z][A-Za-z\u0020\u002D]*$'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
     ];
     for (var i = 0; i < fields.length; i++) {
@@ -426,11 +456,11 @@ function goToIndex(update) {
  */
 function addToCart(id, amount) {
     var cart = getCart() ? getCart() : {articles: [], total_price: 0.0};
-    var article = {};
+    var cartArticle = {};
     amount = parseInt(amount);
 
-    article.id = cart.articles.length;
-    article.article_id = id;
+    cartArticle.id = cart.articles.length;
+    cartArticle.article_id = id;
 
     var extra_ingredients = [];
 
@@ -438,32 +468,32 @@ function addToCart(id, amount) {
     for (var i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
             extra_ingredients.push({id: checkboxes[i].getAttribute('content')});
-            checkboxes[i].checked = false;
         }
     }
 
-    article.extra_ingredients = extra_ingredients;
+    cartArticle.extra_ingredients = extra_ingredients;
 
     var found_in_cart = false;
 
     for (var i = 0; (i < cart.articles.length) && !found_in_cart; i++) {
-        if (cart.articles[i].article_id == article.article_id) {
-            if (JSON.stringify(cart.articles[i].extra_ingredients) == JSON.stringify(article.extra_ingredients)) {
+        if (cart.articles[i].article_id == cartArticle.article_id) {
+            if (JSON.stringify(cart.articles[i].extra_ingredients) == JSON.stringify(cartArticle.extra_ingredients)) {
                 cart.articles[i].amount += amount;
+                cartArticle = cart.articles[i];
                 found_in_cart = true;
             }
         }
     }
 
     if (!found_in_cart) {
-        article.amount = amount;
-        cart.articles.push(article);
+        cartArticle.amount = amount;
+        cart.articles.push(cartArticle);
     }
 
-    cart.total_price += calculateSinglePriceFromCartArticle(article) * article.amount;
+    cart.total_price += calculateSinglePriceFromCartArticle(cartArticle) * amount;
 
     saveCart(cart);
-    //updateCart();
+    updateCartPrice();
     showToasterNotification((amount + 'x ' + getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!'), 3000);
 
     buildCartFromLocalStorage();
@@ -512,6 +542,14 @@ function removeFromCart(id) {
     buildCartFromLocalStorage();
 }
 
+function updateCartPrice() {
+    var total_cart_price = getCart().total_price;
+    if (total_cart_price) {
+        notVue.data.template_total_cart_price = total_cart_price.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+        replaceVarsInDOM()
+    }
+}
+
 /**/
 function getExtraIngredientsAsString(extras) {
     var output = "";
@@ -534,7 +572,7 @@ function getExtraIngredientsAsString(extras) {
  */
 function buildCartFromLocalStorage() {
     var cart = getCart() ? getCart() : {articles: [], total_price: 0.0};
-    var cart_table = document.getElementsByTagName('tbody')[0];
+    var cart_table = document.getElementsByClassName('shp-cart-content')[0].firstChild.nextSibling;
 
     if (!cart_table) {
         return;
@@ -583,7 +621,7 @@ function buildCartFromLocalStorage() {
         col.appendChild(tmp);
         row.appendChild(col);
 
-
+        console.log(cart_table);
         cart_table.appendChild(row);
     }
 
@@ -641,9 +679,6 @@ function priceToString(price) {
 function forward(url, update) {
     if (url === '/articles') {
         goToArticles(update);
-    }
-    else if (url === '/cart/checkout') {
-        goToCheckout(update);
     }
     else if (url === '/') {
         goToIndex(update);
@@ -747,6 +782,8 @@ function doCheckout() {
  * Lastly the cart is updated for the possible case of an old, not finished ordering process.
  * */
 function initMain() {
+    saveCart(getCart() ? getCart() : {articles: [], total_price: 0.0});
+
     if (!getRevisions()) {
         rev_setup = {articles: null, ingredients: null, shippingmethods: null, paymentmethods: null, taxes: null};
         saveRevisions(rev_setup)
