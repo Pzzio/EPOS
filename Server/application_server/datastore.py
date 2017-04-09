@@ -51,6 +51,7 @@ class Datastore:
             f.truncate()
     except:
       self.write_in_progress = False
+      raise Exception('DB Write Error')
     self.write_in_progress = False
 
   def get_articles(self):

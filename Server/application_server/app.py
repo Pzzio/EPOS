@@ -27,9 +27,9 @@ FROM_MIN = 0
 TILL_HOUR = 3
 TILL_MIN = 0
 
+
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     pass
-
 
 class BusinessData():
     def __init__(self, datastore):
