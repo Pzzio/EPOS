@@ -39,7 +39,8 @@ for con in h:
 
 for con in h:
 
-    con.request("GET", "/articles",{},{"Cookie":(str("SSID = 111")+str(i))})
+    # con.request("GET", "/articles",{},{"Cookie":(str("SSID = 111")+str(i))})
+    con.request("GET", "/articles", {}, {})
     print(con.getresponse().status)
     i = i+1
     print(i)
