@@ -66,7 +66,7 @@ function doGet(url, callbackAction, etag) {
     var headers = [{identifier: "Content-Type", value: APPLICATION_MIME}];
     if (etag)
         headers.push({identifier: "If-None-Match", value: etag});
-    performXhr(url, "GET", headers, null, callbackAction)
+    performXhr(url, "GET", headers, null, callbackAction);
 
 }
 
@@ -91,8 +91,14 @@ function doPost(url, cartPayload, callbackAction) {
                 case 404:
                     showToasterNotification("Ein oder mehrere angefragte Artikel wurden nicht gefunden!", 3000);
                     break;
+                case 502:
+                    showToasterNotification("Bitte beachten Sie die Öffnungszeiten!", 3000);
+                    break;
+                case 503:
+                    showToasterNotification("Der Dienst ist vorübergehend nicht verfügbar!", 3000);
+                    break;
                 default:
-                    showToasterNotification("Unknown response in POS: " + url);
+                    showToasterNotification("Unknown response in EPOS: " + url);
                     break
             }
         }
@@ -673,9 +679,6 @@ function priceToString(price) {
 function forward(url, update) {
     if (url === '/articles') {
         goToArticles(update);
-    }
-    else if (url === '/cart/checkout') {
-        goToCheckout(update);
     }
     else if (url === '/') {
         goToIndex(update);
