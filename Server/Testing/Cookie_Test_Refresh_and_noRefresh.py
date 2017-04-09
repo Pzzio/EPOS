@@ -2,19 +2,6 @@ import http.client
 import http.cookies
 import time
 
-# Testinhalt:
-# es wird getestet das erst 50 request gemacht werden die ersten 25 werden mit dem selben cookeis ein 2. Request durchgeführt
-# direckt darauf wird versucht 50 weitere einzufügen
-# nach 40s wird nochmal versucht 50 weitere durchzuführen
-# jedes mit einem anderen cookie
-
-# erwartet:
-# die ersten 50 kommen durch die nächsten 50 nicht
-# die letzten 50 wieder (da nur eine anfrage ist die Lebensdauer der cookies nur 30s)
-
-
-# Ergebnis:
-# BESTANDEN
 
 
 h1 = []
