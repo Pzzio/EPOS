@@ -1,4 +1,5 @@
 import cgi
+import datetime
 import http.cookies
 import http.server
 import logging
@@ -6,7 +7,6 @@ import mimetypes
 import os
 import re
 import time
-from datetime import datetime
 from http.server import HTTPServer
 from socketserver import ThreadingMixIn
 
@@ -20,6 +20,12 @@ VERSION = 1.1
 
 CLIENT_DIRECTORY = "../../Client"
 CACHE_TIME_S = str(60 * 60 * 24 * 30);
+
+FROM_HOUR = 7
+FROM_MIN = 0
+
+TILL_HOUR = 3
+TILL_MIN = 0
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     pass
@@ -181,7 +187,6 @@ def make_request_handler_class():
 
         def do_GET(self):
             # logging.debug('Init Time: %s' % str(int(1360287003083988472 % 1000000000)).zfill(9))
-            starttime = datetime.now()
             response_status = 200
             self.intermediate_headers.clear()
 
@@ -230,6 +235,16 @@ def make_request_handler_class():
             Handle POST requests.
             '''
 
+            start = datetime.time(FROM_HOUR, FROM_MIN)
+            end = datetime.time(TILL_HOUR, TILL_MIN)
+            timestamp = datetime.datetime.now().time()
+            if start < timestamp < end:  # oeffnungszeiten checken
+                self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
+                self.finalize_header(http.HTTPStatus.BAD_GATEWAY, "")
+
+            if not self.handle_cookie():
+                return
+
             logging.debug('POST %s' % (self.path))
 
             # CITATION: http://stackoverflow.com/questions/4233218/python-basehttprequesthandler-post-variables
@@ -241,7 +256,14 @@ def make_request_handler_class():
                     length = int(self.headers['content-length'])
                     body = self.rfile.read(length)
 
-                    checkout = JsonDto(body)
+                    try:
+                        checkout = JsonDto(body)
+                    except:
+                        response_status = http.HTTPStatus.BAD_REQUEST
+                        self.intermediate_headers.append(('Content-type', self.APPLICATION_MIME))
+                        self.finalize_header(response_status, "")
+                        return
+
                     # TODO;validate checkout
                     if requestValidator.validate(checkout, datastore):
                         if datastore.insert_full_checkout(checkout):
