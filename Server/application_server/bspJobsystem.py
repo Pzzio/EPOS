@@ -18,9 +18,9 @@ class JobSystem:
 
     # Beispiel fuer jobs
     # jobs = {
-    #    "NEUES_COOKIE_EINFUEGEN": _neuencookie,
-    #    "COOKIE_REFRESH": _cookierefresh,
-    #    "COOKIE_VALIDATE": _cookietest
+    #     "NEUES_COOKIE_EINFUEGEN": _insert_new_cookie,
+    #     "COOKIE_REFRESH": _refresh_cookie,
+    #     "COOKIE_VALIDATE": _test_cookie
     # }
     # die Klasse von der die Job objecte abgeleitet werden.
     # ein Job enthält die folgenden Informationen:

@@ -1,9 +1,5 @@
 var isInitialized = false;
 var go_back_uri = [];
-const CURRENCY_SYMBOL = ' \u20AC';
-const MAX_NUMBER_OF_PIZZAS_TO_ADD = 5;
-
-const APPLICATION_MIME = 'application/com.rosettis.pizzaservice';
 
 /*
  * This method pushes the given URI onto the history, both locally for the back button and globally in the browser.
@@ -18,88 +14,6 @@ function setNewUrl(url, title) {
         title = 'default';
     go_back_uri.push('/' + window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, ""));
     window.history.pushState({urlPath: url}, title, url);
-}
-
-/*
- * This function performs a HTTP request.
- *
- * url              specifies the requested URI
- * method           specifies the used method (GET, POST, DELETE, PUT)
- * headers          are the used HTTP headers
- * data             is the request body
- * callbackAction   specifies what to do once the request is compvare, regardless of the returned status code
- * */
-function performXhr(url, method, headers, data, callbackAction) {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            payload = xhttp.responseText;
-            try {
-                payload = JSON.parse(payload)
-            }
-            catch (err) {
-                if (this.status == 304) {
-                    console.log("Data up to date, status 304 (Not Modified)");
-                }
-                else {
-                    console.log("Invalid JSON payload");
-                }
-            }
-            callbackAction((!payload || payload === "") ? null : payload, this.status, this.getResponseHeader('ETag'));
-        }
-    };
-    xhttp.open(method, url, true);
-    xhttp.setRequestHeader('Content-Type', APPLICATION_MIME);
-    for (header in headers) {
-        xhttp.setRequestHeader(headers[header].identifier, headers[header].value)
-    }
-    xhttp.send((!data || data == '') ? null : data);
-}
-
-/*
- * This method performs an HTTP GET request on the given url by generation the request headers and calling the
- * performXhr method.
- */
-function doGet(url, callbackAction, etag) {
-    if (!etag)
-        etag = null;
-    var headers = [{identifier: "Content-Type", value: APPLICATION_MIME}];
-    if (etag)
-        headers.push({identifier: "If-None-Match", value: etag});
-    performXhr(url, "GET", headers, null, callbackAction)
-
-}
-
-/*
- * This method performs an HTTP POST request on the given url by generation the request headers and calling the
- * performXhr method.
- */
-function doPost(url, cartPayload, callbackAction) {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-        if (this.readyState === 4) {
-            switch (this.status) {
-                case 200:
-                    callbackAction();
-                    break;
-                case 400:
-                    showToasterNotification("Die angegebenen Daten scheinen inkorrekt zu sein!", 3000);
-                    break;
-                case 409:
-                    showToasterNotification("Es ist ein Fehler mit den Artikeldaten aufgetreten!", 3000);
-                    break;
-                case 404:
-                    showToasterNotification("Ein oder mehrere angefragte Artikel wurden nicht gefunden!", 3000);
-                    break;
-                default:
-                    showToasterNotification("Unknown response in POS: " + url);
-                    break
-            }
-        }
-    };
-    xhr.open('POST', url, true);
-    xhr.setRequestHeader('Content-Type', APPLICATION_MIME);
-    xhr.send(cartPayload);
 }
 
 /*
@@ -118,6 +32,24 @@ function goToArticleView(id, update) {
     img.setAttribute('src', json.thumb_img_url);
     img_container.appendChild(img);
 
+    var description_container = document.createElement('DIV');
+    description_container.setAttribute('class', 'shp-desc-container');
+
+    var description_price = document.createElement('p');
+    description_price.setAttribute('id', 'price-tag');
+    description_price.innerHTML = 'Preis:  ' + priceToString(json.base_price);
+    description_container.appendChild(description_price);
+
+    var description_text = document.createElement('p');
+    description_text.innerHTML = 'Beschreibung: <br>' + json.desc;
+    description_container.appendChild(description_text);
+
+
+    img_container.appendChild(description_container);
+
+    var buttonContainer = document.createElement('DIV');
+    buttonContainer.setAttribute('class', "shp-cart-btn-box");
+
     var select = document.createElement('SELECT');
     for (var i = 1; i <= MAX_NUMBER_OF_PIZZAS_TO_ADD; i++) {
         var option = document.createElement('OPTION');
@@ -129,9 +61,10 @@ function goToArticleView(id, update) {
     var button = document.createElement('BUTTON');
     button.setAttribute('id', 'addToCart');
 
-    button.setAttribute('onclick', 'addToCart(' + id + ', document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value)');
+    button.setAttribute('onclick', 'addArticleToCart(' + id + ', document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value)');
     button.innerHTML = '<h3>In den Warenkorb</h3>';
 
+    notVue.data.message = json.name;
     document.getElementsByTagName('h2')[0].innerHTML = json.name;
 
     var container = document.getElementsByTagName('article')[0];
@@ -140,47 +73,52 @@ function goToArticleView(id, update) {
         container.removeChild(container.firstChild);
     }
 
-    var section = document.createElement('SECTION');
-    section.setAttribute('id', 'ingredients-form');
-
-    var list = document.createElement('UL');
-    list.setAttribute('id', 'ingredients-form');
-
+    var table = document.createElement('TABLE');
+    table.setAttribute('id', 'ingredients-form');
+    var tableBody = document.createElement('TBODY');
     var ingr = json.extra_ingredients;
+
     for (var i = 0; i < ingr.length; i++) {
-        var list_element = document.createElement('LI');
+        var row = document.createElement('TR');
+        var col = document.createElement('TD');
 
         var label = document.createElement('DIV');
         var extra_ingredient = (getExtraIngredientsFromArticleById(id).ingredients.find(function (ingredient) {
             return ingredient.id == ingr[i].id;
         }));
-        label.setAttribute('class', 'art-span');
-        ;
-        ;
 
+        label.setAttribute('class', 'art-span');
         var ingredient_img = document.createElement('IMG');
         ingredient_img.setAttribute('src', extra_ingredient.thumb_img_url);
 
-        label.appendChild(ingredient_img);
+        col.appendChild(ingredient_img);
+        row.appendChild(col);
 
+        var col = document.createElement('TD');
+        var ingredient_name = document.createElement('h3');
+        ingredient_name.innerHTML = 'Extra ' + extra_ingredient.name;
+        col.appendChild(ingredient_name);
+        row.appendChild(col);
+
+        var col = document.createElement('TD');
         var input = document.createElement('INPUT');
         input.setAttribute('type', 'checkbox');
         input.setAttribute('name', 'zutat');
         input.setAttribute('class', 'checkbox-custom');
-        ;
-        ;
         input.setAttribute('content', ingr[i].id);
 
-        label.appendChild(input);
-        list_element.appendChild(label);
-        list.appendChild(list_element);
+        col.appendChild(input);
+        row.appendChild(col);
+        tableBody.appendChild(row);
     }
+    table.appendChild(tableBody);
+
+    buttonContainer.appendChild(select);
+    buttonContainer.appendChild(button);
+    table.appendChild(buttonContainer);
 
     var list_section = document.createElement('SECTION');
-    list_section.setAttribute('id', 'ingredients-form');
-    list_section.appendChild(list);
-    list_section.appendChild(select);
-    list_section.appendChild(button);
+    list_section.appendChild(table);
 
     container.appendChild(img_container);
     container.appendChild(list_section);
@@ -214,7 +152,7 @@ function goToArticles(update) {
     for (var i = 0; i < json.articles.length; i++) {
         var img = document.createElement('IMG');
         img.setAttribute('src', json.articles[i].thumb_img_url);
-        img.setAttribute('onclick', 'goToArticleView(' + json.articles[i].id + ')');
+        img.setAttribute('onclick', 'changeToScreen(2, false,' + json.articles[i].id + ')');
 
         var section = document.createElement('SECTION');
         section.setAttribute('id', json.articles[i].id);
@@ -265,8 +203,8 @@ function goToCheckout(update) {
     form.setAttribute('onsubmit', 'doCheckout(); return false;');
 
     var fields = [
-        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z\u0020\u002D]+$'},
-        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[A-Za-z\u0020\u002D]+$'},
+        {nvupdate: 'nachName', content: 'Name:', type: 'text', name: 'name', pattern: '^[A-Za-z][A-Za-z\u0020\u002D]*$'},
+        {nvupdate: 'vorName', content: 'Vorname:', type: 'text', name: 'vorname', pattern: '^[A-Za-z][A-Za-z\u0020\u002D]*$'},
         {nvupdate: 'email', content: 'E-Mail:', type: 'email', name: 'email'},
         {
             nvupdate: 'telefon',
@@ -275,7 +213,7 @@ function goToCheckout(update) {
             name: 'tel',
             pattern: '^([\u002B]([0-9]|[0-9][0-9])|00([0-9]|[0-9][0-9])|001([0-9]|[0-9][0-9])|0)[0-9\u0020\u002D\u002F]{3,}$'
         },
-        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[A-Za-z\u0020\u002D]+$'},
+        {nvupdate: 'strasse', content: 'Strasse:', type: 'text', name: 'strasse', pattern: '^[A-Za-z][A-Za-z\u0020\u002D]*$'},
         {
             nvupdate: 'hausNr',
             content: 'Hausnummer:',
@@ -284,7 +222,7 @@ function goToCheckout(update) {
             pattern: '^([1-9][0-9]*(\u002F[1-9][0-9]?|[A-Za-z])?)$'
         },
         {nvupdate: 'plz', content: 'PLZ:', type: 'text', name: 'plz', pattern: '^[0-9]{4,5}$'},
-        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z\u0020\u002D]+$'},
+        {nvupdate: 'ort', content: 'Ort:', type: 'text', name: 'ort', pattern: '^[A-Za-z][A-Za-z\u0020\u002D]*$'},
         {nvupdate: 'zusatzInfo', content: 'Zusatzinfos:', type: 'text', name: 'zusatzinfos'}
     ];
     for (var i = 0; i < fields.length; i++) {
@@ -338,7 +276,7 @@ function goToCheckout(update) {
 
     button = document.createElement('BUTTON');
     button.setAttribute('id', 'abort');
-    button.setAttribute('onclick', '(function(){clearCart(); buildCartFromLocalStorage(); goToIndex(); showToasterNotification("Checkout abgebrochen!", 3000)})()');
+    button.setAttribute('onclick', 'abortCheckout()');
     button.innerHTML = 'Checkout abbrechen';
     form.appendChild(button);
 
@@ -398,7 +336,7 @@ function goToIndex(update) {
 
     var button = document.createElement('BUTTON');
     button.setAttribute('id', 'start-btn');
-    button.setAttribute('onclick', 'goToArticles()');
+    button.setAttribute('onclick', 'changeToScreen(1)');
     button.innerHTML = '<h3>Jetzt bestellen</h3>';
 
     var section = document.createElement('SECTION');
@@ -415,235 +353,12 @@ function goToIndex(update) {
 }
 
 /*
- * This method is used to add a pizza specified by its id to the cart.
- * It checks whether there is already a pizza with the same constellation of extra ingredients in the cart
- * and simply increments its amount in this given case. Otherwise it will add this pizza alongside with the selected
- * extra ingredients to the cart.
- *
- * In both cases the overall total cart price is updated.
- *
- * Finally the user is notified that the pizza was successfully added and the sliding HTML cart window is updated.
- */
-function addToCart(id, amount) {
-    var cart = getCart() ? getCart() : {articles: [], total_price: 0.0};
-    var article = {};
-    amount = parseInt(amount);
-
-    article.id = cart.articles.length;
-    article.article_id = id;
-
-    var extra_ingredients = [];
-
-    var checkboxes = document.getElementsByTagName('input');
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].checked) {
-            extra_ingredients.push({id: checkboxes[i].getAttribute('content')});
-            checkboxes[i].checked = false;
-        }
-    }
-
-    article.extra_ingredients = extra_ingredients;
-
-    var found_in_cart = false;
-
-    for (var i = 0; (i < cart.articles.length) && !found_in_cart; i++) {
-        if (cart.articles[i].article_id == article.article_id) {
-            if (JSON.stringify(cart.articles[i].extra_ingredients) == JSON.stringify(article.extra_ingredients)) {
-                cart.articles[i].amount += amount;
-                found_in_cart = true;
-            }
-        }
-    }
-
-    if (!found_in_cart) {
-        article.amount = amount;
-        cart.articles.push(article);
-    }
-
-    cart.total_price += calculateSinglePriceFromCartArticle(article) * article.amount;
-
-    saveCart(cart);
-    //updateCart();
-    showToasterNotification((amount + 'x ' + getArticleById(id).name + ' wurde zum Warenkorb hinzugefuegt!'), 3000);
-
-    buildCartFromLocalStorage();
-}
-
-function showToasterNotification(message, duration) {
-    var toaster = document.getElementById("toaster");
-
-    if (toaster.className == 'show') {
-        return;
-    }
-    toaster.className = "show";
-    toaster.innerHTML = message;
-
-    setTimeout(function () {
-        toaster.className = toaster.className.replace("show", "");
-    }, duration);
-}
-
-function calculateSinglePriceFromCartArticle(cartArticle) {
-    var price = 0;
-    price += getArticleById(cartArticle.article_id).base_price;    //TODO; obtain tax and process VAT
-
-    for (var j = 0; j < cartArticle.extra_ingredients.length; ++j) {
-        price += getIngredientById(cartArticle.extra_ingredients[j].id).price
-    }
-
-    return price;
-}
-
-/**/
-function removeFromCart(id) {
-    var cart = getCart();
-    var article = cart.articles[id];
-    if (article.amount > 1) {
-        article.amount--;
-    }
-    else {
-        cart.articles.splice(id, 1);
-    }
-    for (var j = 0; j < article.extra_ingredients.length; ++j) {
-        cart.total_price -= getIngredientById(article.extra_ingredients[j].id).price
-    }
-    cart.total_price -= getArticleById(article.article_id).base_price;
-    saveCart(cart);
-    buildCartFromLocalStorage();
-}
-
-/**/
-function getExtraIngredientsAsString(extras) {
-    var output = "";
-    for (var i = 0; i < extras.length; i++) {
-        output += (getIngredientById(extras[i].id).name);
-        output += ",<br>";
-    }
-    return output.substring(0, output.length - 5);
-}
-
-/*
- * This function builds or updates the sliding HTML cart window using the data retrieved from the local storage.
- *
- * For that all the rows of the cart's table are removed except the header row.
- * After that the content rows are generated from the local storage showing the pizza's name, its extra ingredients,
- * the amount of the specific constellation, the base price and also the resulting sub total of the current row.
- * Additionally each row contains a button to remove itself.
- *
- * Because of that there is absolutely no functional difference between an initial build up and an update.
- */
-function buildCartFromLocalStorage() {
-    var cart = getCart() ? getCart() : {articles: [], total_price: 0.0};
-    var cart_table = document.getElementsByTagName('tbody')[0];
-
-    if (!cart_table) {
-        return;
-    }
-
-    while (cart_table.firstChild != cart_table.lastChild) {
-        cart_table.removeChild(cart_table.lastChild);
-    }
-
-    var row;
-    var col;
-
-    for (var i = 0; i < cart.articles.length; i++) {
-        row = document.createElement('TR');
-        row.setAttribute('class', 'shp-cart-art-row');
-
-        var cartArticle = cart.articles[i];
-
-        col = document.createElement('TD');
-        col.innerHTML = cartArticle.amount;
-        row.appendChild(col);
-
-        col = document.createElement('TD');
-        col.innerHTML = getArticleById(cartArticle.article_id).name;
-        row.appendChild(col);
-
-        col = document.createElement('TD');
-        col.innerHTML = getExtraIngredientsAsString(cartArticle.extra_ingredients);
-        row.appendChild(col);
-
-        var cartArticleSinglePrice = calculateSinglePriceFromCartArticle(cartArticle);
-        col = document.createElement('TD');
-        col.innerHTML = priceToString(cartArticleSinglePrice);
-        row.appendChild(col);
-
-        col = document.createElement('TD');
-        col.innerHTML = priceToString(cartArticle.amount * cartArticleSinglePrice);
-        row.appendChild(col);
-
-        col = document.createElement('TD');
-
-        var tmp = document.createElement('BUTTON');
-        tmp.innerHTML = 'Entfernen';
-        tmp.setAttribute('onclick', 'removeFromCart(' + cartArticle.id + ')');
-
-        col.appendChild(tmp);
-        row.appendChild(col);
-
-
-        cart_table.appendChild(row);
-    }
-
-    row = document.createElement("TR");
-    row.setAttribute('class', 'shp-cart-endrow');
-
-    col = document.createElement('TD');
-    col.setAttribute('colspan', '4');
-    col.innerHTML = 'Gesamtpreis';
-    row.appendChild(col);
-
-    col = document.createElement('TD');
-    col.innerHTML = priceToString(cart.total_price);
-    row.appendChild(col);
-
-    cart_table.appendChild(row);
-}
-
-/*
- * This function parses number (floating point and integer alike) to a nice string.
- * */
-function priceToString(price) {
-    if (price < 0.001) {
-        return '0,00' + CURRENCY_SYMBOL;
-    }
-
-    price = price + '';
-    var price_parts = price.split(".");
-    price = price_parts[0] + ',';
-
-    if (price_parts.length == 1) {
-        price += '00';
-    }
-    else if (price_parts[1].length > 2) {
-        price += price_parts[1].substring(0, 2);
-    }
-    else if (price_parts[1].length == 1) {
-        price += price_parts[1];
-        price += '0';
-    }
-    else if (price_parts[1].length == 0) {
-        price += '00';
-    }
-    else {
-        price += price_parts[1];
-    }
-
-    return price + CURRENCY_SYMBOL;
-}
-
-/*
  * This function "forwards" the browser to the screen associated with the given URI.
  * If the URI is unknown, the index page is called.
  * */
 function forward(url, update) {
     if (url === '/articles') {
         goToArticles(update);
-    }
-    else if (url === '/cart/checkout') {
-        goToCheckout(update);
     }
     else if (url === '/') {
         goToIndex(update);
@@ -668,66 +383,6 @@ function forward(url, update) {
     }
 }
 
-/**/
-function updateCart() {
-    var total_cart_price = getCart().total_price;
-    if (total_cart_price) {
-        notVue.data.template_total_cart_price = total_cart_price.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
-        replaceVarsInDOM()
-    }
-}
-
-/*
- * Here the checkout JSON object is built for the order terminating POST request.
- *
- * Firstly the object containing the user data is built from the checkout form. After that the articles
- * stored in the cart object in the local storage are dumped into the outgoing object analogically to the total cart
- * price. Finally the payment method and the ordering method are stored.
- *
- * Once the object is ready, the doPost function is called with a callback, which, provided the server returns a 200 code,
- * clears notifies the user about the successful checkout, clears the locally stored cart, updates the (now empty cart window)
- * and forwards the user to the starting page.
- *
- * Note that this function does not execute any validation of the data sent to the server. This is because firstly a frontend
- * executed validation is extremely unsafe and secondly a validation would use up additional time.
- * Therefor the validation is performed only by the backend for the sake of security and performance.
- * */
-function doCheckout() {
-    var formData = document.getElementsByTagName('input');
-    console.log(formData);
-
-    var submitData = {};
-
-    var customer = {};
-
-    customer.id = 0;
-    customer.type = 'Person';
-    customer.email = formData.email.value;
-    customer.first_name = formData.vorname.value;
-    customer.last_name = formData.name.value;
-    customer.telephone = formData.tel.value;
-
-    customer.address = {};
-    customer.address.addressCountry = '';
-    customer.address.addressLocality = formData.ort.value;
-    customer.address.addressRegion = '';
-    customer.address.postalCode = formData.plz.value;
-    customer.address.streetAddress = formData.strasse.value + ' ' + formData.hausnr.value;
-
-    submitData.customer = customer;
-    submitData.articles = getCart().articles;
-    submitData.total_price = getCart().total_price;
-    submitData.payment_method = document.getElementsByTagName("select")[0].options[document.getElementsByTagName("select")[0].selectedIndex].value;
-    submitData.order_method_id = document.getElementsByTagName("select")[1].options[document.getElementsByTagName("select")[1].selectedIndex].value;
-
-    doPost("/cart/checkout", JSON.stringify(submitData), function () {
-        showToasterNotification("Checkout erfolgreich! Ihre Bestellung wird bearbeitet", 3000);
-        clearCart();
-        buildCartFromLocalStorage();
-        forward("/");
-    });
-}
-
 /*
  * This is the starting point of the application.
  *
@@ -747,6 +402,8 @@ function doCheckout() {
  * Lastly the cart is updated for the possible case of an old, not finished ordering process.
  * */
 function initMain() {
+    saveCart(getCart() ? getCart() : {articles: [], total_price: 0.0});
+
     if (!getRevisions()) {
         rev_setup = {articles: null, ingredients: null, shippingmethods: null, paymentmethods: null, taxes: null};
         saveRevisions(rev_setup)
@@ -848,10 +505,6 @@ function initMain() {
             }
         }, etag)
     }
-
-    saveCart(getCart() ? getCart() : {articles: [], total_price: 0.0});
-
-    buildCartFromLocalStorage();
 
     isInitialized = true;
     updateCart();

@@ -111,7 +111,6 @@ def make_request_handler_class():
     datastore = Datastore()
     business_data = BusinessData(datastore)
 
-    #TODO schaun ob das die richtige stelle ist
     c = CookieManager()
 
 
