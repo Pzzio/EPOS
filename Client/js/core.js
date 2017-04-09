@@ -1,3 +1,9 @@
+/*
+* This file serves as an interface for all the high level calls in this application.
+* Every call is delegated to the corresponding function(s) in the other files.
+* */
+
+
 function changeToScreen(screen, update, id) {
     switch (screen){
         case 0:

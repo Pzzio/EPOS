@@ -60,6 +60,9 @@ function addToCart(id, amount) {
     buildCartFromLocalStorage();
 }
 
+/*
+*  This function shows the given String inside a Toaster Notification at the bottom of the screen.
+*/
 function showToasterNotification(message, duration) {
     var toaster = document.getElementById("toaster");
 
@@ -88,7 +91,10 @@ function calculateSinglePriceFromCartArticle(cartArticle) {
     return price;
 }
 
-/**/
+/*
+* The given article id, which is the same as the index within the cart.articles, is removed from the cart. If there are more than
+* one Pizza at the given index, the number is decremented, it is removed otherwise.
+* */
 function removeFromCart(id) {
     var cart = getCart();
     if (!cart.articles){
@@ -112,6 +118,9 @@ function removeFromCart(id) {
     buildCartFromLocalStorage();
 }
 
+/*
+* The cart total price is updated and all the notVue components are updated, too.
+* */
 function updateCartPrice() {
     var total_cart_price = getCart().total_price;
     if (total_cart_price) {
@@ -120,7 +129,9 @@ function updateCartPrice() {
     }
 }
 
-/**/
+/*
+* The given array of ingredients objects is converted to a human readable String.
+* */
 function getExtraIngredientsAsString(extras) {
     var output = "";
     for (var i = 0; i < extras.length; i++) {
@@ -242,7 +253,9 @@ function priceToString(price) {
     return price + CURRENCY_SYMBOL;
 }
 
-/**/
+/*
+ * The cart is updated and all the notVue components are updated, too.
+ * */
 function updateCart() {
     var total_cart_price = getCart().total_price;
     if (total_cart_price) {
