@@ -13,8 +13,6 @@ FILE_SECONDARY="secondary.json"
 #TODO anpassung der kosten für die einzelnen Zutaten !! hier ist es noch unklar aus der Doku wo die kosten in welcher Form gespeichert sein werden.
 class RequestValidator:
     def validate(self, objectvonnoli, datastore):  # wie mit noli besprochen
-
-
         kosten = 0
 
         if not objectvonnoli.articles:
@@ -25,6 +23,15 @@ class RequestValidator:
 
         if not objectvonnoli.customer:
             return False
+
+        if not objectvonnoli.payment_method_id:
+            return False
+        if not objectvonnoli.order_method_id:
+            return False
+
+        objectvonnoli.order_method_id = int(objectvonnoli.order_method_id)
+        objectvonnoli.payment_method_id = int(objectvonnoli.payment_method_id)
+
         if objectvonnoli.payment_method_id is None:
             return False
 
