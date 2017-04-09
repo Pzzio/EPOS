@@ -50,7 +50,10 @@
                     #
                 </th>
                 <th class="shp-cart-row shp-cart-row-name">
-                    Name / Extras
+                    Name
+                </th>
+                <th class="shp-cart-row shp-cart-row-name">
+                    Extras
                 </th>
                 <th class="shp-cart-row shp-cart-row-singleprice">
                     Einzelpreis
@@ -61,8 +64,8 @@
             </tr>
         </table>
         <div class="shp-cart-btn">
-            <button onclick="(function(){goToCheckout(); hideMenu({stopPropagation: function() {}});})()"><h3>Zur Kasse</h3></button>
-            <button onclick="(function(){clearCart(); buildCartFromLocalStorage();})()"><h3>Warenkorb leeren</h3></button>
+            <button onclick="changeToScreen(3)"><h3>Zur Kasse</h3></button>
+            <button onclick="removeEverythingFromCart()"><h3>Warenkorb leeren</h3></button>
         </div>
     </div>
 </div>
@@ -72,6 +75,9 @@
 <script src="/js/notVue.js"></script>
 <script src="/js/notVueInstructions.js"></script>
 <script src="/js/LocalDatastore.js"></script>
-<script src="/js/utils.js"></script>
+<script src="/js/httpRequests.js"></script>
+<script src="/js/contents.js"></script>
+<script src="/js/core.js"></script>
+<script src="/js/routing.js"></script>
 </body>
 </html>

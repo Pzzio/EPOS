@@ -1,5 +1,5 @@
 const NUMBER_OF_PIZZAS = 13;
-const NUMBER_OF_ORDERS = 1000;
+const NUMBER_OF_ORDERS = 100;
 
 
 describe("Basic building functions", function () {

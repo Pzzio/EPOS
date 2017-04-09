@@ -15,25 +15,44 @@
     <script src="js/LocalDatastore.js"></script>
     <script src="js/notVue.js"></script>
     <script src="js/notVueInstructions.js"></script>
-    <script src="js/utils.js"></script>
+    <script src="js/contents.js"></script>
 
     <!-- include spec files here... -->
     <script src="spec/utilsSpec.js"></script>
 
 </head>
 <body>
-<div class="bg">
-    <div id="instruction">
+<div class="bg" hidden>
+    <div id="instruction" hidden>
         <label>
             <h2></h2>
         </label>
     </div>
-    <article>
+    <article hidden>
     </article>
 </div>
-<div id="flyoutMenu">
+<div id="flyoutMenu" hidden>
     <div id="warenkorb">
         <table id="shp-cart-content">
+            <tbody>
+            <tr class="shp-cart-row">
+                <th class="shp-cart-row shp-cart-row-count">
+                    #
+                </th>
+                <th class="shp-cart-row shp-cart-row-name">
+                    Name
+                </th>
+                <th class="shp-cart-row shp-cart-row-name">
+                    Extras
+                </th>
+                <th class="shp-cart-row shp-cart-row-singleprice">
+                    Einzelpreis
+                </th>
+                <th class="shp-cart-row shp-cart-row-price">
+                    Preis
+                </th>
+            </tr>
+            </tbody>
         </table>
     </div>
 </div>
