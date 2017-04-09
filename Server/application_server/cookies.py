@@ -1,5 +1,6 @@
 
 import time
+import random
 
 from bspJobsystem import JobSystem
 
@@ -21,11 +22,11 @@ class CookieManager:
     # maximale anzahl an Kookies gleichzeitig(default 50)
     cookie_count_limit = 50
 
-    # erzeugt einen neuen wert für die cookieID TODO derzeit nur das Datum/Zeit
+    # erzeugt einen neuen wert für die cookieID
     @staticmethod
     def _new_id():
-        # TODO derzeit ist der neue name einfach die zeit
-        return str(time.time())
+
+        return (str(time.time())+str(random.random()))
 
     # es wird ein cookie in unserem Format erzeugt welches den übergeenen Value hat aber den exp_date = 0
     @staticmethod
@@ -148,6 +149,7 @@ class CookieManager:
 
         self.jobsystem.q.put(job)
         self.jobsystem.process_jobs()
+        print(len(self.cookie_list))
         return job.return_value
 
     # ruft _refresh_cookie über das Job system auf und gibt den returnwert zurück
@@ -163,6 +165,7 @@ class CookieManager:
 
         self.jobsystem.q.put(job)
         self.jobsystem.process_jobs()
+        print(len(self.cookie_list))
         return job.return_value
 
     # ruft _test_cookie über das Job system auf und gibt den returnwert zurück
@@ -177,4 +180,5 @@ class CookieManager:
 
         self.jobsystem.q.put(job)
         self.jobsystem.process_jobs()
+        print(len(self.cookie_list))
         return job.return_value
